@@ -1,0 +1,87 @@
+﻿@model Logistic_Inventory.Models.DuesAndPaids
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>DuesAndPaids</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Purchase.ProductsList)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Purchase.ProductsList)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateOfDue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateOfDue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalPayable)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalPayable)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalPaid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalPaid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalDue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalDue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateOfPayment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateOfPayment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateOfPartialPayment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateOfPartialPayment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" />  
+        </div>
+    }
+</div>

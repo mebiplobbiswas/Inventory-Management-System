@@ -1,0 +1,305 @@
+﻿@model IEnumerable<Logistic_Inventory.Models.Journal>
+
+@{
+    ViewBag.Title = "Journals";
+    var i = 1;
+    int k = 1;
+
+    var prevInv = "";
+
+    var fileName = System.IO.Path.Combine(Server.MapPath("~/Content/img/logo/"), "banner_350.png");
+
+    ViewBag.banner = "data:image/gif;base64," + Convert.ToBase64String(File.ReadAllBytes(fileName));
+
+
+    bool isMatched = false;
+}
+
+<link rel="stylesheet" type="text/css" href="~/Content/datatable/jquery.dataTables.css">
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jquery.dataTables.js"></script>
+
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.print.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/dataTables.buttons.min.js"></script>
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.flash.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/pdfmake.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/vfs_fonts.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.html5.min.js"></script>
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Journals</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")">Reports</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Journals </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                 
+                <div class="card-body">
+                    <table class=" display ">
+                        <thead>
+                            <tr>
+                                <th>Sl</th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Date)
+                                </th>
+
+                                @*<th>
+                        Account
+                    </th>*@
+
+
+                                <th>
+                                    Sub Head
+                                </th>
+
+
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Title)
+                                </th>
+
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Invoice)
+                                </th>
+
+                                @*<th>
+                        T. Code
+                    </th>*@
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Debit)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Credit)
+                                </th>
+
+
+                                @*<th></th>*@
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+
+
+
+                                <tr>
+
+
+
+
+
+
+                                    <td>@i</td>
+                                    <td>
+                                        <b>   @Html.DisplayFor(modelItem => item.Date)</b>
+                                    </td>
+
+
+                                    @*<td>
+                            @Html.DisplayFor(modelItem => item.AccSubHead.AccHeadSubCode)
+                        </td>*@
+
+
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.AccSubHead.SubHeadName)
+                                    </td>
+
+
+                                    <td>
+                                        <b>  @Html.DisplayFor(modelItem => item.Title)</b>
+                                    </td>
+                                    <td>
+
+
+                                        <p style="color:blue;font-weight:bold">@item.Invoice</p>
+
+
+
+
+                                    </td>
+                                    @*<td>
+                            @Html.DisplayFor(modelItem => item.TransactionCode)
+                        </td>*@
+
+                                    <td style="text-align:center">
+
+                                        <b>
+                                            @if (item.Debit == 0)
+                                            {
+                                                @:-
+                                            }
+                                            else
+                                            {
+                                                @Html.DisplayFor(modelItem => item.Debit)
+                                            }
+                                        </b>
+                                    </td>
+                                    <td style="text-align:center">
+
+                                        <b>
+                                            @if (item.Credit == 0)
+                                            {
+                                                @:-
+                                            }
+                                            else
+                                            {
+                                                @Html.DisplayFor(modelItem => item.Credit)
+                                            }
+                                        </b>
+
+                                    </td>
+
+
+
+                                </tr>
+
+
+
+
+
+
+
+
+
+
+
+
+                                i++;
+                                k++;
+                                if (k == 5) { k = 1; }
+                            }
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<style>
+    .bg_grey {
+        background-color: rgba(34, 42, 66, 0.05);
+    }
+
+    .bg_black {
+        background-color: #d4e4ee;
+    }
+</style>
+
+<script>
+
+    $(document).ready(function () {
+        $('table').DataTable({
+
+            "aLengthMenu": [[25, 50, 100, 200, 300, 500, 1000], ['25 Rows', '50 Rows', '100 Rows', '200 Rows', '300 Rows', '500 Rows', '1000 Rows']],
+            "pageLength": 25,
+
+            //"fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            //    $("td:nth-child(1)", nRow).html(iDisplayIndex + 1);
+            //    return nRow;
+            //},
+            "language": {
+
+                "search": '<i class="fa fa-search"></i>',
+                "searchPlaceholder": "Search",
+                "paginate": {
+                    "previous": '<i class="fa fa-angle-left"></i>',
+                    "next": '<i class="fa fa-angle-right"></i>'
+                }
+            },
+              dom: 'lBfrtip',
+             buttons: [
+
+                 {
+                    extend: 'pdf',
+                    text: '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                    customize: function (doc) {
+                        doc.content.splice(0, 0, {
+                            margin: [0, 0, 0, 0],
+
+                            alignment: 'left',
+                            image: '@ViewBag.banner'
+                        });
+
+                    }
+                }
+                 ,
+                 {
+                    extend: 'excel',
+                    text: '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+                    title: "@ViewBag.Title",
+                    footer: true,
+
+
+                },
+                 {
+                    extend: 'csv',
+                    text: '<i class="fa fa-file-word" aria-hidden="true"></i> CSV',
+                     title: "@ViewBag.Title",
+                    footer: true
+
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: "@ViewBag.Title",
+                    autoPrint: true,
+                    footer: true ,
+                    customize: function (win)
+                    {
+                        var url = location.protocol + '//' + location.host + "/Content/img/logo/banner_1000.png";
+
+
+
+                        $(win.document.body).find('.table>thead>tr>th').css("color", "black");
+                        $(win.document.body).find('.table>tbody>tr>td').css("color", "black");
+
+
+                        $(win.document.body)
+                            .css('font-size', '10pt').css('background-color', 'white')
+                        .prepend( '<img src="'+url+'" style="position:relative; top:0; left:0;width:600px" />'  );
+                        $(win.document.body).find('h1').css('font-size', '20px').css('font-weight', 'bold').css('text-transform', 'uppercase').css('color', 'black').css('margin-top', '15px');
+                    }
+                }
+
+            ]
+        });
+
+
+    });
+
+</script>

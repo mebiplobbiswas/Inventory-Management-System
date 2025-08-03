@@ -1,0 +1,207 @@
+﻿@model Logistic_Inventory.Models.DataEntry
+@using Logistic_Inventory.Models;
+@{
+    ViewBag.Title = "Create";
+    int id = ViewBag.maxId;
+    ViewBag.page = "transactions";
+
+    var inv = DateTime.UtcNow.Day.ToString() + DateTime.UtcNow.Month.ToString() + DateTime.UtcNow.Year.ToString() + "-D" + id.ToString();
+}
+<script src="~/Scripts/select2/3.5/select2.min.js"></script>
+
+<link href="~/Content/select2/3.5/select2.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/cal/bootstrap-datepicker.js"></script>
+
+<link href="~/Content/cal/bootstrap-datepicker.css" rel="stylesheet" />
+
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"> Transaction Entries</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/AccountSubHeads")">Accounts</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Transactions</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="@Url.Content("~/AccountSubHeads")" class="btn btn-sm btn-success">  Account Sub Heads</a>
+                    <a href="@Url.Content("~/dataentries/")" class="btn btn-sm btn-default">Transaction Entries</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page content -->
+<div class="container col-md-6 mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h3 class="mb-0">    <b><i class="fa fa-plus-circle"></i> Transaction Entry</b></h3>
+                </div>
+                <div class="card-body">
+                    <div class="">
+                        <div class="card-description">
+
+
+                            @using (Html.BeginForm())
+                            {
+                                @Html.AntiForgeryToken()
+
+                                <div class="form-horizontal">
+
+
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.EntryDate, htmlAttributes: new { @class = "form-control-label" })
+                                        <div class="">
+                                            <input type="text" class="form-control" value="@DateTime.UtcNow.ToShortDateString()" name="EntryDate" id="EntryDate" />
+                                            @Html.ValidationMessageFor(model => model.EntryDate, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="AccSubHeadID">Account Head</label>      <div  >
+                                            <select class="" id="AccSubHeadID" name="AccSubHeadID">
+                                                @foreach (var item in ViewData["AccSubHeadID"] as List<AccSubHead>)
+                                                {
+
+                                                    var title = item.AccHeadSubCode + "-" + item.SubHeadCode + " : " + item.AccHeadName + " - " + item.SubHeadName;
+                                                    <option value="@item.id">@title</option>
+
+
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "form-control-label" })
+                                        <div class="">
+                                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "form-control-label" })
+                                        <div class="">
+                                            @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Invoice, htmlAttributes: new { @class = "form-control-label" })
+                                        <div class="">
+                                            @Html.EditorFor(model => model.Invoice, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.Invoice, "", new { @class = "text-danger" })
+
+                                            <span class="text-danger">@ViewBag.error</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Comment, htmlAttributes: new { @class = "form-control-label" })
+                                        <div class="">
+                                            @Html.EditorFor(model => model.Comment, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        
+                                            <br />
+                                            <input type="submit" value="Submit" class="btn btn-default btn-block" />
+                                        
+                                    </div>
+                                </div>
+                            }
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+ 
+
+
+
+
+
+
+
+
+<script>
+
+      $('#EntryDate').datepicker({
+        weekStart: 1,
+        color: 'black',
+          format: 'd/m/yyyy'
+
+    });
+
+
+    $('#AccSubHeadID').select2({
+        width: '99%'
+
+    });
+
+    $('#Invoice').val("@inv");
+
+    var accHeads = { id: 0, name: "" };
+
+    var AccSubHeads = [
+        @foreach (var item in ViewData["AccSubHeadID"] as List<AccSubHead>)
+         {
+               @:{ id: @item.id, name: "@item.SubHeadName" },
+         }
+    ];
+
+
+    $('#AccSubHeadID').on("change", function () {
+
+
+         console.log(initialSelect);
+         var name= AccSubHeads.find(s => s.id == this.value).name;
+
+    $('#Name').val(name);
+
+
+    });
+
+    var initialSelect = $('#AccSubHeadID').val();
+
+
+    var name= AccSubHeads.find(s => s.id == initialSelect).name;
+
+    $('#Name').val(name);
+
+
+
+
+
+</script>

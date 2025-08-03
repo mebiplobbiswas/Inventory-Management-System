@@ -1,0 +1,203 @@
+﻿@model Logistic_Inventory.Models.DataEntry
+@using Logistic_Inventory.Models
+
+@{
+    ViewBag.Title = "Edit";
+    ViewBag.page = "transactions";
+
+}
+<script src="~/Scripts/select2/3.5/select2.min.js"></script>
+
+<link href="~/Content/select2/3.5/select2.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/cal/bootstrap-datepicker.js"></script>
+
+<link href="~/Content/cal/bootstrap-datepicker.css" rel="stylesheet" />
+ 
+
+
+
+<div class="col-md-6 ml-auto mr-auto" id="searchBody">
+    <div class="card card-upgrade">
+
+        <div class="card-body">
+            <div class="card card-user">
+                <div class="card-body">
+                    <p class="card-text">
+                    </p><div class="author">
+                        <div class="block block-one"></div>
+                        <div class="block block-two"></div>
+                        <div class="block block-three"></div>
+                        <div class="block block-four"></div>
+
+                        <div class="row" id="content">
+                            <div class="col-md-6">
+                                <h5 style="margin:0" class="center-block center"></h5>
+
+                            </div>
+                            <div class="col-md-6 ">
+                                <div class="btn-group btn-group-sm btn-sm" style="float:right;">
+
+ 
+
+
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <h1 class="description">
+                            Edit Transactions
+                        </h1>
+                    </div>
+                    <p></p>
+                    <div class="card-description">
+
+
+
+                        @using (Html.BeginForm())
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-horizontal">
+                              
+                                <hr />
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                @Html.HiddenFor(model => model.Id)
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.EntryDate, htmlAttributes: new { @class = "control-label col-md-4" })
+                                    <div class="col-md-12">
+                                        <input type="text" class="form-control" value="@Model.EntryDate.Value.ToShortDateString()" name="EntryDate" id="EntryDate" />
+                                        @Html.ValidationMessageFor(model => model.EntryDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.AccSubHeadID, "AccSubHeadID", htmlAttributes: new { @class = "control-label col-md-4" })
+                                    <div class="col-md-12">
+                                        <select class="" id="AccSubHeadID" name="AccSubHeadID">
+                                            @foreach (var item in ViewData["AccSubHeadID"] as List<AccSubHead>)
+                                            {
+
+                                                var title = item.AccHeadSubCode + "-" + item.SubHeadCode + " : " + item.AccHeadName + " - " + item.SubHeadName;
+                                                <option value="@item.id">@title</option>
+
+
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-4" })
+                                    <div class="col-md-12">
+                                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-4" })
+                                    <div class="col-md-12">
+                                        @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Invoice, htmlAttributes: new { @class = "control-label col-md-4" })
+                                    <div class="col-md-12">
+                                        @Html.EditorFor(model => model.Invoice, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.ValidationMessageFor(model => model.Invoice, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Comment, htmlAttributes: new { @class = "control-label col-md-4" })
+                                    <div class="col-md-12">
+                                        @Html.EditorFor(model => model.Comment, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-12">
+                                        <br/>
+                                        <input type="submit" value="Update" class="btn btn-default btn-block btn-lg" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+
+
+                    </div>
+
+                    <div class="card-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+     $('#EntryDate').datepicker({
+        weekStart: 1,
+        color: 'black',
+          format: 'd/m/yyyy'
+
+    });
+
+
+    $('#AccSubHeadID').select2({
+       
+    width:"99%"
+    });
+
+
+
+    var accHeads = { id: 0, name: "" };
+
+    var AccSubHeads = [
+        @foreach (var item in ViewData["AccSubHeadID"] as List<AccSubHead>)
+         {
+               @:{ id: @item.id, name: "@item.SubHeadName" },
+         }
+    ];
+
+
+    $('#AccSubHeadID').on("change", function () {
+
+
+         console.log(initialSelect);
+         var name= AccSubHeads.find(s => s.id == this.value).name;
+
+    $('#Name').val(name);
+
+
+    });
+
+    var initialSelect = $('#AccSubHeadID').val();
+
+
+    var name= AccSubHeads.find(s => s.id == initialSelect).name;
+
+    $('#Name').val(name);
+
+
+</script>

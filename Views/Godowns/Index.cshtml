@@ -1,0 +1,173 @@
+﻿@model IEnumerable<Logistic_Inventory.Models.Godown>
+
+@{
+    ViewBag.Title = "Index";
+    var i = 1;
+    ViewBag.page = "others";
+}
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"> Godowns</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/products")">Products</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Godowns</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="@Url.Content("~/Godowns/create")" class="btn btn-md btn-primary">Add New</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                
+                </div>
+                <div class="card-body">
+                    <table class="table    table-hover table-bordered">
+                        <tr class="th_bg">
+
+                            <th>SL</th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.GodownName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.GodownCode)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.GodownAddress)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.GodownIncharge)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Mobile)
+                            </th>
+                            @*<th>
+                                @Html.DisplayNameFor(model => model.Comment)
+                            </th>*@
+                            <th></th>
+                        </tr>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <th>@i</th>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.GodownName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.GodownCode)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.GodownAddress)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.GodownIncharge)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Mobile)
+                                </td>
+                                @*<td>
+                                    @Html.DisplayFor(modelItem => item.Comment)
+                                </td>*@
+                                <td>
+
+
+                                    <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+
+                                        <label class="btn btn-sm btn-default btn-simple active" onclick="edit(@item.id)">
+
+
+                                            <input type="radio" name="options" checked="">
+                                            <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Edit</span>
+                                            <span class="d-block d-sm-none">
+                                                <i class="fa fa-edit"></i>
+                                            </span>
+
+                                        </label>
+
+                                        @*<label class="btn btn-sm btn-default btn-simple" id="1" onclick="details(@item.id)">
+                                            <input type="radio" class="d-none d-sm-none" name="options">
+                                            <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Details</span>
+                                            <span class="d-block d-sm-none">
+                                                <i class="tim-icons icon-notes"></i>
+                                            </span>
+                                        </label>*@
+                                        <label class="btn btn-sm btn-default btn-simple" id="2" onclick="deletes(@item.id)">
+                                            <input type="radio" class="d-none" name="options">
+                                            <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Delete</span>
+                                            <span class="d-block d-sm-none">
+                                                <i class="tim-icons icon-simple-remove"></i>
+                                            </span>
+                                        </label>
+                                    </div>
+
+
+                                </td>
+
+                            </tr>
+                            i++;
+                        }
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+ 
+
+
+
+ 
+
+<script>
+
+    var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+
+    if (width < 900) {
+        $("table").addClass("table-responsive");
+    }
+
+    function edit(id) {
+        window.location.href = "/godowns/Edit/" + id;
+
+    }
+
+    function details(id) {
+        window.location.href = "/godowns/details/" + id;
+
+    }
+
+    function deletes(id) {
+        window.location.href = "/godowns/delete/" + id;
+
+    }
+</script>
+
+
+
+
+
+
+
+

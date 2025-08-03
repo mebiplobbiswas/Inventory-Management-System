@@ -1,0 +1,82 @@
+﻿@model Logistic_Inventory.Models.DuesAndPaids
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>DuesAndPaids</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Purchase.ProductsList)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Purchase.ProductsList)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateOfDue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateOfDue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalPayable)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalPayable)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalPaid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalPaid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalDue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalDue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateOfPayment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateOfPayment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateOfPartialPayment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateOfPartialPayment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,75 @@
+﻿@model Logistic_Inventory.Models.DataEntry
+
+@{
+    ViewBag.Title = "Details";
+    ViewBag.page = "transactions";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>DataEntry</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AccSubHead.AccHeadName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccSubHead.AccHeadName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EntryDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EntryDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Amount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Amount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Invoice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Invoice)
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Side)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Side)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Comment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Comment)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

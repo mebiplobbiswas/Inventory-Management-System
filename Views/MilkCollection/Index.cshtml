@@ -1,0 +1,425 @@
+﻿@model IEnumerable<Logistic_Inventory.Models.CowMilkCollectionMap>
+
+@{
+
+    var conName = @ViewContext.RouteData.Values["controller"].ToString();
+
+    ViewBag.Title = " Milk Production Report";
+    int i = 1;
+    int j = 1;
+
+    var fileName = System.IO.Path.Combine(Server.MapPath("~/Content/img/logo/"), "banner_350.png");
+
+    ViewBag.banner = "data:image/gif;base64," + Convert.ToBase64String(File.ReadAllBytes(fileName));
+
+    ViewBag.page = "cows";
+
+}
+
+<link rel="stylesheet" type="text/css" href="~/Content/datatable/jquery.dataTables.css">
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jquery.dataTables.js"></script>
+
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.print.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/dataTables.buttons.min.js"></script>
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.flash.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/pdfmake.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/vfs_fonts.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.html5.min.js"></script>
+
+
+
+<script src="~/Scripts/cal/bootstrap-datepicker.js"></script>
+
+<link href="~/Content/cal/bootstrap-datepicker.css" rel="stylesheet" />
+
+
+
+
+<div class="card">
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <h2 style="margin-top: 10px;">
+                    <b>
+                        <i class="fa fa-file" aria-hidden="true"></i>   @ViewBag.Title
+                    </b>
+                </h2>
+            </div>
+
+            <div class="col-md-8 printhide">
+                <div class="btn-group btn-group" style="float:right">
+                    <a class="btn btn-sm btn-success" href="/@conName/create"><i class="fa fa-plus-circle" aria-hidden="true"></i> &nbsp; Add New</a>
+
+                    <button  class="btn btn-sm btn-default" onclick="print()">
+                        <i class="fa fa-print"> Print</i>
+                    </button>
+
+
+                </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<div class="row" style=" text-align: center;  margin: 0 auto;">
+    <ul class="nav nav-tabs center-block" style=" text-align: center; margin: 0 auto;">
+        <li class="nav-item">
+            <a class="btn btn-sm btn-default btn-simple active show" data-toggle="tab" href="#home">All Milk Collection  Records </a>
+        </li>
+        <li class="nav-item">
+            <a class="btn btn-sm btn-default btn-simple" data-toggle="tab" href="#menu1">Cow-wise Milk Collection Record</a>
+        </li>
+
+    </ul>
+
+</div>
+<br />
+<div class="card">
+
+    <div class="card-body">
+
+
+
+
+
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane   active" id="home">
+
+
+
+                <div class="row hide">
+
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+
+
+
+
+                                    <input class="form-control text-box single-line" autocomplete="off" data-val="true" id="from" style="border: 1px solid #2196f3;background: #ebf4fb;font-size: 22px; color: #444444;font-weight: bolder;" placeholder="Date From" type="text" value="">
+
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+
+                                    <input class="form-control text-box single-line" autocomplete="off" placeholder="Date To" id="to" style="border: 1px solid #2196f3;background: #ebf4fb;font-size: 22px; color: #444444;font-weight: bolder;" type="text" value="">
+
+
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="btn-group btn-group " style="float:right">
+
+                                    <button class="btn btn-danger btn-sm" id="clearNow"><i class="fa fa-times"></i> Clear  </button>
+
+
+                                    <button class="btn btn-default btn-sm" id="dateSarch"><b> <i class="fa fa-search"></i> Date Range Search </b>  </button>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+
+
+
+                <br />
+
+                <table class="display table dataTable" style="font-weight:bold;width:100%">
+                    <thead class="text-primary">
+                        <tr>
+                            <th>SL</th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.date)
+                            </th>
+                            <th>
+                                Cow     @Html.DisplayNameFor(model => model.cows.Name)
+                            </th>
+
+                            @*<th>
+                        Cow  @Html.DisplayNameFor(model => model.cows.Code)
+                    </th>*@
+
+
+                            <th>
+                                Shift
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Products.ProductName)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.Purchase.Invoice)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.quantity)
+                            </th>
+
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>
+                                @item.date.ToShortDateString()
+                            </td>
+                            <td>
+                                <b>                                @Html.DisplayFor(modelItem => item.cows.Name)</b>
+                            </td>
+                            @*<td>
+                        @Html.DisplayFor(modelItem => item.cows.Code)
+                    </td>*@
+
+
+                            <td>
+
+
+                                @if (item.Purchase.CollectionShift == "Morning")
+                                {
+                                    <label class="btn btn-sm btn-success">Morning</label>
+                                }
+                                else if (item.Purchase.CollectionShift == "Evening")
+                                {
+                                    <label class="btn btn-sm btn-default">Evening</label>
+                                }
+                                else if (item.Purchase.CollectionShift == "None")
+                                {
+                                    <label class="btn btn-sm btn-danger">None</label>
+                                }
+                                else
+                                {
+                                    <label class="btn btn-sm btn-warning">After Noon</label>
+                                }
+
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Products.ProductName)
+                            </td>
+                            <td>
+                                <a style="font-size:16px" href="/purchases/Details/@item.purchaseId"> @item.Purchase.Invoice</a>
+
+
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.quantity)
+                            </td>
+
+
+                        </tr>
+                        i++;
+                    }
+
+                </table>
+
+
+
+            </div>
+            <div class="tab-pane  fade" id="menu1">
+
+                <br />
+
+                <table class="display table dataTable" style="font-weight:bold;width:100%">
+                    <thead class="text-primary">
+                        <tr>
+                            <th>SL</th>
+                            <th>
+                                Cow  Name
+                            </th>
+                            <th>
+                                Cow   Code
+                            </th>
+
+                            <th>
+                                Total
+                            </th>
+
+
+
+
+                        </tr>
+                    </thead>
+                    @foreach (var item in ViewData["cowMilkCollection"] as List<Logistic_Inventory.Models.db_first.vCowWiseMilkCollection>)
+                    {
+                        <tr>
+                            <td>@j</td>
+                            <td>
+                                @item.Name
+                            </td>
+                            <td>
+                                @item.Code
+                            </td>
+                            <td>
+                                @item.total
+                            </td>
+
+
+
+
+                        </tr>
+                        j++;
+                    }
+
+                </table>
+
+
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+
+
+
+<script>
+
+
+
+    $(document).ready(function () {
+
+    $(document).ready(function () {
+        $('table').DataTable({
+
+            "aLengthMenu": [[25, 50, 100, 200, 300, 500, 1000], ['25 Rows', '50 Rows', '100 Rows', '200 Rows', '300 Rows', '500 Rows', '1000 Rows']],
+            "pageLength": 25,
+
+            //"fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            //    $("td:nth-child(1)", nRow).html(iDisplayIndex + 1);
+            //    return nRow;
+            //},
+            "language": {
+
+                "search": '<i class="fa fa-search"></i>',
+                "searchPlaceholder": "By Cow,Provider",
+                "paginate": {
+                    "previous": '<i class="fa fa-angle-left"></i>',
+                    "next": '<i class="fa fa-angle-right"></i>'
+                }
+            },
+              dom: 'lBfrtip',
+             buttons: [
+
+                 {
+                    extend: 'pdf',
+                    text: '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                    customize: function (doc) {
+                        doc.content.splice(0, 0, {
+                            margin: [0, 0, 0, 0],
+
+                            alignment: 'left',
+                            image: '@ViewBag.banner'
+                        });
+
+                    }
+                }
+                 ,
+                 {
+                    extend: 'excel',
+                    text: '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+                    title: "@ViewBag.Title",
+                    footer: true,
+
+
+                },
+                 {
+                    extend: 'csv',
+                    text: '<i class="fa fa-file-word" aria-hidden="true"></i> CSV',
+                     title: "@ViewBag.Title",
+                    footer: true
+
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: "@ViewBag.Title",
+                    autoPrint: true,
+                    footer: true ,
+                    customize: function (win)
+                    {
+                        var url = location.protocol + '//' + location.host + "/Content/img/Inventory.png";
+
+
+
+                        $(win.document.body).find('.table>thead>tr>th').css("color", "black");
+                        $(win.document.body).find('.table>tbody>tr>td').css("color", "black");
+
+
+                        $(win.document.body)
+                            .css('font-size', '10pt').css('background-color', 'white')
+                        .prepend( '<img src="'+url+'" style="position:relative; top:0; left:0;width:600px" />'  );
+                        $(win.document.body).find('h1').css('font-size', '20px').css('font-weight', 'bold').css('text-transform', 'uppercase').css('color', 'black').css('margin-top', '15px');
+                    }
+                }
+
+            ]
+        });
+
+
+    });
+    });
+    $('#from').datepicker({
+        weekStart: 1,
+        color: 'black',
+        format: 'dd/mm/yyyy'
+    });
+
+
+    $('#to').datepicker({
+        weekStart: 1,
+        color: 'black',
+        format: 'dd/mm/yyyy'
+    });
+
+
+
+
+    $("#dateSarch").click(function () {
+
+
+        table.ajax.url(url).load();
+
+    });
+
+    $("#clearNow").click(function () {
+
+
+        $("#from").val('');
+        $("#to").val("");
+
+    });
+</script>
+

@@ -1,0 +1,82 @@
+﻿@model Logistic_Inventory.Models.Journal
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Journal</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AccSubHead.AccHeadName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccSubHead.AccHeadName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Purchase.ProductsList)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Purchase.ProductsList)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Invoice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Invoice)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Debit)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Debit)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Credit)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Credit)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Date_updated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Date_updated)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
