@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="4c0ab694e2304ba9aeb96261bb0e00fe" Name="Diagram1" ZoomLevel="97">
+        <EntityTypeShape EntityType="DB_A4BCAF_PurbaDBModel.vPurchaseList" Width="2.625" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_A4BCAF_PurbaDBModel.vCowMilkCollectionAlltime" Width="1.5" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="DB_A4BCAF_PurbaDBModel.vCowWiseMilkCollection" Width="1.5" PointX="5.375" PointY="4.25" />
+        <EntityTypeShape EntityType="DB_A4BCAF_PurbaDBModel.vPurchaseListByProduct" Width="1.5" PointX="10.75" PointY="0.75" />
+        <EntityTypeShape EntityType="DB_A4BCAF_PurbaDBModel.vSalesList" Width="1.5" PointX="13.375" PointY="0.75" />
+        <EntityTypeShape EntityType="DB_A4BCAF_PurbaDBModel.vCustomerSalesBalance" Width="1.5" PointX="0.75" PointY="7.75" />
+        <EntityTypeShape EntityType="DB_A4BCAF_PurbaDBModel.vCustomerSalesList" Width="1.5" PointX="5.25" PointY="7.5" />
+        <EntityTypeShape EntityType="DB_A4BCAF_PurbaDBModel.vProvidersBalance" Width="1.5" PointX="8.25" PointY="5.125" />
+        <EntityTypeShape EntityType="DB_A4BCAF_PurbaDBModel.vStockEntry" Width="1.5" PointX="7.375" PointY="0.75" />
+        <EntityTypeShape EntityType="DB_A4BCAF_PurbaDBModel.vStock" Width="1.5" PointX="11.25" PointY="8.5" />
+        <EntityTypeShape EntityType="DB_A4BCAF_PurbaDBModel.vPurchaseListCowWise" Width="1.5" PointX="7.375" PointY="8.75" />
+        <EntityTypeShape EntityType="DB_A4BCAF_PurbaDBModel.vSalesByMonth" Width="1.5" PointX="10.375" PointY="5.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
