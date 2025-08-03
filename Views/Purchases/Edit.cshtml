@@ -1,0 +1,1059 @@
+﻿@model Logistic_Inventory.Models.Purchase
+
+<script src="~/Scripts/select2/3.5/select2.min.js"></script>
+
+<link href="~/Content/select2/3.5/select2.min.css" rel="stylesheet" />
+
+@{ 
+    ViewBag.page = "production";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+
+
+    <h1>Product Purchase</h1>
+
+
+    <div class="row">
+
+        <div class="col-md-8">
+
+
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="title">Edit Purchase</h5>
+                </div>
+                <div class="card-body">
+
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+                    <div class="row">
+                        <div class="col-md-5 pr-md-1">
+                            <div class="form-group">
+                                <label>Purchase Date</label>
+                                @Html.EditorFor(model => model.PurchaseDate, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.PurchaseDate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Branch</label>
+                                @Html.DropDownList("BranchID", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.BranchID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Projects</label>
+                                <br />
+                                @Html.DropDownList("ProjectsID", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ProjectsID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+
+
+                        <div class="col-md-6 pr-md-1">
+                            <div class="form-group">
+                                <label>Purchase Code</label>
+                                @Html.EditorFor(model => model.PurchaseCode, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.PurchaseCode, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 pl-md-1">
+                            <div class="form-group">
+                                <label>Invoice</label>
+
+                                @Html.EditorFor(model => model.Invoice, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Invoice, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12" style="padding-right:0">
+                            <div class="form-group">
+                                <label>Products</label>
+                                <br />
+                                @Html.DropDownList("ProductsID", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ProductsID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4" style="padding-right: 0;padding-left: 0;">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.UnitPrice, htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    <input readonly="readonly" class="form-control text-box single-line" data-val="true" data-val-number="The field Unit Price must be a number." data-val-required="The Unit Price field is required." id="UnitPrice" name="UnitPrice" type="number" value="">
+                                    @Html.ValidationMessageFor(model => model.UnitPrice, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2" style="padding-right: 0;padding-left: 0;">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.PurchaseQuantity, htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+
+                                    <input class="form-control text-box single-line" data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="PurchaseQuantity" name="PurchaseQuantity" type="number" value="">         @Html.ValidationMessageFor(model => model.PurchaseQuantity, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label col-md-8" for="PurchaseQuantity">Unit</label>
+                                <div class="col-md-12">
+                                    <input type="text" name="Unit" id="Unit" readonly="readonly" class="form-control" />
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-4" style="padding-right: 0;padding-left: 0;">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Total, htmlAttributes: new { @class = "control-label col-md-8" })
+                                <div class="col-md-12">
+                                    <input readonly="readonly" class="form-control text-box single-line" data-val="true" data-val-number="The field Total must be a number." data-val-required="The Total field is required." id="Total" name="Total" type="number" value="">
+                                    @Html.ValidationMessageFor(model => model.Total, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div id="pro">
+
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Provider(Supplier)</label>
+                                @Html.DropDownList("ProvidersID", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ProvidersID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-left:50px">
+                                <label>Account Sub Head</label>
+
+                                @Html.DropDownList("AccSubHeadID", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.AccSubHeadID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="row">
+
+
+
+
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label>Godown</label>
+                                <br />
+                                @Html.DropDownList("GodownID", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.GodownID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-7">
+                            <div class="form-group" style="padding-left:30px">
+                                <label>Comments</label>
+                                @Html.EditorFor(model => model.Comments, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Comments, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+        </div>
+        <div class="col-md-4">
+            <div class="card card-user">
+                <div class="card-body">
+                    <p class="card-text">
+                        <div class="author">
+                            <div class="block block-one"></div>
+                            <div class="block block-two"></div>
+                            <div class="block block-three"></div>
+                            <div class="block block-four"></div>
+                        </div>
+
+                        <div class="card-description">
+
+
+
+
+
+
+
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ComissionType, htmlAttributes: new { @class = "control-label col-md-8" })
+                                <div class="col-md-12">
+
+                                    <input type="radio" name="ComissionType" id="ComissionType" value="Flat" checked="checked"> Flat
+                                    &nbsp;&nbsp;&nbsp;<input type="radio" id="ComissionType" name="ComissionType" value="Percent"> Percent(%)
+
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="control-label col-md-8" for="Comission">Comission</label> <span id="comm"></span>
+                                <div class="col-md-12">
+                                    <input class="form-control text-box single-line" data-val="true" data-val-number="The field Comission must be a number." data-val-required="The Comission field is required." id="Comission" name="Comission" type="number" value="">
+                                    @Html.ValidationMessageFor(model => model.Comission, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.NetTotal, htmlAttributes: new { @class = "control-label col-md-8" })
+                                <div class="col-md-12">
+                                    <input readonly="readonly" class="form-control text-box single-line" data-val="true" data-val-number="The field Net Total must be a number." data-val-required="The Net Total field is required." id="NetTotal" name="NetTotal" type="number" value="">
+                                    @Html.ValidationMessageFor(model => model.NetTotal, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ServiceCharge, htmlAttributes: new { @class = "control-label col-md-8" })
+                                <div class="col-md-12">
+                                    <input class="form-control text-box single-line" data-val="true" data-val-number="The field Net Total must be a number." data-val-required="The Net Total field is required." id="ServiceCharge" name="ServiceCharge" type="number" value="">
+                                    @Html.ValidationMessageFor(model => model.ServiceCharge, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-8" for="PurchaseQuantity">VAT (%) <b><span id="TotalVat"></span></b></label>
+                                <div class="col-md-12">
+
+                                    <input type="radio" name="VatType" id="VatType" value="plus" checked="checked"> (+) Add
+                                    &nbsp;&nbsp;&nbsp;<input type="radio" name="VatType" id="VatType" value="minus"> (-) Subtract
+
+                                    <input class="form-control text-box single-line" style="margin-top:10px" data-val="true" data-val-number="The field Net Total must be a number." data-val-required="The Net Total field is required." id="VAT" name="VAT" type="number" value="">
+                                    @Html.ValidationMessageFor(model => model.VAT, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.NetPayable, htmlAttributes: new { @class = "control-label col-md-8" })
+                                <div class="col-md-12">
+                                    <input readonly="readonly" class="form-control text-box single-line" data-val="true" data-val-number="The field Net Total must be a number." data-val-required="The Net Total field is required." id="NetPayable" name="NetPayable" type="number" value="">
+                                    @Html.ValidationMessageFor(model => model.NetPayable, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+
+                            <input type="hidden" name="Year" value="0" />
+                            <input type="hidden" name="UnitsID" id="UnitsID" value="0" />
+
+                            <input type="hidden" name="Month" value="0" />
+                            <input type="hidden" name="VatAmount" id="VatAmount" value="0" />
+                            <input type="hidden" name="ProductsList" id="ProductsList" />
+                            <input type="hidden" name="ProductsCount" id="ProductsCount" value="1" />
+
+                            <input type="hidden" name="ProductsListQuantity" id="ProductsListQuantity" value="0" />
+
+                            <input type="hidden" name="ProductsListTotal" id="ProductsListTotal" value="0" />
+
+
+                        </div>
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-dark" id="AddProduct" style="color:white;width:100%"><i class="fa fa-add"></i> Add More Products</a>
+
+
+                    <button type="submit" style="width:100%" class="btn btn-round btn-info"><i class="fa fa-plus"></i>&nbsp; Update Purchase</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+<button type="button" class="btn btn-default" id="modal" data-toggle="modal" data-target="#ProductModal" style="display:none">
+    Launch Product Picker
+</button>
+
+
+<div class="modal fade" id="ProductModal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog  " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add More Products</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="margin-left:1px">
+
+                    @Html.DropDownList("Products2", null, htmlAttributes: new { @class = "form-control" })
+
+
+                </div>
+                <br />
+
+                <input type="number" class="form-control"
+                       id="moreProductQuantity" value="1" />
+
+                <br />
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-darker" data-dismiss="modal" id="pickProduct">Pick Product</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<style>
+    #UnitPrice, #Total {
+        background-color: #c8eaff;
+    }
+</style>
+
+
+
+<script>
+
+    var products = [];
+    var productsTotal = [];
+    var productsQuantity = [];
+    var productsNetTotal = 0;
+    var val = $('#ProductsID').val();
+
+    //Adding products ID to the list
+    products.push(val);
+
+
+    productsQuantity.push(1);
+
+    var url = "/Purchases/getProductPrice/" + val;
+    $.get(url, function (data) {
+
+        var price = data["price"];
+        var unit = data["unit"];
+        var unitID = data["unitID"];
+
+        console.log(unitID);
+
+
+
+        $('#UnitsID').val(unitID);
+        $('#Unit').val(unit);
+
+
+        $("#UnitPrice").val(price);
+        $("#Total").val(price);
+
+
+        $("#ProductsList").val(val);
+
+
+        $("#NetTotal").val(price);
+
+        $("#NetPayable").val(price);
+
+    });
+
+    var i = 2;
+
+    $("#AddProduct").click(function () {
+
+        // alert(i);
+        $("#modal").click();
+
+        // $("#pro").append("<h2>Hello</h2>");
+    });
+
+    $("#pickProduct").click(function () {
+
+        var productSelected = $("#Products2").val();
+
+        var moreProductQuantity = $("#moreProductQuantity").val();
+
+        //var units = $("#Units2").val();
+
+        var url = "/Purchases/getProductPrice/" + productSelected;
+
+        $.get(url, function (data) {
+            var price = data["price"];
+            var name = data["name"];
+            var unit = data["unit"];
+
+            var Total = parseInt(moreProductQuantity) * parseInt(price);
+
+            products.push(productSelected);
+
+            productsTotal.push(total);
+
+            productsQuantity.push(moreProductQuantity);
+
+
+            console.log(products.toString());
+
+            $("#ProductsList").val(products.toString());
+            $("#ProductsCount").val(i);
+            $("#ProductsListTotal").val(productsTotal.toString());
+            $("#ProductsListQuantity").val(productsQuantity.toString());
+
+
+            var netTotal = parseInt($("#NetTotal").val());
+
+            netTotal = netTotal + Total;
+
+            productsNetTotal = productsNetTotal + parseInt(Total);
+
+            console.log("##################");
+            console.log(productsNetTotal);
+            $("#NetTotal").val(netTotal);
+
+            var total = netTotal;
+
+            var serviceCharge = $("#ServiceCharge").val();
+
+
+            var vat = $("#VAT").val();
+
+            if (serviceCharge != "") {
+                total = parseInt(total) + parseInt(serviceCharge);
+
+                if (vat != "") {
+                    var vatAmount = parseInt((total * vat) / 100);
+                    $("#TotalVat").text(" == " + vatAmount);
+
+
+
+                    var vtype = $('input[name=VatType]:checked').val();
+
+                    if (vtype == "plus") {
+                        total = total + parseInt(vatAmount);
+                    }
+                    else {
+                        total = total - parseInt(vatAmount);
+                    }
+
+
+
+                    console.log(vatAmount);
+                    $("#VatAmount").val(vatAmount);
+
+
+                }
+
+            }
+
+            $("#NetPayable").val(total);
+
+
+
+            var elements = '<div class="card">' +
+                '<div class="card-body" >' +
+                '<div class="row">' +
+                '<div class="col-md-8" style="padding-right:0">' +
+                '<div class="form-group">' +
+                '<label class="control-label col-md-12">Products</label>' +
+                '<input readonly="readonly" class="form-control text-box single-line" id="UnitPrice' + i + '"   type="text" value="' + name + '">' +
+                '</div>' +
+                '</div>' +
+                '<div class="col-md-4">' +
+                '<div class="form-group">' +
+                '<label class="control-label col-md-12"  >Unit</label>' +
+                '<div class="col-md-12">' +
+                '    <input readonly="readonly" class="form-control text-box single-line"    id="Units' + i + '"   type="text" value="' + unit + '"></div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '<div class="row">' +
+                '<div class="col-md-4" style="padding-right: 0;padding-left: 0;">' +
+                ' <div class="form-group">' +
+                ' <label class="control-label col-md-12">UnitPrice</label>' +
+                ' <div class="col-md-12">' +
+                ' <input readonly="readonly" class="form-control text-box single-line" id="UnitPrice' + i + '"   type="number" value="' + price + '">' +
+                '  </div>' +
+                ' </div>' +
+                '  </div>' +
+                ' <div class="col-md-4" style="padding-right: 0;padding-left: 0;">' +
+                ' <div class="form-group">' +
+                '  <label class="control-label col-md-12">Quantity</label>' +
+                '  <div class="col-md-12">' +
+                '<input readonly="readonly" class="form-control text-box single-line" id="PurchaseQuantity' + i + '"   type="number" value="' + moreProductQuantity + '">  ' +
+                ' </div>' +
+                '</div>' +
+                ' </div>' +
+                '  <div class="col-md-4" style="padding-right: 0;padding-left: 0;">' +
+                ' <div class="form-group">' +
+                '  <label class="control-label col-md-12">Total</label>' +
+                '  <div class="col-md-12">' +
+                '  <input readonly="readonly" class="form-control text-box single-line" id="Total' + i + '"   type="number" value="' + Total + '">' +
+                ' </div>' +
+                '</div>' +
+                '  </div>' +
+                '</div>' +
+                ' </div>' +
+                ' </div>';
+
+
+
+
+            $("#pro").append(elements);
+
+
+            i++;
+
+        });
+
+
+    });
+    $('#ProductsID').on('change', function () {
+
+        products[0] = this.value;
+
+        var v = this.value;
+        var price = 0;
+        var url = "/Purchases/getProductPrice/" + v;
+        $.get(url, function (data) {
+
+            price = data["price"];
+
+            $("#UnitPrice").val(price);
+
+            $("#NetTotal").val(price);
+            $("#NetPayable").val(price);
+
+            var unit = data["unit"];
+            var unitID = data["unitID"];
+
+
+
+
+
+            $('#UnitsID').val(unitID);
+            $('#Unit').val(unit);
+
+
+
+            var quantity = $("#PurchaseQuantity").val();
+
+            if (quantity != "") {
+                $("#Total").val(0);
+
+                var total = parseInt(quantity * price);
+
+
+                console.log(productsNetTotal);
+
+                if (productsNetTotal > 0) {
+                    total = total + productsNetTotal;
+                }
+
+                $("#Total").val(total);
+
+
+
+                $("#NetTotal").val(total);
+
+                var comission = $("#Comission").val();
+
+                if (comission != "") {
+                    var netTotal = CalculateComission();
+
+                    if (netTotal != 0) {
+                        total = netTotal;
+                    }
+
+                }
+
+                var serviceCharge = $("#ServiceCharge").val();
+                serviceCharge = serviceCharge;
+
+                var vat = $("#VAT").val();
+
+                if (serviceCharge != "") {
+                    total = parseInt(total) + parseInt(serviceCharge);
+
+                    if (vat != "") {
+                        var vatAmount = parseInt((total * vat) / 100);
+                        $("#TotalVat").text(" == " + vatAmount);
+                        var vtype = $('input[name=VatType]:checked').val();
+
+                        if (vtype == "plus") {
+                            total = total + parseInt(vatAmount);
+                        }
+                        else {
+                            total = total - parseInt(vatAmount);
+                        }
+
+
+
+
+                        console.log(vatAmount);
+                        $("#VatAmount").val(vatAmount);
+
+
+                    }
+
+                    $("#NetPayable").val(total);
+
+                }
+                else {
+
+                    var vat = $("#VAT").val();
+
+                    if (vat != "") {
+                        var vatAmount = (total * vat) / 100;
+
+                        $("#TotalVat").text(" == " + vatAmount);
+
+                        var vtype = $('input[name=VatType]:checked').val();
+
+                        if (vtype == "plus") {
+                            total = total + parseInt(vatAmount);
+                        }
+                        else {
+                            total = total - parseInt(vatAmount);
+                        }
+
+
+                        $("#VatAmount").val(vatAmount);
+
+                    }
+
+                    console.log("total : " + total)
+                    $("#NetPayable").val(total);
+
+
+                }
+
+
+            }
+
+        });
+
+    });
+
+
+    $('#Comission').bind('keyup paste', function () {
+        var type = $('input[name=ComissionType]:checked').val();
+
+
+        var comission = parseInt(this.value);
+        var total = parseInt($("#Total").val());
+
+
+        if (type == "Flat") {
+
+
+            if (total < comission) {
+                alert("Comission amount can not be greather than total amount.");
+                $("#Comission").val(0);
+                $("#Comission").focus();
+            }
+            else {
+                var netTotal = total - comission;
+
+                $("#comm").text(" == " + comission);
+
+                $("#NetTotal").val(netTotal);
+                $("#NetPayable").val(netTotal);
+            }
+
+        }
+        else {
+
+            var netTotal = (total * comission) / 100;
+            $("#comm").text(" == " + netTotal);
+            netTotal = total - netTotal;
+
+
+            $("#NetTotal").val(netTotal);
+
+            $("#NetPayable").val(netTotal);
+
+        }
+    });
+
+
+
+
+
+
+
+    function CalculateComission() {
+        var type = $('input[name=ComissionType]:checked').val();
+
+
+        var comission = $("#Comission").val();
+        var total = $("#Total").val();
+
+        console.log("TT : " + total);
+
+        if (comission != "") {
+            comission = parseInt(comission);
+
+            if (type == "Flat") {
+
+
+                if (total < comission) {
+                    alert("Comission amount can not be greather than total amount.");
+                    $("#Comission").val(0);
+                    $("#Comission").focus();
+
+                    return 0;
+                }
+                else {
+                    var netTotal = total - comission;
+
+                    $("#comm").text(" == " + comission);
+
+                    $("#NetTotal").val(netTotal);
+
+                    return netTotal;
+                }
+
+            }
+            else {
+
+                var netTotal = (total * comission) / 100;
+                $("#comm").text(" == " + netTotal);
+                netTotal = total - netTotal;
+
+
+                $("#NetTotal").val(netTotal);
+
+                return netTotal;
+
+            }
+        }
+
+    }
+    $('#PurchaseQuantity').on("keyup keydown change paste", function (e) {
+
+        var quantity = $("#PurchaseQuantity").val();
+
+        productsQuantity[0] = this.value;
+
+        console.log(productsQuantity);
+
+        if (quantity == "") {
+            //alert("Product Quantity Cannot be empty.Please Specify Product Quantity");
+            $("#PurchaseQuantity").focus();
+        }
+        else {
+            var price = $("#UnitPrice").val();
+
+
+
+            var total = quantity * price;
+
+            $("#Total").val(total);
+            $("#NetTotal").val(total);
+
+            var serviceCharge = $("#ServiceCharge").val();
+            var vat = $("#VAT").val();
+
+
+            if (serviceCharge != "") {
+                total = total + parseInt(serviceCharge);
+
+                if (vat != "") {
+                    var vatAmount = (total * vat) / 100;
+
+                    var vtype = $('input[name=VatType]:checked').val();
+
+                    if (vtype == "plus") {
+                        total = total + parseInt(vatAmount);
+                    }
+                    else {
+                        total = total - parseInt(vatAmount);
+                    }
+
+
+                    $("#VatAmount").val(vatAmount);
+
+                    $("#NetPayable").val(total);
+
+                }
+
+                $("#NetPayable").val(total);
+
+
+            }
+            else {
+                if (vat != "") {
+                    var vatAmount = (total * vat) / 100;
+
+                    total = total + vatAmount;
+
+                    $("#VatAmount").val(vatAmount);
+
+                    $("#NetPayable").val(total);
+
+                }
+
+                $("#NetPayable").val(total);
+
+
+            }
+
+        }
+
+    });
+
+
+    function UpdateNetPayable() {
+        var quantity = 1;
+
+
+        var price = $("#UnitPrice").val();
+
+        var total = quantity * price;
+
+
+
+
+
+    }
+
+    $('#ServiceCharge').bind('keyup paste', function () {
+        var total = parseInt($("#NetTotal").val());
+        total = total + 0;
+
+
+        var serviceCharge = parseInt(this.value);
+
+
+
+        total = total + serviceCharge;
+
+        var vat = $("#VAT").val();
+
+        if (vat != "") {
+            var vatAmount = (total * vat) / 100;
+
+            total = total + vatAmount;
+        }
+
+
+        $("#NetPayable").val(parseInt(total));
+
+
+    });
+
+
+    $('#VAT').bind('keyup paste', function () {
+        var total = parseInt($("#NetTotal").val());
+        total = total + 0;
+
+
+        var vat = parseInt(this.value);
+
+        var serviceCharge = $("#ServiceCharge").val();
+
+        if (serviceCharge != "") {
+            total = total + parseInt(serviceCharge);
+        }
+
+        if (vat != "") {
+            var vatAmount = (total * vat) / 100;
+
+            if (isNaN(vatAmount)) {
+
+                $("#VatAmount").val(0);
+
+                $("#NetPayable").val(parseInt(total));
+            }
+            else {
+                $("#TotalVat").text(" == " + vatAmount);
+
+
+                total = total + vatAmount;
+
+                $("#VatAmount").val(vatAmount);
+
+                $("#NetPayable").val(parseInt(total));
+            }
+
+
+        }
+
+
+
+    });
+
+    $("#PurchaseQuantity").val(1);
+    $("#VAT").val(0);
+    $("#VatAmount").val(0);
+    $("#Comission").val(0);
+    $("#ServiceCharge").val(0);
+    UpdateNetPayable();
+
+
+
+
+
+    $('#Products2').select2({
+        width: '450px'
+
+
+    });
+
+    $('#BranchID').select2({
+        width: '99%'
+
+    });
+
+    $('#ProjectsID').select2({
+        width: '99%'
+
+    });
+
+    $('#ProductsID').select2({
+        width: '98%'
+
+    });
+
+    $('#AccSubHeadID').select2({
+        width: '99%'
+
+    });
+
+    $('#ProvidersID').select2({
+        width: '99%'
+
+    });
+
+
+
+
+    $('input[type=radio][name=VatType]').change(function () {
+        var total = parseInt($("#NetTotal").val());
+
+
+
+        var vat = $("#VAT").val();
+        var serviceCharge = $("#ServiceCharge").val();
+        if (serviceCharge != "") {
+            total = parseInt(total) + parseInt(serviceCharge);
+
+            if (vat != "") {
+                var vatAmount = parseInt((total * vat) / 100);
+                $("#TotalVat").text(" == " + vatAmount);
+
+
+
+                var vtype = this.value;
+
+                if (vtype == "plus") {
+                    total = total + parseInt(vatAmount);
+                }
+                else {
+                    total = total - parseInt(vatAmount);
+                }
+
+
+
+                console.log(vatAmount);
+                $("#VatAmount").val(vatAmount);
+
+                $("#NetPayable").val(total);
+            }
+
+        }
+
+    });
+
+
+
+
+</script>

@@ -1,0 +1,440 @@
+﻿@model Logistic_Inventory.Models.Purchase
+@using Logistic_Inventory.Models
+@{
+    ViewBag.Title = "Details";
+    var i = 0;
+
+    var text = " : ";
+    var p = " % ";
+
+    var server = Request.ServerVariables["SERVER_NAME"];
+    string serverPort = Request.ServerVariables["SERVER_PORT"];
+
+
+    string ServerAddress = server;
+    if (!string.IsNullOrEmpty(serverPort))
+    {
+        ServerAddress = server + ":" + serverPort;
+    }
+
+    var comma = ", ";
+
+
+    var emailText = "Email : ";
+
+    var separator = " - ";
+
+
+    var products = ViewData["Products"] as List<Products>;
+
+    var company = ViewData["CompanyInfo"] as Logistic_Inventory.Models.CompanyInfo;
+
+    ViewBag.page = "production";
+}
+
+
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Product Production</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/Purchases")">Production</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Details</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+
+                    <a class="btn btn-default btn-sm" href="@Url.Content("~/Purchases/")" style="color:white"><i class="ni ni-bag-17"></i> &nbsp; Records</a>
+
+                    <a class="btn btn-default btn-sm" href="@Url.Content("~/Purchases/milkproductcollection")" style="color:white"><i class="ni ni-delivery-fast"></i> &nbsp;Milk Collection </a>
+
+                    <button class="btn btn-primary btn-sm" id="printNow">
+                        <i class="fa fa-print"> Print</i>
+                    </button>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                
+                <div class="card-body">
+                    <div class="">
+                        <div id="InvoiceTbl" style="font-family:sans-serif">
+
+
+                            <div class="row" style="margin-left:5px">
+                                <div class="col-md-7">
+                                    <img src="~/Content/img/Inventory.png" width="250" style="margin-left: -15px;" class="img-responsive" />
+
+
+                                    <br />
+                                    <div class="row" style="margin-top:20px">
+                                        <h4 class="margin0">Supplier : <b>@Model.Providers.CompanyName</b></h4>
+
+                                    </div>
+
+
+
+
+
+
+
+
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <h2 class="float-lg-left"><b>INVOICE</b></h2>
+                                    </div>
+
+                                    <div class="row">
+                                        <h4 class="margin0">Invoice  No &nbsp;:&nbsp; <b>@Model.Invoice</b></h4>
+                                    </div>
+                                    <div class="row">
+                                        <h4 class="margin0">Billing Date  : <b>@Model.PurchaseDate.Value.ToShortDateString()</b></h4>
+
+                                    </div>
+
+
+
+                                </div>
+
+                            </div>
+
+
+
+
+                            <br />
+
+
+
+                            <table class="table table-responsive  align-items-center table-hover table-bordered" style="color:black;font-weight:bold" id="mainTbl">
+
+
+
+
+
+
+                                <thead>
+                                    <tr>
+                                        <th>SL</th>
+                                        <th>Products Descriptions</th>
+                                        <th class="">Quantity</th>
+                                        <th class="">Unit Price</th>
+                                        <th class="">Amount Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+
+
+                                    @{
+                                        if (ViewBag.MultipleProducts)
+                                        {
+                                            List<string> quantity = ViewData["ProQuan"] as List<string>;
+                                            int k = 0;
+                                            int quan = 0;
+                                            i = 1;
+                                            decimal total = 0;
+
+                                            List<string> cowsName = null;
+                                            if (ViewData["cowListNames"] != null)
+                                            {
+                                                cowsName = ViewData["cowListNames"] as List<string>;
+                                            }
+
+                                            foreach (var item in products)
+                                            {
+                                                quan = Convert.ToInt32(quantity.ElementAt(k));
+                                                total = item.UnitPrice * quan;
+
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>
+                                                        <label class="control-label">
+                                                            @if (ViewData["cowListNames"] != null)
+                                                            {
+                                                                @item.ProductName @separator @cowsName.ElementAt(k)
+                                                            }
+                                                            else
+                                                            {
+                                                                @item.ProductName
+                                                            }
+
+
+
+                                                        </label>
+
+                                                        @*<h6>@item.Description</h6>*@
+
+                                                    </td>
+                                                    <td id="NoBorder" class="">  @quan &nbsp;  @item.Units.UnitShortName  </td>
+                                                    <td id="NoBorder" class="">@item.UnitPrice</td>
+                                                    <td id="NoBorder" class="">@total</td>
+                                                </tr>
+
+                                                k++;
+                                                i++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td id="NoBorder">@i</td>
+                                                <td id="NoBorder">
+                                                    <label class="control-label">@Model.Products.ProductName </label>
+
+                                                    @*<h6>@Model.Products.Description</h6>*@
+
+                                                </td>
+                                                <td id="NoBorder" class="">  @decimal.Parse(Model.PurchaseQuantity.ToString()).ToString("G29") &nbsp;  @Model.Products.Units.UnitShortName  </td>
+                                                <td id="NoBorder" class="">@Model.Products.UnitPrice</td>
+                                                <td id="NoBorder" class="">@Model.Total</td>
+                                            </tr>
+                                        }
+
+                                    }
+
+                                    <tr class="hide">
+                                        <td id="NoBorder"></td>
+                                        <td id="NoBorder" style="text-align:right">
+                                            <span>
+                                                Discount
+
+                                                @if (Model.Comission != 0)
+                                                {@:(
+                                                    if (Model.ComissionType == "Flat")
+                                                    {@Model.ComissionType @text @Model.Comission }
+                                                else if (Model.ComissionType == "Percent")
+                                                {@Model.Comission @p}
+
+                                            @:)
+                                        }
+                                            </span>
+
+                                        </td>
+                                        <td id=""></td>
+                                        <td id=""></td>
+                                        <td class="" id="">
+
+
+
+                                            - @Model.Comission
+
+
+
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr style="background-color: #f6f6f6; font-weight: bold;">
+                                        <td id=""></td>
+                                        <td id="" style="text-align:right">
+                                            <span><b>Total Amount</b></span>
+
+
+
+                                        </td>
+                                        <td id=""></td>
+                                        <td id=""></td>
+                                        <td class=""><b>@Model.NetTotal</b></td>
+                                    </tr>
+                                    <tr class="hide">
+                                        <td id=""></td>
+                                        <td id="" style="text-align:right">
+                                            <span> Service Charge</span>
+
+                                        </td>
+                                        <td id=""></td>
+                                        <td id=""></td>
+                                        <td class="right" id="">+ @Model.ServiceCharge</td>
+                                    </tr>
+
+
+
+                                    <tr>
+
+                                        <td></td>
+
+                                        <td style="text-align:right">
+
+                                            <span>Including (VAT + AIT ) = @Model.VAT%</span>
+
+                                        </td>
+                                        <td id=""></td>
+                                        <td id=""></td>
+                                        <td class="">    @Model.VatAmount </td>
+                                    </tr>
+
+
+                                    <tr id="">
+                                        <td id=""> </td>
+                                        <td id="">
+                                            <h4><b>Net Payable Amount</b> </h4>
+
+
+
+                                        </td>
+                                        <td id=""></td>
+                                        <td id=""></td>
+                                        <td id="" class=""><b style="border-bottom:1px solid black;font-size:20px">@Model.NetPayable</b></td>
+                                    </tr>
+
+
+                                </tbody>
+                            </table>
+
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <div class="row">
+
+                                <div class="col-sm-4">
+                                    <div class="inv-footer-left">
+                                        Received By
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="inv-footer-right">
+                                        Authorised By
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+ 
+
+<style>
+    #NoBorder {
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    #BorderTop {
+        border-top: 1px solid grey;
+    }
+
+    /*.center {
+        text-align: center;
+    }
+
+    .right {
+        text-align: right;
+    }*/
+
+    .white-content .main-panel {
+        background-color: white;
+    }
+
+    .white-content .table > thead > tr > th,
+    .white-content .table > tbody > tr > th,
+    .white-content .table > tfoot > tr > th,
+    .white-content .table > thead > tr > td,
+    .white-content .table > tbody > tr > td,
+    .white-content .table > tfoot > tr > td {
+        border-color: #222a42;
+    }
+
+    .inv-footer-left {
+        float: left;
+        width: 35%;
+        text-align: center;
+        border-top: 1px solid black;
+        font-weight: bold;
+    }
+
+    .inv-footer-right {
+        float: left;
+        width: 45%;
+        text-align: center;
+        float: right;
+        border-top: 1px solid black;
+        font-weight: bold;
+    }
+</style>
+
+
+<script>
+
+    var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+
+    if (width < 900) {
+        $("table").addClass("table-responsive");
+    }
+
+    @{
+        var sc = "</script>";
+    }
+
+    $("#printNow").click(function () {
+
+
+        //$("#mainTbl").removeClass("table-bordered");
+
+
+        var toPrint = document.getElementById('InvoiceTbl');
+
+        var popupWin = window.open('', '', 'toolbar=yes,scrollbars=yes,resizable=yes,width=800,height=800,location=no,left=200px');
+        popupWin.document.open();
+        popupWin.document.write('<html><head><title>Production Report </title><style>h1{font-size:20px} .inv-footer-left {float: left; width: 35%;text-align: center; border-top: 1px solid black;font-weight: bold;}  .inv-footer-right {float: left; width: 45%;text-align: center;float: right;border-top: 1px solid black;font-weight: bold;}   .no-print,.hide{display: none;}  .table > tbody > tr > td,    .table > tfoot > tr > td {font-size:14px;padding:6px !important; color:black !important;padding-left:8px !important;padding-right:8px !important;} .table > thead > tr > th , th {padding:11px !important;font-size:14px;}  a[href]:after {content: none !important;}   </style>  <link rel="stylesheet" type="text/css" href="/Content/argon/css/argon.css?v=1.2.0" />  </head>');
+
+
+        popupWin.document.write('<body onload="window.print();" style="padding:1%;background-color:white"> <div >  ');
+
+        popupWin.document.write('<div  id="print">');
+
+
+
+
+        popupWin.document.write(toPrint.innerHTML);
+        popupWin.document.write('</div>');
+
+
+
+
+        popupWin.document.write('</div></body></html>');
+        popupWin.document.close();
+
+
+
+        $("#mainTbl").addClass("table-bordered");
+
+    });
+
+</script>

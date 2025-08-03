@@ -1,0 +1,233 @@
+﻿@model Logistic_Inventory.Models.Products
+@using Logistic_Inventory.Models
+
+
+@{
+    ViewBag.Title = "Edit Product";
+    ViewBag.page = "products";
+}
+
+<script src="~/Scripts/select2/3.5/select2.min.js"></script>
+
+<link href="~/Content/select2/3.5/select2.min.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"> Product</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/products")">Products</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+
+
+                    <a class="btn btn-default" href="@Url.Content("~/Products/")" style="color:white"><i class="tim-icons icon-app"></i> &nbsp;Products List </a>
+
+                     
+
+
+ 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h3 class="mb-0">Edit Product</h3>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12 icon-examples">
+                        @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "frm", id = "frm" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="pl-lg-4">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="input-username">Name</label>
+                                            @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="input-email">Model</label>
+                                            @Html.EditorFor(model => model.ProductModel, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.ProductModel, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="input-first-name">Product Code</label>
+                                            @Html.EditorFor(model => model.ProductCode, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.ProductCode, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="input-last-name">Description</label>
+                                            <textarea class="form-control" data-val="true"
+                                                      data-val-length="Product Details cannot be longer than 1000 characters &   Less Than 3 Character" id="Description" rows="2"
+                                                      name="Description" type="text" value="" form="frm">@Model.Description</textarea>
+                                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="input-first-name">Manufacturer</label>
+                                            @Html.EditorFor(model => model.Manufacturer, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.Manufacturer, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.SubCategoryID, "CategoryID", htmlAttributes: new { @class = "form-control-label" })
+                                            <br />
+                                            <select class="" name="SubCategoryID" id="SubCategoryID">
+                                                @foreach (var item in ViewData["Categories"] as List<SubCategory>)
+                                                {
+
+
+                                                    var name = item.category.CatName + " - " + item.SubCatName + " - " + item.SubCatCode + "";
+
+                                                    if (Model.SubCategoryID == item.id)
+                                                    {
+                                                        <option value="@item.id" selected="selected">@name</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.id"  >@name</option>
+                                                    }
+
+                                                }
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.UnitPrice, htmlAttributes: new { @class = "form-control-label" })
+                                            <input class="form-control text-box single-line" data-val="true" data-val-number="The field Purchase Price/Manufacture Cost must be a number." data-val-required="The Purchase Price/Manufacture Cost field is required." 
+                                                   id="UnitPrice" name="UnitPrice" type="number" value="@Model.UnitPrice">
+                                            @Html.ValidationMessageFor(model => model.UnitPrice, "", new { @class = "text-danger" })
+
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.SellingUnitPrice, htmlAttributes: new { @class = "form-control-label" })
+                                            <input class="form-control text-box single-line" id="SellingUnitPrice" name="SellingUnitPrice" type="number" value="@Model.SellingUnitPrice">
+                                            @Html.ValidationMessageFor(model => model.SellingUnitPrice, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="input-first-name">Product Unit</label>
+                                            <br />
+                                            @Html.DropDownList("UnitsID", null, htmlAttributes: new { @class = "" })
+                                            @Html.ValidationMessageFor(model => model.UnitsID, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="input-last-name">Status</label>
+                                            <br />
+                                            <select name="Status">
+
+                                                @if (Model.Status == 1)
+                                                {
+                                                    <option value="1" selected="selected">Active</option>
+                                                    <option value="0">In-active</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="1">Active</option>
+                                                    <option value="0" selected="selected"> In-active</option>
+                                                }
+
+                                            </select>
+                                            @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div class="col-md-7" style="text-align:center">
+                                            <input type="submit" value="Update Product" class="btn btn-warning" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                            </div>
+
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    $('select').select2({
+        width: '100%'
+
+    });
+
+
+
+    $("#ProductCode").val(@ViewBag.code);
+</script>
+
+
+

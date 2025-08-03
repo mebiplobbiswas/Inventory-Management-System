@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewBag.Title = "index";
+
+}
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"> Reports</h6>
+
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="container">
+                        <div class="row px-4">
+                            <a href="@Url.Content("~/report/sales")" class="col-md-4  ">
+                                <span class="shortcut-media avatar rounded-circle bg-gradient-green">
+                                    <i class="ni ni-books"></i>
+                                </span>
+                                <big>Sales Reports</big>
+                            </a>
+                            <a href="@Url.Content("~/report/SalesByProduct")" class="col-md-4  ">
+                                <span class="shortcut-media avatar rounded-circle bg-gradient-purple">
+                                    <i class="ni ni-chart-pie-35"></i>
+                                </span>
+                                <big>Sales By Product</big>
+                            </a>
+                            <a href="@Url.Content("~/report/CustomerSale")" class="col-md-4  ">
+                                <span class="shortcut-media avatar rounded-circle bg-gradient-yellow">
+                                    <i class="ni ni-basket"></i>
+                                </span>
+                                <big>Customer Payment</big>
+                            </a>
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="container">
+                        <div class="row  px-4">
+                            <a href="@Url.Content("~/report/receipt_payments")" class="col-md-4">
+                                <span class="shortcut-media avatar rounded-circle bg-gradient-red">
+                                    <i class="ni ni-money-coins"></i>
+                                </span>
+                                <big>Receipts &amp; Payments</big>
+                            </a>
+                            <a href="@Url.Content("~/report/purchase")" class="col-md-4  ">
+                                <span class="shortcut-media avatar rounded-circle bg-gradient-orange">
+                                    <i class="ni ni-cart"></i>
+                                </span>
+                                <big>Milk Production</big>
+                            </a>
+                            <a href="@Url.Content("~/report/purchase2")" class="col-md-4  ">
+                                <span class="shortcut-media avatar rounded-circle bg-gradient-info">
+                                    <i class="ni ni-chart-pie-35"></i>
+                                </span>
+                                <big>Production Report</big>
+                            </a>
+
+
+                        </div>
+                    </div>
+
+
+
+
+                    <br />
+                    <div class="container">
+                        <div class="row px-4">
+                            <a href="@Url.Content("~/report/ProviderPurchase")" class="col-md-4  ">
+                                <span class="shortcut-media avatar rounded-circle bg-gradient-green">
+                                    <i class="ni ni-books"></i>
+                                </span>
+                                <big>Supplier Payments</big>
+                            </a>
+                            <a href="@Url.Content("~/report/Ledger")" class="col-md-4  ">
+                                <span class="shortcut-media avatar rounded-circle bg-gradient-purple">
+                                    <i class="ni ni-chart-pie-35"></i>
+                                </span>
+                                <big>Ledger</big>
+                            </a>
+                            <a href="@Url.Content("~/report/Journals")" class="col-md-4  ">
+                                <span class="shortcut-media avatar rounded-circle bg-gradient-yellow">
+                                    <i class="ni ni-basket"></i>
+                                </span>
+                                <big>Journals</big>
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

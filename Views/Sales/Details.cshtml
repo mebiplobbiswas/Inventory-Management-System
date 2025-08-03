@@ -1,0 +1,481 @@
+﻿@model Logistic_Inventory.Models.Sales
+
+@{
+    var conName = @ViewContext.RouteData.Values["controller"].ToString();
+
+    ViewBag.Title = "Sales  Details ";
+
+    var i = 1;
+
+    var text = " : ";
+    var p = " % ";
+
+    var server = Request.ServerVariables["SERVER_NAME"];
+    string serverPort = Request.ServerVariables["SERVER_PORT"];
+
+    var comma = ", ";
+
+
+    var emailText = "Email : ";
+
+    string ServerAddress = server;
+
+
+    var company = ViewData["CompanyInfo"] as Logistic_Inventory.Models.CompanyInfo;
+
+    var colon = ":";
+    ViewBag.page = "sales";
+}
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"> Sales</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/products")">Products</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Add Sale</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="@Url.Content("~/sales/")" class="btn btn-md btn-primary"><i class="fa fa-plus-circle"></i> Sales List</a>
+                    <button class="btn btn-round btn-info" id="printNow">
+                        <i class="fa fa-print"> Print</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Page content -->
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="">
+
+                <div class="card" id="InvoiceTbl">
+                    <div class="card-body" >
+
+
+                        <div id="InvoiceTbl">
+                            <div class="row" style="margin-left:5px">
+                                <div class="col-md-7">
+                                    <img src="~/Content/img/Inventory.png" width="250" style="margin-left: -15px;" class="img-responsive" />
+
+                                    <div class="row">
+                                        <button class="btn btn-outline-default btn-sm" style="margin-top:20px">Billing From</button>
+                                    </div>
+
+                                    <div class="row">
+                                        <h2 class="margin0"><b>@company.Name</b></h2>
+                                    </div>
+                                    <div class="row">
+                                        <h4 class="margin0">@company.Address</h4>
+                                    </div>
+                                    <div class="row">
+                                        <h4 class="margin0">Mobile : @company.Mobile , Email : @company.Email</h4>
+                                    </div>
+                                    <div class="row">
+                                        <h4 class="margin0">Website : @company.Website </h4>
+                                    </div>
+
+
+
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <h1 class="float-lg-left"><b>SALE INVOICE</b></h1>
+                                    </div>
+
+                                    <div class="row">
+                                        <h4 class="margin0">Invoice  No &nbsp;:&nbsp; <b>@Model.Invoice</b></h4>
+                                    </div>
+                                    <div class="row">
+                                        <h4 class="margin0">Billing Date  : <b>@Model.SalesDate.Value.ToShortDateString()</b></h4>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <button class="btn btn-outline-default btn-sm" style="margin-top:10px">Billing To</button>
+                                    </div>
+
+                                    <div class="row">
+                                        <h2 class="margin0"><b>@Model.Customer.CustomerName</b></h2>
+
+                                    </div>
+
+                                    @if (Model.Customer.Address != null)
+                                    {
+                                        <div class="row">
+                                            <h4 class="margin0"> @Model.Customer.Address </h4>
+
+                                        </div>
+                                    }
+
+                                    <div class="row">
+                                        <h4 class="margin0">
+
+                                            @if (Model.Customer.Mobile != null)
+                                            {
+                                                @:Mobile: @Model.Customer.Mobile
+
+                                            }
+
+                                            @if (Model.Customer.Email != null)
+                                            {
+                                                @comma  @emailText @Model.Customer.Email
+                                            }
+
+
+                                        </h4>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+                            <div style="font-family:sans-serif">
+
+                                <br />
+
+                                <table class="border1px" id="mainTbl" style="width:100%">
+
+
+
+
+                                    <thead class="border1px" style="background-color:#ddd">
+
+
+                                        <tr>
+                                            <th>SL</th>
+                                            <th> Products Descriptions </th>
+                                            <th>Quantity</th>
+                                            <th>Unit Price</th>
+                                            <th>Amount Total</th>
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+
+                                        @{
+                                            var productsList = ViewData["products"] as IEnumerable<Logistic_Inventory.Models.DAO.ProductDAO>;
+
+
+                                        }
+
+
+                                        @if (Model.ProductCount == 1)
+                                        {
+                                            //total = decimal.Parse(Model.QuantityList.ToString())  *  Model.Products.SellingUnitPrice;
+                                            var pid = Convert.ToInt32(Model.ProductsListIds);
+                                            <tr>
+                                                <td id="NoBorder">@i</td>
+                                                <td id="NoBorder">
+                                                    <b>@Model.Products.ProductName </b>
+
+                                                </td>
+                                                <td id="NoBorder" class="">@decimal.Parse(Model.QuantityList.ToString()).ToString("G29") &nbsp;  @productsList.Where(s => s.Id == pid).SingleOrDefault().Unit  </td>
+                                                <td id="NoBorder" class="">@Model.Products.SellingUnitPrice</td>
+                                                <td id="NoBorder" class="">@Model.Total</td>
+                                            </tr>
+                                        }
+
+
+                                        @{
+                                            if (Model.ProductCount > 1)
+                                            {
+                                                List<string> productList = Model.ProductsListNames.Split(',').ToList();
+                                                List<string> priceList = Model.PriceList.Split(',').ToList();
+                                                List<string> quantityList = Model.QuantityList.Split(',').ToList();
+
+                                                List<string> ProductsListIds = Model.ProductsListIds.Split(',').ToList();
+                                                int k = 0;
+                                                decimal quan = 0;
+                                                decimal unitPrice = 0;
+
+                                                decimal total = 0;
+
+                                                foreach (var item in productList)
+                                                {
+                                                    unitPrice = Convert.ToDecimal(priceList.ElementAt(k));
+                                                    quan = Convert.ToDecimal(quantityList.ElementAt(k));
+                                                    total = unitPrice * quan;
+                                                    var pid = Convert.ToInt32(ProductsListIds.ElementAt(k));
+                                                    <tr>
+                                                        <td id="NoBorder">@i</td>
+                                                        <td id="NoBorder">
+                                                            <b>@item  </b>
+                                                        </td>
+                                                        <td id="NoBorder" class="">  @quan &nbsp;  @productsList.Where(s => s.Id == pid).SingleOrDefault().Unit </td>
+                                                        <td id="NoBorder" class="">@unitPrice</td>
+                                                        <td id="NoBorder" class="">@total</td>
+                                                    </tr>
+
+                                                    k++;
+                                                    i++;
+
+                                                }
+                                            }
+
+                                        }
+
+
+                                        @if (Model.Comments != null)
+                                        {
+                                            <tr  >
+                                                <td id="NoBorder"></td>
+                                                <td id="NoBorder" style="text-align:left;" class="text-success">
+                                                 <i class="fa fa-info-circle"></i>  @Model.Comments  
+
+
+
+                                                </td>
+                                                <td id="NoBorder"></td>
+                                                <td id="NoBorder"></td>
+                                                <td class="right"></td>
+                                            </tr>
+
+                                        }
+
+                                        <tr style="background-color: #f7f7f7">
+                                            <td id="NoBorder"></td>
+                                            <td id="NoBorder" style="text-align:right">
+                                                <b>Total  </b>
+
+
+
+                                            </td>
+                                            <td id="NoBorder"></td>
+                                            <td id="NoBorder"></td>
+                                            <td class="right"><b>@Model.Total</b></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td id="NoBorder"></td>
+                                            <td id="NoBorder" style="text-align:right">
+                                                <b> Discount</b>
+
+
+
+                                            </td>
+                                            <td id="NoBorder"></td>
+                                            <td id="NoBorder"></td>
+                                            <td class="right"> - @Model.Discount  </td>
+                                        </tr>
+                                        <tr>
+                                            <td id="NoBorder"></td>
+                                            <td id="NoBorder" style="text-align:right">
+                                                <b>VAT</b>
+
+
+
+                                            </td>
+                                            <td id="NoBorder" style="text-align:center">@Model.VAT%</td>
+                                            <td id="NoBorder"></td>
+                                            <td class="right">@Model.VAT_Type  @Model.VAT_Amount </td>
+                                        </tr>
+                                        <tr style="background-color:#f7f7f7;font-weight:bold">
+                                            <td id="NoBorder"></td>
+                                            <td id="NoBorder" style="text-align:right">
+                                                <b>Net Total</b>
+
+
+
+                                            </td>
+                                            <td id="NoBorder"></td>
+                                            <td id="NoBorder"></td>
+                                            <td class="right"><b>@Model.GrandTotal</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td id="NoBorder"></td>
+                                            <td id="NoBorder" style="text-align:right">
+                                                <b>Amount Paid</b>
+
+
+
+                                            </td>
+                                            <td id="NoBorder"></td>
+                                            <td id="NoBorder"></td>
+                                            <td class="right">  @Model.Paid  </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td id="NoBorder"></td>
+                                            <td id="NoBorder" style="text-align:right">
+                                                <b>Amount Due</b>
+
+
+
+                                            </td>
+                                            <td id="NoBorder"></td>
+                                            <td id="NoBorder"></td>
+                                            <td class="right"> @Model.Due </td>
+                                        </tr>
+
+
+
+
+                                        <tr id="BorderTop">
+                                            <td id="BorderTop"> </td>
+                                            <td id="BorderTop">
+                                                <h4><b>Net Receivable Amount</b> </h4>
+
+                                                <p>
+                                                    PAYMENT METHOD ( @Model.Payment_Type  @if (Model.Payment_Account != null)
+                                                    {@colon @Model.Payment_Account} )
+                                                </p>
+
+
+
+                                            </td>
+                                            <td id="BorderTop"></td>
+                                            <td id="BorderTop"></td>
+                                            <td id="BorderTop" class="right"><b style="border-bottom:1px solid black;font-size:20px">@Model.Total</b></td>
+                                        </tr>
+
+
+                                    </tbody>
+                                </table>
+
+
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <div class="row">
+
+                                    <div class="col-sm-4">
+                                        <div class="inv-footer-left">
+                                            Received By
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-4">
+
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <div class="inv-footer-right">
+                                            Authorised By
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    
+
+
+
+
+
+
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<style>
+    #NoBorder {
+        /*  border-bottom: 1px solid #f5f6fa;*/
+    }
+
+    #BorderTop {
+        /*   border-top: 1px solid grey;*/
+    }
+
+    .center {
+        /*  text-align: center;*/
+    }
+
+    .right {
+        /* text-align: right;*/
+    }
+
+    .border1px {
+        border: 1px solid grey;
+    }
+
+    .table-bordered th, .table-bordered td {
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 5px;
+        padding-top: 5px;
+    }
+
+    .margin0 { margin: 0;}  .padding0 {padding: 0; }
+
+
+    .inv-footer-left {float: left; width: 35%;text-align: center; border-top: 1px solid black;font-weight: bold;}
+
+    .inv-footer-right {float: left; width: 45%;text-align: center;float: right;border-top: 1px solid black;font-weight: bold;}
+</style>
+
+
+<script>
+
+    var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+
+    if (width < 900) {
+        $("table").addClass("table-responsive");
+    }
+
+
+    $("#printNow").click(function () {
+
+
+        //$("#mainTbl").removeClass("table-bordered");
+
+
+        var toPrint = document.getElementById('InvoiceTbl');
+
+        var popupWin = window.open('', '', 'toolbar=yes,scrollbars=yes,resizable=yes,width=1000,height=800,location=no,left=200px');
+        popupWin.document.open();
+        popupWin.document.write('<html><head><title>SALE </title><style>    .inv-footer-left {float: left; width: 35%;text-align: center; border-top: 1px solid black;font-weight: bold;}  .inv-footer-right {float: left; width: 45%;text-align: center;float: right;border-top: 1px solid black;font-weight: bold;} .margin0 { margin: 0;}  .padding0 {padding: 0; } h1{font-size:20px} .table>tbody>tr>td,p,label{padding:0px !important;padding-left:4px !important;padding-right:4px !important;margin:0} h4{font-size:14px}   .right{border:1px solid black;padding-right:5px;padding-left:4px;} .border1px{border:1px solid black}  .no-print{display: none;} .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{ }a[href]:after {content: none !important;}            th ,  td  { padding-left:10px;  padding-right:10px;  color:black  }   </style> <link rel="stylesheet" type="text/css" href="/Content/argon/css/argon.css?v=1.2.0" />  </head>');
+
+        popupWin.document.write('<body onload="window.print();" style="padding:1%"> <div >  ');
+
+        popupWin.document.write('<div  id="print">');
+        popupWin.document.write(toPrint.innerHTML);
+        popupWin.document.write('</div>');
+
+
+        popupWin.document.write('</div></body></html>');
+        popupWin.document.close();
+
+        //var divToPrint = document.getElementById("InvoiceTbl");
+        //newWin = window.open('', '', 'toolbar=yes,scrollbars=yes,resizable=yes,width=800,height=800,location=no,left=200px');;
+        //newWin.document.write(divToPrint.outerHTML);
+        //newWin.print();
+
+
+    });
+
+
+    $("#mainTbl").addClass("table-bordered");
+
+</script>

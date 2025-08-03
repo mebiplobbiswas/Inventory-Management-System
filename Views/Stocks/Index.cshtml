@@ -1,0 +1,388 @@
+﻿
+@model PagedList.IPagedList<Logistic_Inventory.ViewModels.StockDTO>
+@using PagedList.Mvc;
+@using System.Globalization;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+@{
+    ViewBag.Title = "Products Stock";
+    var i = 1;
+
+    var fileName = System.IO.Path.Combine(Server.MapPath("~/Content/img/logo/"), "banner_350.png");
+
+    ViewBag.banner = "data:image/gif;base64," + Convert.ToBase64String(File.ReadAllBytes(fileName));
+
+    ViewBag.page = "stocks";
+}
+<link rel="stylesheet" type="text/css" href="~/Content/datatable/jquery.dataTables.css">
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jquery.dataTables.js"></script>
+
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.print.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/dataTables.buttons.min.js"></script>
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.flash.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/pdfmake.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/vfs_fonts.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.html5.min.js"></script>
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"> Stock Report</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/products")">Products</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Stock</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <button id="modal" data-toggle="modal" data-target="#ProductModal" class="btn btn-sm btn-default"><i class="fa fa-search"></i> Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Page content -->
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                 
+                <div class="card-body">
+                    <div class="" style="padding:10px">
+                        <table class="table   display table-hover table-bordered" style="font-weight:bold">
+                            <thead>
+                                <tr class="th_bg">
+                                    <th>SL</th>
+                                    <th>
+                                        Products Name
+                                    </th>
+                                    @*<th>
+                        Code
+                    </th>*@
+                                    <th class="text-center">
+                                        In Item
+                                    </th>
+                                    <th class="text-center">
+                                        Out Item
+                                    </th>
+                                    <th class="text-center">
+                                        Balance
+                                    </th>
+
+                                    <th>Unit</th>
+                                    <th>
+                                        Unit Price
+                                    </th>
+
+                                    <th>Worth Value</th>
+                                    @*<th></th>*@
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    var balance = item.InItem - item.OutItem;
+                                    var total = balance * (int)item.UnitPrice;
+
+                                    <tr>
+                                        <td>
+                                            @i
+                                        </td>
+                                        <td>
+                                            @item.ProductName
+                                        </td>
+                                        @*<td>@item.ProductCode</td>*@
+                                        <td class="text-center">
+                                            <b> @item.InItem</b>
+                                        </td>
+                                        <td class="text-center">
+                                            <b>  @item.OutItem</b>
+                                        </td>
+                                        <td class="text-center">
+
+
+                                            <span class="badge badge-default">          <b> @balance</b></span>
+
+
+                                        </td>
+                                        <td>
+                                            @item.Unit
+                                        </td>
+                                        <td>
+                                            ৳  @item.UnitPrice
+                                        </td>
+
+                                        <td>
+
+
+                                            ৳  @total
+
+                                        </td>
+                                        @*<td>
+                            <a style="font-size:20px" href="/Stocks/Edit/@item.id"><i class="fa fa-edit"></i></a>&nbsp; | &nbsp;
+                            <a style="font-size:20px" href="/Stocks/Details/@item.id"><i class="tim-icons icon-notes"></i></a> &nbsp; | &nbsp;
+                            <a style="font-size:20px" href="/Stocks/Delete/@item.id"><i class="tim-icons icon-simple-remove"></i></a>
+                        </td>*@
+
+                                    </tr>
+
+                                    i++;
+                                }
+
+                            </tbody>
+
+
+                        </table>
+
+                        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+
+
+
+                        @Html.PagedListPager(Model, page => Url.Action("index",
+                            new { page }))
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+ 
+
+
+
+
+
+
+
+<div class="modal fade" id="ProductModal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog  " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="col-md-12 " style="padding:0">
+                    <div class="card card-upgrade">
+
+                        <div class="card-body">
+                            <div class="card card-user">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                    </p><div class="author">
+                                        <div class="block block-one"></div>
+                                        <div class="block block-two"></div>
+                                        <div class="block block-three"></div>
+                                        <div class="block block-four"></div>
+                                     
+                                    </div>
+                                    <p></p>
+                                    <div class="card-description">
+
+                                        @using (Html.BeginForm())
+                                        {
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <select class="form-control" required style="max-width:700px" name="pid" id="pid">
+                                                        <option selected>Select Product</option>
+
+                                                        @foreach (var item in ViewBag.products)
+                                                        {
+
+                                                            <option value="@item.id">@item.ProductName</option>
+                                                        }
+
+
+                                                    </select>
+                                                </div>
+                                            </div>
+
+
+
+
+                                            <br />
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <button class="btn btn-default btn-block" type="submit"> Show  </button>
+
+                                                </div>
+
+                                            </div>
+                                        }
+
+                                    </div>
+
+                                    <div class="card-footer">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ 
+<style>
+    .card-body {
+        padding: 3px;
+    }
+
+    .card {
+        margin-bottom: 5px;
+    }
+
+    .modal-body {
+        padding: 0;
+    }
+</style>
+
+<script>
+
+    var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+
+    if (width < 900) {
+        $("table").addClass("table-responsive");
+    }
+
+    function edit(id) {
+        window.location.href = "/sales/Edit/" + id;
+
+    }
+
+    function details(id) {
+        window.location.href = "/sales/details/" + id;
+
+    }
+
+    function deletes(id) {
+        window.location.href = "/sales/delete/" + id;
+
+    }
+</script>
+
+
+
+
+<script>
+
+       $(document).ready(function () {
+        $('table').DataTable({
+
+            "aLengthMenu": [[25, 50, 100, 200, 300, 500, 1000], ['25 Rows', '50 Rows', '100 Rows', '200 Rows', '300 Rows', '500 Rows', '1000 Rows']],
+            "pageLength": 25,
+
+            //"fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            //    $("td:nth-child(1)", nRow).html(iDisplayIndex + 1);
+            //    return nRow;
+            //},
+            "language": {
+
+                "search": '<i class="fa fa-search"></i>',
+                "searchPlaceholder": "SEARCH",
+                "paginate": {
+                    "previous": '<i class="fa fa-angle-left"></i>',
+                    "next": '<i class="fa fa-angle-right"></i>'
+                }
+            },
+              dom: 'lBfrtip',
+             buttons: [
+
+                 {
+                    extend: 'pdf',
+                    text: '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                    customize: function (doc) {
+                        doc.content.splice(0, 0, {
+                            margin: [0, 0, 0, 0],
+
+                            alignment: 'left',
+                            image: '@ViewBag.banner'
+                        });
+
+                    }
+                }
+                 ,
+                 {
+                    extend: 'excel',
+                    text: '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+                    title: "@ViewBag.Title",
+                    footer: true,
+
+
+                },
+                 {
+                    extend: 'csv',
+                    text: '<i class="fa fa-file-word" aria-hidden="true"></i> CSV',
+                     title: "@ViewBag.Title",
+                    footer: true
+
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: "@ViewBag.Title",
+                    autoPrint: true,
+                    footer: true ,
+                    customize: function (win)
+                    {
+                        var url = location.protocol + '//' + location.host + "/Content/img/Inventory.png";
+
+                        $(win.document.body).find('.table>thead>tr>th').css("color", "black");
+                        $(win.document.body).find('.table>tbody>tr>td').css("color", "black");
+
+
+                        $(win.document.body)
+                            .css('font-size', '10pt').css('background-color', 'white')
+                        .prepend( '<img src="'+url+'" style="position:relative; top:0; left:0;width:600px" />'  );
+                        $(win.document.body).find('h1').css('font-size', '20px').css('font-weight', 'bold').css('text-transform', 'uppercase').css('color', 'black').css('margin-top', '15px');
+                    }
+                }
+
+            ]
+        });
+
+
+    });
+
+</script>

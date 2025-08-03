@@ -1,0 +1,1340 @@
+﻿@model IEnumerable<Logistic_Inventory.Models.Sales>
+
+@{
+    ViewBag.Title = "Sales Report";
+
+    var i = 1;
+
+    var fileName = System.IO.Path.Combine(Server.MapPath("~/Content/img/logo/"), "banner_350.png");
+
+    ViewBag.banner = "data:image/gif;base64," + Convert.ToBase64String(File.ReadAllBytes(fileName));
+
+    var dateToday = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Bangladesh Standard Time"));
+
+    var today = dateToday.ToString("MM/dd/yyyy");
+    var lastMonth = dateToday.AddMonths(-1).ToString("MM/dd/yyyy");
+    var tomorrow = dateToday.AddDays(1).ToString("MM/dd/yyyy");
+
+    ViewBag.page = "sales";
+}
+
+<link rel="stylesheet" type="text/css" href="~/Content/datatable/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.print.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/dataTables.buttons.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.flash.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/pdfmake.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/vfs_fonts.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.html5.min.js"></script>
+<script src="~/Scripts/cal/bootstrap-datepicker.js"></script>
+<link href="~/Content/cal/bootstrap-datepicker.css" rel="stylesheet" />
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"><i class="ni ni-cart"></i> Sales</h6>
+                    @*<nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/products")">Products</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Sales</li>
+                        </ol>
+                    </nav>*@
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="@Url.Content("~/sales/create")" class="btn btn-sm btn-primary"><i class="fa fa-plus-circle"></i> Add New</a>
+                    @*<button class="btn btn-default btn-sm" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-search"></i> &nbsp; Search By Customer</button>*@
+
+                    <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-search"></i> &nbsp; Date Filter/Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent hide">
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body">
+
+                                    <div class="card-description">
+
+                                        <div class="container-fluid" style="text-align:center">
+                                            <h1><span id="price"><b>@ViewBag.count </b></span></h1>
+                                            <h4 id="val"><b>Count Sale</b></h4>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-3">
+                            <div class="card" id="cd">
+                                <div class="card-body">
+
+                                    <div class="card-description">
+
+                                        <div class="container-fluid" style="text-align:center">
+                                            <h1><span id="price"><b>@ViewBag.totalSale ৳</b></span></h1>
+                                            <h4 id="val"><b>Total Sale</b></h4>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body">
+
+                                    <div class="card-description">
+
+                                        <div class="container-fluid" style="text-align:center">
+                                            <h1><span id="price"><b>@ViewBag.totalPaid ৳</b></span></h1>
+                                            <h4 id="val"><b>Total  Paid</b></h4>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-3">
+                            <div class="card">
+                                <div class="card-body">
+
+                                    <div class="card-description">
+
+                                        <div class="container-fluid" style="text-align:center">
+                                            <h1><span id="price"><b>@ViewBag.totalDue ৳</b></span></h1>
+                                            <h4 id="val"><b>Total  Due</b></h4>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-body" style="padding-top:0">
+ 
+
+                    <div class="nav-wrapper">
+                        <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"><i class="ni ni-time-alarm mr-2"></i>Sales Today</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="ni ni-calendar-grid-58 mr-2"></i>Sales Last One Month</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="fa fa-calendar"></i> Sales  Since Begining</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+
+                                    <table class="display" id="table" style="font-weight:bold;font-size:12px;color:black;width:100%">
+                                        <thead>
+                                            <tr style="background-color:#e9ecef">
+                                                <th>SL</th>
+                                                <th>
+                                                    Date
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Invoice)
+                                                </th>
+                                                <th>
+                                                    Customer
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Products.ProductName)
+                                                </th>
+
+
+
+                                                <th>
+                                                    Qty
+                                                </th>
+                                                <th>
+                                                    Sell Price
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Total)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Paid)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Due)
+                                                </th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+
+                                                <th></th>
+                                                <th></th>
+                                                <th>Total</th>
+                                                <th style="float:left;font-weight:bold"></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+
+                                    </table>
+
+                                </div>
+                                <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                    <table class="display" id="table2" style="font-weight:bold;font-size:12px;width:100%;color:black">
+                                        <thead>
+                                            <tr style="background-color:#e9ecef">
+                                                <th>SL</th>
+                                                <th>
+                                                    Date
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Invoice)
+                                                </th>
+                                                <th>
+                                                    Customer
+                                                </th>
+
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Products.ProductName)
+                                                </th>
+
+
+                                                <th>
+                                                    Qty
+                                                </th>
+                                                <th>
+                                                    Sell Price
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Total)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Paid)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Due)
+                                                </th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+
+                                                <th></th>
+                                                <th></th>
+                                                <th>Total</th>
+                                                <th style="float:left;font-weight:bold"></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+
+                                    </table>
+                                </div>
+                                <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
+                                    <table class="display" id="table3" style="font-weight:bold;font-size:12px;width:100%;color:black">
+                                        <thead>
+                                            <tr style="background-color:#e9ecef">
+                                                <th>SL</th>
+                                                <th>
+                                                    Date
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Invoice)
+                                                </th>
+                                                <th>
+                                                    Customer
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Products.ProductName)
+                                                </th>
+
+
+
+                                                <th>
+                                                    Qty
+                                                </th>
+                                                <th>
+                                                    Sell Price
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Total)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Paid)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Due)
+                                                </th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+
+                                                <th></th>
+                                                <th></th>
+                                                <th>Total</th>
+                                                <th style="float:left;font-weight:bold"></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                 
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Filter By Date Range</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+
+                            <input class="form-control text-box single-line" autocomplete="off" data-val="true" id="fromCopy" onchange="myDate1()" placeholder="Date From" type="date" value="@today">
+                            <input id="from" type="hidden" value="@today">
+                            <input id="from2" type="hidden" value="@lastMonth">
+                            <input id="from3" type="hidden" value="">
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+
+                            <input class="form-control text-box single-line" autocomplete="off" placeholder="Date To" id="toCopy" onchange="myDate2()" type="date" value="@tomorrow">
+                            <input id="to" type="hidden" value="@tomorrow">
+                            <input id="to2" type="hidden" value="@today">
+                            <input id="to3" type="hidden" value="">
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary text-danger" id="clearNow"><i class="fa fa-times"></i> Clear</button>
+                <button type="button" class="btn btn-primary" id="dateSarch"><i class="fa fa-search"></i> Filter/Search</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<div class="modal fade" id="ProductModal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog  " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="col-md-12 ml-auto mr-auto">
+                    <div class="card card-upgrade">
+
+                        <div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div>
+                                        @using (Html.BeginForm())
+                                        {
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    @Html.DropDownList("CustomersID", null, htmlAttributes: new { @class = "form-control" })
+                                                </div>
+                                            </div>                                          
+                                            <br />
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <button class="btn btn-default btn-block" type="submit"> Query Sales  </button>
+
+                                                </div>
+
+                                            </div>
+                                        }
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="fixed-plugin hide">
+    <div class="dropdown show-dropdown">
+        <a href="#" data-toggle="dropdown">
+            <i class="fa fa-angle-double-left  fa-2x" style="color:white;font-weight:600"> </i>
+        </a>
+        <ul class="dropdown-menu">
+            <li class="header-title"> Additional Options</li>
+
+            <li class="adjustments-line text-center color-change">
+                <a class="btn btn-default" href="@Url.Content("~/sales/create")" style="color:white"><i class="fa fa-pencil"></i> &nbsp;Add New </a>
+
+
+
+
+            </li>
+
+            <li class="adjustments-line text-center color-change">
+
+                <button class="btn btn-sucess btn-round" id="modal" data-toggle="modal" data-target="#ProductModal">
+                    <i class="tim-icons icon-zoom-split"></i> Search
+                </button>
+
+            </li>
+            <li></li>
+
+        </ul>
+    </div>
+</div>
+
+<style>
+   
+</style>
+<script>
+
+    var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+
+    if (width < 900) {
+        $("table").addClass("table-responsive");
+    }
+
+    function edit(id) {
+        window.location.href = "/sales/Edit/" + id;
+
+    }
+
+    function details(id) {
+        window.location.href = "/sales/details/" + id;
+
+    }
+
+    
+    //$('#from').datepicker({
+    //    weekStart: 1,
+    //    color: 'black',
+    //    format: 'dd/mm/yyyy'
+    //});
+
+
+    //$('#to').datepicker({
+    //    weekStart: 1,
+    //    color: 'black',
+    //    format: 'dd/mm/yyyy'
+    //});
+
+
+    var table = null;
+    var table2 = null;
+    var table3 = null;
+
+    var url = location.protocol + '//' + location.host + "/sales/GetSalesAjax"
+    $(document).ready(function () {
+
+        table = $('#table').DataTable({
+            "processing": true,
+            "serverSide": true,
+    
+            "ajax":
+            {
+                "url": url,
+                "type": "POST",
+                data: function (d) {
+                    d.dateFrom = $("#from").val(),
+                        d.dateTo = $("#to").val()
+                }
+            },
+            rowId: 'id',
+            "columns": [
+                { "data": "SL", defaultContent: '' },
+                { data: "Date", render: function (data, type, full, meta) { return '<b>' + full.Date + '</b>' } },
+                { "data": "Invoice" },
+                {
+                    data: "Customer",
+                    render: function (data, type, full, meta) {
+
+                        return full.Customer;
+                    }
+                },
+
+                { data: "ProductName", render: function (data, type, full, meta) { return '<b>' + full.ProductName + '</b>' } },
+              
+                { "data": "Quantity" },
+                { "data": "Price" },
+                { data: "Total", render: function (data, type, full, meta) { return '<b>' + full.Total +'</b>' } },
+
+                //{ data: "UnitPrice", render: function (data, type, full, meta) { return '<b>' + full.UnitPrice + '৳</b>' } },
+                { data: "Paid", render: function (data, type, full, meta) { return '<span class="badge badge-default">' + full.Paid + '</span>' } },
+                { data: "Due", render: function (data, type, full, meta) { return '<span class="badge badge-danger">' + full.Due + '</span>' } },
+
+                {
+                    data: "Action",
+                    render: function (data, type, full, meta) {
+
+                        if (full.Due > 0) {
+                            return '<div class="btn-group btn-group-toggle float-right" data-toggle="buttons">' +
+                                ' <label class="btn btn-sm btn-default btn-simple active" onclick="edit(' + full.id + ')">'+
+                                '<input type="radio" name="options" checked="">'+
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"> <i class="fa fa-edit"></i> Dues</span>' +
+                                ' <span class="d-block d-sm-none">' +
+                                '    <i class="fa fa-edit"></i> Dues' +
+                                ' </span>  </label>' +
+                                '<label class="btn btn-sm btn-default btn-simple" id = "1" onclick = "details(' + full.id + ')" > ' +
+                                '<input type="radio" class="d-none d-sm-none" name="options">' +
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="ni ni-single-copy-04"></i></span>' +
+                                '<span class="d-block d-sm-none">' +
+                                '<i class="ni ni-single-copy-04"></i>' +
+                                '</span>' +
+                                '</label>' +
+                                '<button class="btn btn-sm btn-default btn-simple" id="2" onclick="deletes(' + full.id + ')">' +
+
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="fa fa-times-circle"></i></span>' +
+                                '<span class="d-block d-sm-none">' +
+                                '<i class="fa fa-times-circle"></i>' +
+                                '</span>' +
+                                '</button>' +
+                                '</div>';
+                        } else {
+                            return '<div class="btn-group btn-group-toggle float-right" data-toggle="buttons">' +
+                                '<label class="btn btn-sm btn-default btn-simple" id="1" onclick="details(' + full.id + ')">' +
+
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="ni ni-single-copy-04"></i></span>' +
+                                '<span class="d-block d-sm-none">' +
+                                '<i class="ni ni-single-copy-04"></i>' +
+                                '</span>' +
+                                '</label>' +
+                                '<button class="btn btn-sm btn-default btn-simple" id="2" onclick="deletes(' + full.id + ')">' +
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="fa fa-times-circle"></i></span>' +
+                                '<span class="d-block d-sm-none">' +
+                                '<i class="fa fa-times-circle"></i>' +
+                                '</span>' +
+                                '</button>' +
+                                '</div>';
+                        }
+                    }
+                },
+
+            ],
+            "aLengthMenu": [[25, 50, 100, 200, 300, 500, 1000], ['25 Rows', '50 Rows', '100 Rows', '200 Rows', '300 Rows', '500 Rows', '1000 Rows']],
+            "pageLength": 25,
+
+            //"fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            //    $("td:nth-child(1)", nRow).html(iDisplayIndex + 1);
+            //    return nRow;
+            //},
+            "language": {
+
+                "search": '<i class="fa fa-search"></i>',
+                "searchPlaceholder": "Date,Product,Customer",
+                "paginate": {
+                    "previous": '<i class="fa fa-angle-left"></i>',
+                    "next": '<i class="fa fa-angle-right"></i>'
+                }
+            },
+              dom: 'lBfrtip',
+             buttons: [
+
+                 {
+                    extend: 'pdf',
+                    text: '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                    customize: function (doc) {
+                        doc.content.splice(0, 0, {
+                            margin: [0, 0, 0, 0],
+
+                            alignment: 'left',
+                            image: '@ViewBag.banner'
+                        });
+
+                    }
+                }
+                 ,
+                 {
+                    extend: 'excel',
+                    text: '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                },
+                 {
+                    extend: 'csv',
+                    text: '<i class="fa fa-file-word" aria-hidden="true"></i> CSV',
+                     title: "@ViewBag.Title",
+                    footer: true
+
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: "@ViewBag.Title",
+                    autoPrint: true,
+                    footer: true ,
+                    customize: function (win)
+                    {
+                        var url = location.protocol + '//' + location.host + "/Content/img/Inventory.png";
+
+                        $(win.document.body).find('.table>thead>tr>th').css("color", "black");
+                        $(win.document.body).find('.table>tbody>tr>td').css("color", "black");
+                        $(win.document.body)
+                            .css('font-size', '10pt').css('background-color', 'white')
+                        .prepend( '<img src="'+url+'" style="position:relative; top:0; left:0;width:600px" />'  );
+                        $(win.document.body).find('h1').css('font-size', '20px').css('font-weight', 'bold').css('text-transform', 'uppercase').css('color', 'black').css('margin-top', '15px');
+                    }
+                }
+         ]
+         ,
+         "footerCallback": function (row, data, start, end, display) {
+             var api = this.api(), data;
+
+             // Remove the formatting to get integer data for summation
+             var intVal = function (i) {
+                 return typeof i === 'string' ?
+                     i.replace(/[\$,]/g, '') * 1 :
+                     typeof i === 'number' ?
+                         i : 0;
+             };
+
+             // Total over all pages
+             total = api
+                 .column(7)
+                 .data()
+                 .reduce(function (a, b) {
+                     return intVal(a) + intVal(b);
+                 }, 0);
+
+             // Total over this page
+             pageTotal = api
+                 .column(7, { page: 'current' })
+                 .data()
+                 .reduce(function (a, b) {
+                     return intVal(a) + intVal(b);
+                 }, 0);
+
+             // Update footer
+             $(api.column(7).footer()).html(
+                 "<u>" + pageTotal + "<u>"
+             );
+
+
+             pageTotal = api
+                 .column(8, { page: 'current' })
+                 .data()
+                 .reduce(function (a, b) {
+                     return intVal(a) + intVal(b);
+                 }, 0);
+
+             // Update footer
+             $(api.column(8).footer()).html(
+                 "<u>" + pageTotal + "<u>"
+             );
+
+
+             pageTotal = api
+                 .column(9, { page: 'current' })
+                 .data()
+                 .reduce(function (a, b) {
+                     return intVal(a) + intVal(b);
+                 }, 0);
+
+             // Update footer
+             $(api.column(9).footer()).html(
+                 "<u>" + pageTotal + "<u>"
+             );
+
+
+
+
+         }
+        });
+
+
+
+
+
+        table2 = $('#table2').DataTable({
+            "processing": true,
+            "serverSide": true,
+      
+            "ajax":
+            {
+                "url": url,
+                "type": "POST",
+                data: function (d) {
+                    d.dateFrom = $("#from2").val(),
+                        d.dateTo = $("#to2").val()
+                }
+            },
+            rowId: 'id',
+            "columns": [
+                { "data": "SL", defaultContent: '' },
+                { data: "Date", render: function (data, type, full, meta) { return '<b>' + full.Date + '</b>' } },
+                { "data": "Invoice" },
+                {
+                    data: "Customer",
+                    render: function (data, type, full, meta) {
+
+                        return full.Customer;
+                    }
+                },
+                { data: "ProductName", render: function (data, type, full, meta) { return '<b>' + full.ProductName + '</b>' } },
+               
+               
+                { "data": "Quantity" },
+                { "data": "Price" },
+                { data: "Total", render: function (data, type, full, meta) { return '<b>' + full.Total +'</b>' } },
+
+                //{ data: "UnitPrice", render: function (data, type, full, meta) { return '<b>' + full.UnitPrice + '৳</b>' } },
+                { data: "Paid", render: function (data, type, full, meta) { return '<span class="badge badge-default">' + full.Paid + '</span>' } },
+                { data: "Due", render: function (data, type, full, meta) { return '<span class="badge badge-danger">' + full.Due + '</span>' } },
+
+                {
+                    data: "Action",
+                    render: function (data, type, full, meta) {
+
+                        if (full.Due > 0) {
+                            return '<div class="btn-group btn-group-toggle float-right" data-toggle="buttons">' +
+                                ' <label class="btn btn-sm btn-default btn-simple active" onclick="edit(' + full.id + ')">'+
+                                '<input type="radio" name="options" checked="">'+
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"> <i class="fa fa-edit"></i> Dues</span>' +
+                                ' <span class="d-block d-sm-none">' +
+                                '    <i class="fa fa-edit"></i> Dues' +
+                                ' </span>  </label>' +
+                                '<label class="btn btn-sm btn-default btn-simple" id = "1" onclick = "details(' + full.id + ')" > ' +
+                                '<input type="radio" class="d-none d-sm-none" name="options">' +
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="ni ni-single-copy-04"></i></span>' +
+                                '<span class="d-block d-sm-none">' +
+                                '<i class="ni ni-single-copy-04"></i>' +
+                                '</span>' +
+                                '</label>' +
+                                '<button class="btn btn-sm btn-default btn-simple" id="2" onclick="deletes(' + full.id + ')">' +
+
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="fa fa-times-circle"></i></span>' +
+                                '<span class="d-block d-sm-none">' +
+                                '<i class="fa fa-times-circle"></i>' +
+                                '</span>' +
+                                '</button>' +
+                                '</div>';
+                        } else {
+                            return '<div class="btn-group btn-group-toggle float-right" data-toggle="buttons">' +
+                                '<label class="btn btn-sm btn-default btn-simple" id="1" onclick="details(' + full.id + ')">' +
+
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="ni ni-single-copy-04"></i></span>' +
+                                '<span class="d-block d-sm-none">' +
+                                '<i class="ni ni-single-copy-04"></i>' +
+                                '</span>' +
+                                '</label>' +
+                                '<button class="btn btn-sm btn-default btn-simple" id="2" onclick="deletes(' + full.id + ')">' +
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="fa fa-times-circle"></i></span>' +
+                                '<span class="d-block d-sm-none">' +
+                                '<i class="fa fa-times-circle"></i>' +
+                                '</span>' +
+                                '</button>' +
+                                '</div>';
+                        }
+                    }
+                },
+
+            ],
+            "aLengthMenu": [[200, 300, 500, 1000], ['200 Rows', '300 Rows', '500 Rows', '1000 Rows']],
+            "pageLength": 200,
+
+            //"fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            //    $("td:nth-child(1)", nRow).html(iDisplayIndex + 1);
+            //    return nRow;
+            //},
+            "language": {
+
+                "search": '<i class="fa fa-search"></i>',
+                "searchPlaceholder": "Date,Product,Customer",
+                "paginate": {
+                    "previous": '<i class="fa fa-angle-left"></i>',
+                    "next": '<i class="fa fa-angle-right"></i>'
+                }
+            },
+              dom: 'lBfrtip',
+             buttons: [
+
+                 {
+                    extend: 'pdf',
+                    text: '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                    customize: function (doc) {
+                        doc.content.splice(0, 0, {
+                            margin: [0, 0, 0, 0],
+
+                            alignment: 'left',
+                            image: '@ViewBag.banner'
+                        });
+
+                    }
+                }
+                 ,
+                 {
+                    extend: 'excel',
+                    text: '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                },
+                 {
+                    extend: 'csv',
+                    text: '<i class="fa fa-file-word" aria-hidden="true"></i> CSV',
+                     title: "@ViewBag.Title",
+                    footer: true
+
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: "@ViewBag.Title",
+                    autoPrint: true,
+                    footer: true ,
+                    customize: function (win)
+                    {
+                        var url = location.protocol + '//' + location.host + "/Content/img/logo/banner_1000.png";
+
+                        $(win.document.body).find('.table>thead>tr>th').css("color", "black");
+                        $(win.document.body).find('.table>tbody>tr>td').css("color", "black");
+                        $(win.document.body)
+                            .css('font-size', '10pt').css('background-color', 'white')
+                        .prepend( '<img src="'+url+'" style="position:relative; top:0; left:0;width:600px" />'  );
+                        $(win.document.body).find('h1').css('font-size', '20px').css('font-weight', 'bold').css('text-transform', 'uppercase').css('color', 'black').css('margin-top', '15px');
+                    },
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    }
+                }
+         ]
+         ,
+         "footerCallback": function (row, data, start, end, display) {
+             var api = this.api(), data;
+
+             // Remove the formatting to get integer data for summation
+             var intVal = function (i) {
+                 return typeof i === 'string' ?
+                     i.replace(/[\$,]/g, '') * 1 :
+                     typeof i === 'number' ?
+                         i : 0;
+             };
+
+             // Total over all pages
+             total = api
+                 .column(7)
+                 .data()
+                 .reduce(function (a, b) {
+                     return intVal(a) + intVal(b);
+                 }, 0);
+
+             // Total over this page
+             pageTotal = api
+                 .column(7, { page: 'current' })
+                 .data()
+                 .reduce(function (a, b) {
+                     return intVal(a) + intVal(b);
+                 }, 0);
+
+             // Update footer
+             $(api.column(7).footer()).html(
+                 "<u>" + pageTotal + "<u>"
+             );
+
+             pageTotal = api
+                 .column(8, { page: 'current' })
+                 .data()
+                 .reduce(function (a, b) {
+                     return intVal(a) + intVal(b);
+                 }, 0);
+
+             // Update footer
+             $(api.column(8).footer()).html(
+                 "<u>" + pageTotal + "<u>"
+             );
+
+
+             pageTotal = api
+                 .column(9, { page: 'current' })
+                 .data()
+                 .reduce(function (a, b) {
+                     return intVal(a) + intVal(b);
+                 }, 0);
+
+             // Update footer
+             $(api.column(9).footer()).html(
+                 "<u>" + pageTotal + "<u>"
+             );
+
+
+
+         }
+        });
+
+
+
+
+        table3 = $('#table3').DataTable({
+            "processing": true,
+            "serverSide": true,
+    
+            "ajax":
+            {
+                "url": url,
+                "type": "POST",
+                data: function (d) {
+                    d.dateFrom = $("#from3").val(),
+                        d.dateTo = $("#to3").val()
+                }
+            },
+            rowId: 'id',
+            "columns": [
+                { "data": "SL", defaultContent: '' },
+                { data: "Date", render: function (data, type, full, meta) { return '<b>' + full.Date + '</b>' } },
+                { "data": "Invoice" },
+                {
+                    data: "Customer",
+                    render: function (data, type, full, meta) {
+
+                        return full.Customer;
+                    }
+                },
+                { data: "ProductName", render: function (data, type, full, meta) { return '<b>' + full.ProductName + '</b>' } },
+              
+           
+                { "data": "Quantity" },
+                { "data": "Price" },
+                { data: "Total", render: function (data, type, full, meta) { return '<b>' + full.Total +'</b>' } },
+
+                //{ data: "UnitPrice", render: function (data, type, full, meta) { return '<b>' + full.UnitPrice + '৳</b>' } },
+                { data: "Paid", render: function (data, type, full, meta) { return '<span class="badge badge-default">' + full.Paid + '</span>' } },
+                { data: "Due", render: function (data, type, full, meta) { return '<span class="badge badge-danger">' + full.Due + '</span>' } },
+
+                {
+                    data: "Action",
+                    render: function (data, type, full, meta) {
+
+                        if (full.Due > 0) {
+                            return '<div class="btn-group btn-group-toggle float-right" data-toggle="buttons">' +
+                                ' <label class="btn btn-sm btn-default btn-simple active" onclick="edit(' + full.id + ')">'+
+                                '<input type="radio" name="options" checked="">'+
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"> <i class="fa fa-edit"></i> Dues</span>' +
+                                ' <span class="d-block d-sm-none">' +
+                                '    <i class="fa fa-edit"></i> Dues' +
+                                ' </span>  </label>' +
+                                '<label class="btn btn-sm btn-default btn-simple" id = "1" onclick = "details(' + full.id + ')" > ' +
+                                '<input type="radio" class="d-none d-sm-none" name="options">' +
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="ni ni-single-copy-04"></i></span>' +
+                                '<span class="d-block d-sm-none">' +
+                                '<i class="ni ni-single-copy-04"></i>' +
+                                '</span>' +
+                                '</label>' +
+                                '<button class="btn btn-sm btn-default btn-simple" id="2" onclick="deletes(' + full.id + ')">' +
+
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="fa fa-times-circle"></i></span>' +
+                                '<span class="d-block d-sm-none">' +
+                                '<i class="fa fa-times-circle"></i>' +
+                                '</span>' +
+                                '</button>' +
+                                '</div>';
+                        } else {
+                            return '<div class="btn-group btn-group-toggle float-right" data-toggle="buttons">' +
+                                '<label class="btn btn-sm btn-default btn-simple" id="1" onclick="details(' + full.id + ')">' +
+
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="ni ni-single-copy-04"></i></span>' +
+                                '<span class="d-block d-sm-none">' +
+                                '<i class="ni ni-single-copy-04"></i>' +
+                                '</span>' +
+                                '</label>' +
+                                '<button class="btn btn-sm btn-default btn-simple" id="2" onclick="deletes(' + full.id + ')">' +
+                                '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="fa fa-times-circle"></i></span>' +
+                                '<span class="d-block d-sm-none">' +
+                                '<i class="fa fa-times-circle"></i>' +
+                                '</span>' +
+                                '</button>' +
+                                '</div>';
+                        }
+                    }
+                },
+
+            ],
+            "aLengthMenu": [[200, 300, 500, 1000], ['200 Rows', '300 Rows', '500 Rows', '1000 Rows']],
+            "pageLength": 200,
+
+            //"fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            //    $("td:nth-child(1)", nRow).html(iDisplayIndex + 1);
+            //    return nRow;
+            //},
+            "language": {
+
+                "search": '<i class="fa fa-search"></i>',
+                "searchPlaceholder": "Date,Product,Customer",
+                "paginate": {
+                    "previous": '<i class="fa fa-angle-left"></i>',
+                    "next": '<i class="fa fa-angle-right"></i>'
+                }
+            },
+              dom: 'lBfrtip',
+             buttons: [
+
+                 {
+                    extend: 'pdf',
+                    text: '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                    customize: function (doc) {
+                        doc.content.splice(0, 0, {
+                            margin: [0, 0, 0, 0],
+
+                            alignment: 'left',
+                            image: '@ViewBag.banner'
+                        });
+
+                    }
+                }
+                 ,
+                 {
+                    extend: 'excel',
+                    text: '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                },
+                 {
+                    extend: 'csv',
+                    text: '<i class="fa fa-file-word" aria-hidden="true"></i> CSV',
+                     title: "@ViewBag.Title",
+                    footer: true
+
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: "@ViewBag.Title",
+                    autoPrint: true,
+                    footer: true ,
+                    customize: function (win)
+                    {
+                        var url = location.protocol + '//' + location.host + "/Content/img/logo/banner_1000.png";
+
+                        $(win.document.body).find('.table>thead>tr>th').css("color", "black");
+                        $(win.document.body).find('.table>tbody>tr>td').css("color", "black");
+                        $(win.document.body)
+                            .css('font-size', '10pt').css('background-color', 'white')
+                        .prepend( '<img src="'+url+'" style="position:relative; top:0; left:0;width:600px" />'  );
+                        $(win.document.body).find('h1').css('font-size', '20px').css('font-weight', 'bold').css('text-transform', 'uppercase').css('color', 'black').css('margin-top', '15px');
+                    },
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    }
+                }
+         ]
+         ,
+         "footerCallback": function (row, data, start, end, display) {
+             var api = this.api(), data;
+
+             // Remove the formatting to get integer data for summation
+             var intVal = function (i) {
+                 return typeof i === 'string' ?
+                     i.replace(/[\$,]/g, '') * 1 :
+                     typeof i === 'number' ?
+                         i : 0;
+             };
+
+             // Total over all pages
+             total = api
+                 .column(7)
+                 .data()
+                 .reduce(function (a, b) {
+                     return intVal(a) + intVal(b);
+                 }, 0);
+
+             // Total over this page
+             pageTotal = api
+                 .column(7, { page: 'current' })
+                 .data()
+                 .reduce(function (a, b) {
+                     return intVal(a) + intVal(b);
+                 }, 0);
+
+             // Update footer
+             $(api.column(7).footer()).html(
+                 "<u>" + pageTotal + "<u>"
+             );
+
+             pageTotal = api
+                 .column(8, { page: 'current' })
+                 .data()
+                 .reduce(function (a, b) {
+                     return intVal(a) + intVal(b);
+                 }, 0);
+
+             // Update footer
+             $(api.column(8).footer()).html(
+                 "<u>" + pageTotal + "<u>"
+             );
+
+
+             pageTotal = api
+                 .column(9, { page: 'current' })
+                 .data()
+                 .reduce(function (a, b) {
+                     return intVal(a) + intVal(b);
+                 }, 0);
+
+             // Update footer
+             $(api.column(9).footer()).html(
+                 "<u>" + pageTotal + "<u>"
+             );
+
+
+
+         }
+        });
+
+
+    });
+
+
+
+ 
+
+
+
+    $("#dateSarch").click(function () {
+
+
+        table.ajax.url(url).load();
+
+    });
+
+    $("#clearNow").click(function () {
+
+
+        $("#from").val('');
+        $("#to").val("");
+
+        $("#fromCopy").val('');
+        $("#toCopy").val("");
+
+    });
+
+
+
+    function myDate1() {
+        var d = new Date(document.getElementById("fromCopy").value);
+        var day = pad(d.getDate(), 2);
+        var month = pad(d.getMonth() + 1, 2);
+
+        var year = d.getFullYear();
+        var date = month + "/" + day + "/" + year;
+        console.log("From " + date);
+        $("#from").val(date);
+    }
+    function myDate2() {
+        var d = new Date(document.getElementById("toCopy").value);
+        var day = pad(d.getDate(), 2);
+        var month = pad(d.getMonth() + 1, 2);
+
+        var year = d.getFullYear();
+        var date = month + "/" + day + "/" + year;
+        console.log("To : " + date);
+        $("#to").val(date);
+    }
+
+    function pad(str, max) {
+        str = str.toString();
+        return str.length < max ? pad("0" + str, max) : str;
+    }
+
+
+
+
+    function deletes(id) {
+        // window.location.href = "/Categories/delete/" + id;
+        var con = confirm('Are you sure you want to delete ?');
+        if (con) {
+            // Save it!
+            var url = "/Api/DeleteSales?id=" + id;
+            $.get(url, function (data) {
+
+                console.log(data);
+                var Status = data["status"];
+                var Code = parseInt(data["code"]);
+
+
+                //  $("#row_" + id).remove();
+                //table.ajax.url(url).load();
+                table.row("#" + id).remove().draw();
+                table2.row("#" + id).remove().draw();
+                table3.row("#" + id).remove().draw();
+                //$('#' + id).remove();
+                //table2.ajax.url(url).load();
+                //table3.ajax.url(url).load();
+
+                return true;
+            });
+
+        } else {
+            // Do nothing!
+            return false;
+        }
+
+        return false;
+
+    }
+
+
+</script>
+<style>
+    [type="search"] {
+        /* border: 1px solid black; */
+        border-radius: 15px;
+        height: 30px;
+        padding-left: 15px;
+        border-radius: 15px;
+    }
+
+    th {
+        color: black;
+    }
+
+    .badge{
+        font-size:90%;
+    }
+
+    @@media (max-width: 900px) {
+        h1 {
+            font-size: 20px;
+        }
+
+        #price {
+            font-size: 12px;
+        }
+
+        #val {
+            font-size: 10px;
+        }
+
+        h4 {
+            margin: 0;
+        }
+
+        h1 {
+            margin: 8px
+        }
+
+        .card-body {
+            padding: 3px;
+        }
+
+        .card {
+            margin-bottom: 5px;
+        }
+
+        .modal-body {
+            padding: 0;
+        }
+    }
+</style>

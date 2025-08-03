@@ -1,0 +1,305 @@
+﻿@model IEnumerable<Logistic_Inventory.Models.Payments>
+@using Logistic_Inventory.Models
+
+@{
+    ViewBag.Title = "Index";
+
+    var t = "Bank Transfer";
+    var t2 = "By Cheque";
+    var t3 = "By Cash";
+    var i = 1;
+}
+
+
+
+
+
+
+<script src="~/Scripts/cal/bootstrap-datepicker.js"></script>
+
+
+
+
+<link href="~/Content/cal/bootstrap-datepicker.css" rel="stylesheet" />
+
+
+<script src="~/Scripts/select2/3.5/select2.min.js"></script>
+
+<link href="~/Content/select2/3.5/select2.min.css" rel="stylesheet" />
+
+<div class="row">
+    <div class="col-md-6">
+        <h1 style="margin:0" class="center-block">
+            <i class="tim-icons icon-money-coins"></i> Purchase Payments
+
+
+        </h1>
+
+    </div>
+    <div class="col-md-6">
+        <div class="btn-group btn-group " style="float:right;">
+
+            <a class="btn btn-default" href="@Url.Content("~/Payments/create")" style="color:white"><i class="tim-icons icon-pencil"></i> &nbsp;Add New </a>
+            <button class="btn btn-sucess btn-round" id="search"  >
+                <i class="tim-icons icon-zoom-split"></i> Search
+            </button>
+
+
+            <button class="btn btn-round btn-default" id="printNow">
+                <i class="fa fa-print"> Print</i>
+            </button>
+
+
+        </div>
+    </div>
+</div>
+
+<br />
+
+@using (Html.BeginForm())
+{
+    <div class="row" id="searchDiv" >
+
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <h5 class="col-form-label">Account Sub Head</h5>
+                    <select class="form-control"   style="max-width:700px" name="subHead" id="subHead">
+                        <option value="">Select Account Head </option>
+                        @foreach (var item in ViewData["subheads"] as List<AccSubHead>)
+                        {
+                            var tt = item.SubHeadName + " - " + item.SubHeadCode;
+                            <option value="@item.id">@tt </option>
+                        }
+
+
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="form-group" style="">
+
+
+                <div class="col-md-12">
+                    <h5 class="col-form-label">From</h5>
+                    <input type="text" name="from" id="from" class="form-control datetimepicker" placeholder="Date From" />
+
+
+                </div>
+            </div>
+
+
+
+
+        </div>
+        <div class="col-md-3">
+            <div class="form-group" style="">
+
+
+                <div class="col-md-12">
+                    <h5 class="col-form-label">To</h5>
+
+                    <input type="text" name="to" id="to" class="form-control datetimepicker" placeholder="Date To" />
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <h5> .</h5>
+                    <button class="btn btn-default btn-block" type="submit"> Show Report</button>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+}
+<br/>
+<table class="table table-responsive  table-hover table-bordered" style="font-size:12px" id="tbl">
+    <tr>
+        <th>SL</th>
+
+        <th>Date</th>
+        <th>Sub Head Code</th>
+        <th>
+            Sub Head Name
+        </th>
+        <th style="width:120px">
+            Invoice
+        </th>
+        <th>
+            Date
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalBill)
+        </th>
+        <th>Amount Paid</th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalPaid)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.TotalDue)
+        </th>
+
+        @*<th>
+                @Html.DisplayNameFor(model => model.PaymentMethod)
+            </th>*@
+
+
+
+        <th>Status</th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@i</td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentDate)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.AccSubHead.SubHeadCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccSubHead.SubHeadName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Purchase.Invoice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalBill)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentAmount)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalPaid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalDue)
+            </td>
+            @*<td>
+
+                        @if (item.PaymentMethod == "1")
+                        {@t}
+                    else if (item.PaymentMethod == "2")
+                    { @t2}
+                else
+                { @t3}
+                    </td>*@
+
+
+
+            @if (item.Status == "Paid")
+            {
+                <td style="background-color: #b1f6e8;font-weight:bold;text-transform:uppercase;text-align:center">@item.Status</td>
+            }
+            else if (item.Status == "Due")
+            {
+                <td style="background-color: #fcd1cc;font-weight:bold;text-transform:uppercase;text-align:center">@item.Status</td>
+            }
+            else
+            {
+                <td style="background-color: bisque;font-weight:bold;text-transform:uppercase;text-align:center">@item.Status</td>
+            }
+            <td>
+
+                @*<a href="/payments/Edit/@item.id"> <i class="fa fa-edit"></i></a> | &nbsp;*@
+                <a href="/payments/details/@item.id"> <i class="fa fa-file"></i></a> &nbsp; | &nbsp;
+                <a href="/payments/delete/@item.id"> <i class="tim-icons icon-simple-remove"></i></a>
+            </td>
+        </tr>
+
+        i++;
+    }
+
+</table>
+
+
+
+
+<script>
+
+
+    $("#printNow").click(function () {
+
+        var toPrint = document.getElementById('tbl');
+
+        var popupWin = window.open('', '', 'toolbar=yes,scrollbars=yes,resizable=yes,width=800,height=800,location=no,left=200px');
+        popupWin.document.open();
+        popupWin.document.write('<html><head><title>Payments Report </title><style>h1{font-size:20px} h4{font-size:14px}  .no-print{display: none;}.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{}a[href]: after { content: none!important; } </style > <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />  <link href="/Content/site.css" rel="stylesheet" /></head > ');
+
+
+        popupWin.document.write('<body onload="window.print();" style="padding:5%"> <div >  ');
+
+        popupWin.document.write('<table class="table table-responsive  table-hover table-bordered" style="font-size:12px" id="print">');
+        popupWin.document.write(toPrint.innerHTML);
+        popupWin.document.write('</table>');
+
+
+
+
+        popupWin.document.write('</div></body></html>');
+        popupWin.document.close();
+
+    });
+
+
+    $('#from').datepicker({
+        weekStart: 1,
+        color: 'blue'
+    });
+
+
+    $('#to').datepicker({
+        weekStart: 1,
+        color: 'blue'
+    });
+
+
+    $('#subHead').select2({
+        width: '99%'
+    });
+
+
+    var isOpen = false;
+    $("#searchDiv").hide();
+    $("#search").click(function () {
+
+        if (isOpen) {       
+            $("#searchDiv").hide();
+            isOpen = false;
+        }
+        else
+        {
+            $("#searchDiv").show();
+            isOpen = true;
+        }
+       
+    });
+
+</script>
+
+<style>
+    #searchDiv {
+        background-color: gainsboro;
+        margin-left: 1px;
+        margin-right: 1px;
+    }
+</style>

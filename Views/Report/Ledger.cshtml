@@ -1,0 +1,485 @@
+﻿@using Logistic_Inventory.Models
+@model IEnumerable<Logistic_Inventory.Models.Journal>
+
+@{
+    ViewBag.Title = "Index";
+    var i = 2;
+
+
+    decimal dr = 0;
+    decimal cr = 0;
+
+    var bal = ViewBag.Balance;
+
+    ViewBag.page = "reports";
+
+}
+
+<script src="~/Scripts/select2/3.5/select2.min.js"></script>
+
+<link href="~/Content/select2/3.5/select2.min.css" rel="stylesheet" />
+
+
+
+
+<script src="~/Scripts/cal/bootstrap-datepicker.js"></script>
+
+
+
+
+<link href="~/Content/cal/bootstrap-datepicker.css" rel="stylesheet" />
+
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Ledgers</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")">Reports</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Ledger </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+
+
+                    <button class="btn   btn-default" id="printNow">
+                        <i class="fa fa-print"> Print</i>
+                    </button>
+
+
+                    <button class="btn btn-success  " id="search">
+                        <i class="fa fa-search"></i> Search
+                    </button>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid mt--6" id="InvoiceTbl">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h3 class="mb-0">GENERAL LEDGER</h3>
+                    <h6 style="font-size:16px;font-weight:bold;margin:0;padding:0"> Account :    @ViewBag.head  (@ViewBag.code)  </h6>
+
+                    <h6 style="font-size: 16px;margin: 0;padding: 0">Period &nbsp;&nbsp;&nbsp; : @ViewBag.DateFrom - @ViewBag.DateEnd</h6>
+                </div>
+                <div class="card-body" style="padding-top:10px">
+                    <div>
+
+ 
+                        <div class="row">
+                            <div class="col-md-12">
+                              
+                            </div>
+                        </div>
+
+                        <table class="table    align-items-center table-hover table-bordered">
+
+                            @if (Model != null)
+                            {
+
+
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>SL</th>
+
+                                    <th>Date</th>
+
+                                    <th width="100" >
+                                        Invoice
+                                    </th>
+
+                                    <th>
+                                        Description
+                                    </th>
+
+
+                                    <th style="text-align:center">
+                                        Debit
+                                    </th>
+                                    <th style="text-align:center">
+                                        Credit
+                                    </th>
+
+                                    <th style="text-align:center">Balance</th>
+
+                                </tr>
+
+                            </thead>
+                               
+
+
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+
+                                    <td>@ViewBag.DateFrom</td>
+
+                                    <td></td>
+                                    <td style="text-align:right">
+                                        <p>    Opening Balance</p>
+                                    </td>
+                                    <td style="text-align:center"> </td>
+                                    <td style="text-align:center"> </td>
+                                    <td style="text-align:center">
+                                        <h5>
+
+
+                                            @if (ViewBag.Balance < 0)
+                                            {
+                                                var unsignedBal = Math.Abs(ViewBag.Balance).ToString("F") + "CR";
+                                                @unsignedBal
+                                            }
+                                            else
+                                            {
+                                                @bal.ToString("F")
+                                            }
+                                        </h5>
+                                    </td>
+                                </tr>
+
+
+                                @foreach (var item in Model)
+                                {
+
+
+
+                                dr = dr + item.Debit;
+                                cr = cr + item.Credit;
+
+                                bal = dr - cr;
+
+                                <tr>
+                                    <td>@i </td>
+
+
+                                    <td>@item.Date.Value.ToShortDateString()</td>
+                                    <td>
+                                        @item.Invoice
+                                    </td>
+
+                                    <td>
+
+                                        @item.Title
+                                    </td>
+
+                                    <td style="text-align:center">
+                                        @if (item.Debit != 0)
+                                        {@item.Debit.ToString("F")}
+                                    else
+                                    { <p>-</p>}
+                                    </td>
+
+                                    <td style="text-align:center">
+                                        @if (item.Credit != 0)
+                                        {@item.Credit.ToString("F")}
+                                    else
+                                    { <p>-</p>}
+                                    </td>
+
+                                    <td style="text-align:center">
+                                        <b>
+                                            @if (bal < 0)
+                                            {
+                                                var unsignedBal = Math.Abs(bal).ToString("F") + " CR";
+                                                @unsignedBal
+                                            }
+                                            else
+                                            {
+                                                @bal.ToString("F")
+                                            }
+
+                                        </b>
+                                    </td>
+
+
+
+                                </tr>
+
+
+                                i++;
+
+                                }
+                            </tbody>
+
+
+                            }
+
+
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td colspan="3" style="text-align:center">
+                                    <p style="font-size:20px">    Total</p>
+                                </td>
+                                <td style="text-align:center"><h5><u>@dr.ToString("F")</u></h5></td>
+                                <td style="text-align:center"><h5><u>@cr.ToString("F")</u></h5></td>
+                                <td style="text-align:center"><h5> </h5></td>
+                            </tr>
+                        </tfoot>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+<div class="container col-md-6 mt--6" id="section2">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h3 class="mb-0">Select Account Head &amp; Date Range</h3>
+                </div>
+                <div class="card-body">
+                    
+
+
+                        @using (Html.BeginForm("Ledger", "Report", FormMethod.Get))
+                        {
+
+
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <select   required style="max-width:700px" name="id" id="id">
+
+                                        @foreach (var item in ViewData["subheads"] as List<AccSubHead>)
+                                        {
+                                            var t = item.SubHeadName + " - " + item.SubHeadCode;
+                                            <option value="@item.id">@t </option>
+                                        }
+
+
+                                    </select>
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+
+                                <h4 class="col-form-label" style="text-align:center">Period</h4>
+                                <div class="col-md-12">
+                                    <input type="text" required name="DateFrom" id="DateFrom" class="form-control" autocomplete="off" placeholder="Date From" />
+
+                                    <h5 class="col-form-label" style="text-align:center">To</h5>
+
+                                    <input type="text" required name="DateEnd" id="DateEnd" class="form-control" autocomplete="off" placeholder="Date To" />
+
+                                </div>
+                            </div>
+
+
+
+                            <br />
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <button class="btn btn-default btn-block" type="submit"> Show Report</button>
+
+                                </div>
+
+                            </div>
+                        }
+ 
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<style>
+    .form-control {
+        max-width: 750px;
+    }
+</style>
+ 
+
+
+
+<div class="modal" tabindex="-1" id="ProductModal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">General Ledger</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+
+
+
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <select class="form-control" required style="max-width:700px" name="id" id="id">
+
+                            @foreach (var item in ViewData["subheads"] as List<AccSubHead>)
+                            {
+                                var t = item.SubHeadName + " - " + item.SubHeadCode;
+                                <option value="@item.id">@t </option>
+                            }
+
+
+                        </select>
+                    </div>
+                </div>
+
+
+
+
+                <br />
+
+
+
+                <div class="form-group" style="">
+
+                    <h4 class="col-form-label" style="text-align:center">Period</h4>
+                    <div class="col-md-12">
+                        <input type="text" name="DateFrom" id="DateFrom2" class="form-control datetimepicker" autocomplete="off" placeholder="Date From" />
+
+                        <h5 class="col-form-label" style="text-align:center">To</h5>
+
+                        <input type="text" name="DateEnd" id="DateEnd2" class="form-control datetimepicker" autocomplete="off" placeholder="Date To" />
+
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <button class="btn btn-default btn-block" type="submit"> Show Report</button>
+
+                    </div>
+
+                </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<script>
+       @if (!ViewBag.flag)
+       {
+                  @:$("#InvoiceTbl").hide();
+
+
+       }
+       else
+       {
+               @:$("#InvoiceTbl").show();
+
+    @:$("#section2").hide();
+                
+       }
+
+
+    $('#id').select2({
+        width: '99%'
+
+    });
+
+
+
+    $("#printNow").click(function () {
+
+        var toPrint = document.getElementById('InvoiceTbl');
+
+        var popupWin = window.open('', '', 'toolbar=yes,scrollbars=yes,resizable=yes,width=800,height=800,location=no,left=200px');
+        popupWin.document.open();
+        popupWin.document.write('<html><head><title>General Ledger </title><style>h1{font-size:20px} h4{font-size:14px} .marginl15{margin-left:15px} .no-print{display: none;} .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{padding:4px !important;padding-left:7px !important; }a[href]:after {content: none !important;}      </style> <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />  <link href="/Content/site.css" rel="stylesheet"/></head>');
+
+
+        popupWin.document.write('<body onload="window.print();" style="padding:5%"> <div >  ');
+        popupWin.document.write('<img src="/Content/img/logo/banner_500.png" width="420" /> ');
+
+        popupWin.document.write(toPrint.innerHTML);
+        popupWin.document.write('</table>');
+
+
+
+
+        popupWin.document.write('</div></body></html>');
+        popupWin.document.close();
+
+    });
+
+    $('#DateFrom').datepicker({
+        weekStart: 1,
+        color: 'red'
+    });
+
+
+    $('#DateEnd').datepicker({
+        weekStart: 1,
+        color: 'red'
+    });
+
+    $('#DateFrom2').datepicker({
+        weekStart: 1,
+        color: 'red'
+    });
+
+
+    $('#DateEnd2').datepicker({
+        weekStart: 1,
+        color: 'red'
+    });
+    $("#search").click(
+        function () {
+            $("#InvoiceTbl").hide();
+           $("#section2").show();
+        }
+    );
+
+</script>
+
+<style>
+    .datepicker dropdown-menu {
+        z-index: 1000
+    }
+
+    .datepicker {
+        z-index: 1000;
+    }
+</style>

@@ -1,0 +1,477 @@
+﻿@using Logistic_Inventory.Models
+@model IEnumerable<Logistic_Inventory.Models.Purchase>
+
+@{
+    ViewBag.Title = "Index";
+    var i = 1;
+
+    var t1 = " ( + ";
+    var t2 = " Products More ) ";
+
+    Int64 totalPayable = 0;
+    Int64 totalPaid = 0;
+
+    var flag = false;
+
+    var tempProject = "";
+    var tempProject2 = "";
+
+    var x = 1;
+
+    ViewBag.page = "reports";
+}
+
+
+<section id="section1">
+
+
+
+
+    <div class="row center">
+
+        <div class="col-md-8">
+            <h1><i class="tim-icons icon-money-coins"></i>   Report</h1>
+        </div>
+
+
+        <div class="col-md-4 hideSm" style="text-align:right">
+            <button class="btn btn-round btn-info" id="printNow">
+                <i class="fa fa-print"> Print</i>
+            </button>
+
+
+            <button class="btn btn-default btn-round" id="modal" data-toggle="modal" data-target="#ProductModal">
+                <i class="tim-icons icon-zoom-split"></i> Search
+            </button>
+
+
+        </div>
+    </div>
+
+
+    <div id="InvoiceTbl">
+        <h4 style="text-align:center;text-transform:uppercase">ProjectWise Collection Report</h4>
+
+        <table class="table table-responsive  table-hover table-bordered" style="font-size:12px">
+
+            @if (Model != null)
+            {
+
+                foreach (var item in Model)
+                {
+
+                    if (item.Projects.ProjectName != tempProject)
+                    {
+                        tempProject = item.Projects.ProjectName;
+
+                        flag = false;
+                        x = 0;
+                        <tr>
+                            <td colspan="10">
+                                <p style="font-size:18px;font-weight:bold">     @tempProject  ( Code : @item.Projects.ProjectCode )</p>
+                                @*<p style="font-size:15px">Branch : @item.Branch.BranchName</p>*@
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>SL</th>
+
+
+                            <th>
+                                Acc. Head
+                            </th>
+
+
+                            <th>
+                                Products
+                            </th>
+
+                            <th>
+                                Provider
+                            </th>
+
+
+                            <th style="width:110px">
+                                Invoice
+                            </th>
+
+
+                            <th>
+                                Quantity
+                            </th>
+
+
+                            <th>
+                                Unit Price
+                            </th>
+
+
+                            <th>
+                                Net Total
+                            </th>
+
+                            <th>
+                                Total Payable
+                            </th>
+
+                            
+
+                        </tr>
+
+
+
+                    }
+                    else
+                    {
+                        x++;
+                    }
+
+
+                    <tr>
+                        <td>@i </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AccSubHead.SubHeadName)
+                        </td>
+
+
+                        <td>
+
+                            @Html.DisplayFor(modelItem => item.Products.ProductName)  @if (item.ProductsCount > 1)
+
+                            {
+                                var tot = item.ProductsCount - 1;
+                                <p class='text-warning'>@t1 @tot @t2 </p>}
+
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Providers.CompanyName)
+                        </td>
+
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Invoice)
+                        </td>
+
+
+                        <td>
+                            @if (item.ProductsCount > 1)
+                            {
+                                var q = item.ProductsListQuantity.Replace(",", " + ") + " " + item.Units.UnitShortName;
+
+
+                                @q
+                            }
+                            else
+                            {
+                                var qq = Convert.ToInt16(item.PurchaseQuantity) + " " + item.Units.UnitShortName;
+                                @qq
+                            }
+                        </td>
+
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UnitPrice)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NetTotal)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NetPayable)
+                        </td>
+
+
+
+          
+
+
+
+                    </tr>
+
+
+                    totalPayable += (Int64)item.NetPayable;
+                    //totalPaid += item.TotalPaid;
+                    i++;
+
+
+                }
+            }
+
+
+            <tr>
+                <td></td>
+                <td colspan="7" style="text-align:center">
+                    <p style="font-size:20px">    Total</p>
+                </td>
+                <td><h4><u>@totalPayable</u></h4></td>
+     
+            </tr>
+
+        </table>
+    </div>
+</section>
+<style>
+    .form-control {
+        max-width: 750px;
+    }
+</style>
+<div class="row" id="section2">
+    <div class="col-md-8 ml-auto mr-auto">
+        <div class="card card-upgrade">
+
+            <div class="card-body">
+                <div class="card card-user">
+                    <div class="card-body">
+                        <p class="card-text">
+                        </p><div class="author">
+                            <div class="block block-one"></div>
+                            <div class="block block-two"></div>
+                            <div class="block block-three"></div>
+                            <div class="block block-four"></div>
+                            <a href="javascript:void(0)">
+
+                                <h2 class="title">Project Wise Report</h2>
+                            </a>
+                            <p class="description">
+                                Select Project To Proceed
+                            </p>
+                        </div>
+                        <p></p>
+                        <div class="card-description">
+
+
+                            @using (Html.BeginForm())
+                            {
+
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <select class="form-control" required style="max-width:700px" name="id" id="id">
+                                            <option value="0" selected> View Report Of All Project</option>
+
+                                            @foreach (var item in ViewData["projects"] as List<Projects>)
+                                            {
+
+                                                <option value="@item.id">@item.ProjectName</option>
+                                            }
+
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <br />
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <button class="btn btn-default btn-block" type="submit"> Show Report</button>
+
+                                    </div>
+
+                                </div>
+                            }
+
+                        </div>
+
+                        <div class="card-footer">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="ProductModal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog  " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+       
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="col-md-12 ml-auto mr-auto">
+                    <div class="card card-upgrade">
+
+                        <div class="card-body">
+                            <div class="card card-user">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                    </p><div class="author">
+                                        <div class="block block-one"></div>
+                                        <div class="block block-two"></div>
+                                        <div class="block block-three"></div>
+                                        <div class="block block-four"></div>
+
+                                        <p class="description">
+                                            Select Project To Proceed
+                                        </p>
+                                    </div>
+                                    <p></p>
+                                    <div class="card-description">
+
+
+
+
+
+                                        @using (Html.BeginForm())
+                                        {
+
+
+
+                                            <div class="form-group">
+                                                <div class="">
+                                                    <select class="form-control" required style="max-width:700px" name="id" id="id">
+                                                       
+
+                                                        @foreach (var item in ViewData["projects"] as List<Projects>)
+                                                        {
+
+                                                            <option value="@item.id">@item.ProjectName</option>
+                                                        }
+
+
+                                                    </select>
+                                                </div>
+                                            </div>
+
+
+
+
+                                            <br />
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <button class="btn btn-default btn-block" type="submit"> Show Report</button>
+
+                                                </div>
+
+                                            </div>
+                                        }
+
+                                    </div>
+
+                                    <div class="card-footer">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="fixed-plugin hide">
+    <div class="dropdown show-dropdown">
+        <a href="#" data-toggle="dropdown">
+            <i class="fa fa-angle-double-left  fa-2x" style="color:white;font-weight:600"> </i>
+        </a>
+        <ul class="dropdown-menu">
+            <li class="header-title"> Additional Options</li>
+
+            <li class="adjustments-line text-center color-change">
+                <button class="btn btn-default btn-round" id="modal" data-toggle="modal" data-target="#ProductModal">
+                    <i class="tim-icons icon-zoom-split"></i> Search
+                </button>
+            </li>
+
+            <li></li>
+
+        </ul>
+    </div>
+</div>
+
+
+<script>
+
+    var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+
+    if (width < 900) {
+        $("table").addClass("table-responsive");
+    }
+
+  
+</script>
+
+
+
+<style>
+       .card-body
+        {
+            padding:3px;
+        }
+        .card{
+            margin-bottom:5px;
+        }
+
+        .modal-body 
+        {
+            padding:0;
+        }
+
+        .card .card-body
+        {
+            padding:0;
+        }
+</style>
+
+<script>
+       @if (ViewBag.flag)
+       {
+           @:$("#section1").show();
+           @:$("#section2").hide();
+       }
+       else
+       {
+             @:$("#section1").hide();
+           @:$("#section2").show();
+
+       }
+
+
+    $("#printNow").click(function () {
+
+        var toPrint = document.getElementById('InvoiceTbl');
+
+        var popupWin = window.open('', '', 'toolbar=yes,scrollbars=yes,resizable=yes,width=800,height=800,location=no,left=200px');
+        popupWin.document.open();
+        popupWin.document.write('<html><head><title>Attandence Report </title><style>h1{font-size:20px} h4{font-size:14px}  .no-print{display: none;} .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{ }a[href]:after {content: none !important;}      </style> <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />  <link href="/Content/site.css" rel="stylesheet"/></head>');
+
+
+        popupWin.document.write('<body onload="window.print();" style="padding:5%"> <div >  ');
+        popupWin.document.write('<img src="/Content/img/logo/banner_500.png" width="420" /> ');
+    
+        popupWin.document.write('<table class="table table-responsive  table-hover table-bordered" style="font-size:12px" id="print">');
+        popupWin.document.write(toPrint.innerHTML);
+        popupWin.document.write('</table>');
+
+
+
+
+        popupWin.document.write('</div></body></html>');
+        popupWin.document.close();
+
+    });
+
+</script>

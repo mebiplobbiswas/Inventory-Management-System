@@ -1,0 +1,493 @@
+﻿@model IEnumerable<Logistic_Inventory.Models.Journal>
+
+
+@using Logistic_Inventory.Models;
+@{
+    ViewBag.Title = "Receipt_Payments";
+    decimal debit_total = 0;
+    decimal credit_total = 0;
+
+    ViewBag.page = "reports";
+
+
+    var now = DateTime.UtcNow.ToShortDateString();
+
+    var firstDay = "01/01/" + DateTime.UtcNow.ToString("yyyy");
+    if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+
+            if (item.Credit > 0)
+            {
+
+                credit_total += item.Credit;
+
+            }
+
+
+        }
+
+
+    }
+
+
+
+}
+
+<link href="~/Content/cal/bootstrap-datepicker.css" rel="stylesheet" />
+
+
+
+
+
+<script src="~/Scripts/cal/bootstrap-datepicker.js"></script>
+
+
+
+@if (ViewBag.firstRun)
+{
+
+    <div class="header bg-primary-grey pb-6">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row align-items-center py-4">
+                    <div class="col-lg-6 col-7">
+                        <h6 class="h2 text-white d-inline-block mb-0"> Receipt &amp; Payments</h6>
+                        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                                <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Content("~/home")">Reports</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Receipt &amp; Payments</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="col-lg-6 col-5 text-right">
+
+                        <button class="btn btn-primary" id="modal" data-toggle="modal" data-target="#ProductModal">
+                            <i class="fa fa-search"></i> Search
+                        </button>
+
+
+                        <button class="btn  btn-default" id="printNow">
+                            <i class="fa fa-print"> </i> Print
+                        </button>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+}
+
+
+
+<div class="col-md-6 ml-auto mr-auto" id="searchBody">
+    <div class="card card-upgrade">
+
+        <div class="card-body">
+            <div class="card card-user">
+                <div class="card-body">
+                    <p class="card-text">
+                    </p><div class="author">
+                        <div class="block block-one"></div>
+                        <div class="block block-two"></div>
+                        <div class="block block-three"></div>
+                        <div class="block block-four"></div>
+
+                        <h2 class="description">
+                            Receipts &amp; Payments Report
+                        </h2>
+                    </div>
+                    <p></p>
+                    <div class="card-description">
+
+
+
+
+
+                        @using (Html.BeginForm())
+                        {
+
+
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+
+                                    <label>Date From</label>
+                                    <input class="form-control text-box single-line" placeholder="Date From" id="from" name="from" type="text" required value="@firstDay" autocomplete="off">
+
+
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+
+                                    <label>Date To</label>
+                                    <input class="form-control text-box single-line" placeholder="Date From" id="to" name="to" required type="text" value="@now" autocomplete="off">
+
+
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <button class="btn btn-default btn-block" type="submit"> Show Report</button>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+
+                    <div class="card-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@if (Model != null && ViewBag.firstRun)
+{
+
+
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+        <div class="row justify-content-center">
+            <div class=" col ">
+                <div class="card">
+                    <div class="card-body" id="print2">
+                        <div class="row">
+
+                            <div>
+                                <div style="">
+                                    <div style="">
+                                        <img src="~/Content/img/logo/banner_500.png" style="height:60px" />
+
+
+                                    </div>
+
+
+                                    <br />
+                                    <h4 style="text-transform:uppercase;padding:0;margin:0;color:black">
+                                        <b> Receipts &amp; Payments  </b>
+
+
+                                    </h4>
+
+                                    <h4 style="font-family: monospace;font-size: 16px;padding:0;margin:0;color:black;margin-bottom:10px ">
+                                        <b>For the period from @ViewBag.from ending on @ViewBag.to </b>
+
+                                    </h4>
+                                   
+                                </div>
+                                
+                            </div>
+
+                        </div>
+                        <div class="row">
+
+
+                            <div class="col-md-6 border-1px" style="padding:0">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <b>RECEIPTS</b>
+                                        <b style="float:right">AMOUNT</b>
+                                    </li>
+
+                                    @foreach (var item in Model)
+                                    {
+
+                                        if (item.Debit > 0)
+                                        {
+
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                                                <span title="Invoice : @item.Invoice - Date : @item.Date_updated.Value.ToShortDateString()">@item.Title</span>
+
+                                                <span style="float:right">@item.Debit.ToString("0.00")</span>
+
+                                            </li>
+
+
+                                            debit_total += item.Debit;
+
+                                        }
+
+                                    }
+
+
+                                    @if (ViewBag.receiptFlag == true)
+                                    {
+                                        int i = ViewBag.diff;
+
+                                        for (int j = 0; j < i; j++)
+                                        {
+                                <li class="list-group-item">
+
+
+                                    <span style="float:right">      <b style="float:right">-</b> </span>
+                              
+
+                                </li>
+                                        }
+                                    }
+
+
+                                    @if (debit_total < credit_total)
+                                    {
+                                        var balance = credit_total - debit_total;
+                                        var total = debit_total + balance;
+
+
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <b>Balance d/d</b>
+                                            <b style="float:right">@balance.ToString("0.00")</b>
+                                        </li>
+
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <b>Total</b>
+                                            <b class="underline" style="float:right">@total.ToString("0.00")</b>
+                                        </li>
+
+
+
+
+                                    }
+                                    else
+                                    {
+
+
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <b>Total</b>
+                                            <b class="underline" style="float:right">@debit_total.ToString("0.00")</b>
+                                        </li>
+
+
+                                    }
+
+
+
+
+                                </ul>
+                            </div>
+                            <div class="col-md-6 border-1px" style="padding:0">
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <b>PAYMENTS</b>
+                                        <b class="" style="float:right">AMOUNT</b>
+                                    </li>
+
+                                    @foreach (var item in Model)
+                                    {
+
+
+                                        if (item.Credit > 0)
+                                        {
+
+
+
+
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span title="Invoice : @item.Invoice - Date : @item.Date_updated.Value.ToShortDateString()">@item.Title</span>
+
+                                                <span style="float:right">@item.Credit.ToString("0.00")</span>
+
+
+                                            </li>
+
+                                            // credit_total += item.Amount;
+
+                                        }
+
+
+
+                                    }
+
+
+                                    @if (ViewBag.paymentFlag == true)
+                                    {
+                                        int i = ViewBag.diff;
+
+                                        for (int j = 0; j < i; j++)
+                                        {
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                                                <p> </p>
+
+                                                <span style="float:right"> </span>
+
+                                            </li>
+                                        }
+                                    }
+
+
+
+                                    @if (debit_total < credit_total)
+                                    {
+                                        var balance = credit_total - debit_total;
+                                        var total = credit_total + balance;
+
+
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <b>Balance d/d</b>
+                                            <b style="float:right">@balance.ToString("0.00")</b>
+                                        </li>
+
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <b>Total</b>
+                                            <b class="underline" style="float:right">@total.ToString("0.00")</b>
+                                        </li>
+
+
+                                    }
+                                    else
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <b>Total</b>
+                                            <b class="underline" style="float:right">@credit_total.ToString("0.00")</b>
+                                        </li>
+
+
+                                    }
+
+
+                                </ul>
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+}
+
+
+
+<style>
+
+    body {
+        background-color: white !important;
+    }
+
+    .border-1px {
+        border: 1px solid grey;
+        padding: 0;
+        margin: 0;
+    }
+
+    /*.list-group-item { border:none; }*/
+    .right {
+        float: right;
+    }
+
+     
+    .underline {
+        text-decoration: underline;
+        border-bottom: 1px solid black;
+    }
+
+
+    li.borderless {
+        border-top: 0 none;
+    }
+     .list-group-item
+     {
+         color:black;
+     }
+
+     .block
+     {
+         color:black;
+     }
+</style>
+
+<script>
+       @if (!ViewBag.firstRun || Model != null )
+    {
+          @:$("#searchBody").hide();
+    }else
+       {
+           @:$("#searchBody").show();
+       }
+
+
+
+         $('#from').datepicker({
+       weekStart: 1,
+        color: 'black',
+        format: 'dd/mm/yyyy'
+    });
+
+
+    $('#to').datepicker({
+        weekStart: 1,
+
+        format: 'dd/mm/yyyy'
+    });
+
+
+          $('#modal').click(function () {
+
+              $("#content,#tbl,#print2").hide();
+        $("#searchBody").show();
+        
+
+          });
+
+
+
+
+
+            $("#printNow").click(function () {
+
+        var toPrint = document.getElementById('print2');
+
+        var popupWin = window.open('', '', 'toolbar=yes,scrollbars=yes,resizable=yes,width=800,height=800,location=no,left=200px');
+        popupWin.document.open();
+        popupWin.document.write('<html><head><title>Receipt & Payment Report </title><style>.col-md-6{padding:0}  .list-group-item  { border:none; } li.borderless { border-top: 0 none;border-bottom:0 none; } .no-border{ border:none; } h1{font-size:20px} h4{font-size:14px}  .no-print{display: none;} .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{ }a[href]:after {content: none !important;}      </style><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">  <link href="/Content/site2.css" rel="stylesheet"/></head>');
+
+        popupWin.document.write('<body onload="window.print(); " style="padding:5%"> <div >  ');
+
+        popupWin.document.write('<table class="table table-responsive  table-hover table-bordered" style="font-size:12px" id="print">');
+        popupWin.document.write(toPrint.innerHTML);
+        popupWin.document.write('</table>');
+
+
+
+
+        popupWin.document.write('</div></body></html>');
+        popupWin.document.close();
+
+    });
+
+
+</script>

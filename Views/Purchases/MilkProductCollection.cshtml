@@ -1,0 +1,1907 @@
+﻿@model Logistic_Inventory.Models.Purchase
+
+<script src="~/Scripts/select2/3.5/select2.min.js"></script>
+
+<link href="~/Content/select2/3.5/select2.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/cal/bootstrap-datepicker.js"></script>
+
+
+
+
+<link href="~/Content/cal/bootstrap-datepicker.css" rel="stylesheet" />
+@{ 
+    ViewBag.page = "production";
+}
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"><i class="fa fa-plus-circle"></i> Milk Production</h6>
+                    @*<nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/products")">Products</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Milk Production</li>
+                        </ol>
+                    </nav>*@
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+
+                    <a class="btn btn-default btn-sm" href="@Url.Content("~/Purchases/")" style="color:white"><i class="ni ni-bag-17"></i> &nbsp; Records</a>
+
+                    <a class="btn btn-default btn-sm" href="@Url.Content("~/Purchases/create")" style="color:white"><i class="ni ni-delivery-fast"></i> &nbsp;Product Production </a>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Page content -->
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                
+                <div class="card-body">
+                    <div class="">
+                        <form action="/Purchases/milkproductcollection" method="post" id="productForm">
+                            @Html.AntiForgeryToken()
+
+
+
+
+                            <div class="row">
+                               
+
+                            </div>
+
+                            
+
+
+                            <div class="row">
+
+                                <div class="col-md-3" style="padding:0">
+
+                                    <div class="card">
+
+                                        <div class="card-body">
+
+
+                                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                            <input type="hidden" id="PriceList" name="PriceList" />
+
+                                            @if (ViewBag.error != null)
+                                            {
+                                                <div class="alert alert-danger"> @ViewBag.error</div>
+                                            }
+
+
+                                            <div class="row" style="padding-right:15px">
+                                                <div class="col-md-12">
+                                                    <div >
+                                                        <label>Purchase Date</label>
+                                                        <input class="form-control" placeholder="Set Date" required id="PurchaseDate" name="PurchaseDate"
+                                                               autocomplete="off" type="text" value="@ViewBag.today">
+                                                        @Html.ValidationMessageFor(model => model.PurchaseDate, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row" style="padding-right:15px">
+                                                <div class="col-md-12">
+                                                    <div class="form-group" style="display:none">
+                                                        <label for="exampleInputEmail1">Branch</label>
+                                                        @Html.DropDownList("BranchID", null, htmlAttributes: new { @class = "form-control" })
+                                                        @Html.ValidationMessageFor(model => model.BranchID, "", new { @class = "text-danger" })
+                                                    </div>
+
+                                                    <div >
+                                                        <label>Invoice</label>
+                                                        <input class="form-control" data-val="true" data-val-required="The Invoice field is required."
+                                                               id="Invoice" name="Invoice" type="text" value="@ViewBag.invoiceNone" readonly="readonly">
+
+
+                                                        @Html.ValidationMessageFor(model => model.Invoice, "", new { @class = "text-danger" })
+
+                                                    </div>
+                                                    <div class="form-group hide">
+                                                        <label>Projects</label>
+                                                        <br />
+                                                        @Html.DropDownList("ProjectsID", null, htmlAttributes: new { @class = "form-control" })
+                                                        @Html.ValidationMessageFor(model => model.ProjectsID, "", new { @class = "text-danger" })
+                                                    </div>
+
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="row hide">
+
+
+
+
+                                                <div class="col-md-3 pr-md-1 hide">
+                                                    <div class="form-group">
+                                                        <label>Purchase Code</label>
+                                                        @Html.EditorFor(model => model.PurchaseCode, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                                        @Html.ValidationMessageFor(model => model.PurchaseCode, "", new { @class = "text-danger" })
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+
+
+
+
+
+
+
+
+                                        </div>
+
+                                    </div>
+
+
+
+                                    <div class="card" style="padding:0">
+
+                                        <div class="card-body">
+                                            <div class="row" style="padding-right:15px">
+                                                <div class="col-md-12">
+
+
+                                                    <div class="form-group">
+                                                        <label>Product Categories</label>
+                                                        <select class="" id="pCategory">
+                                                            @foreach (var item in ViewData["ProductCategories"] as List<Logistic_Inventory.Models.SubCategory>)
+                                                            {
+                                                                <option value="@item.id">@item.SubCatName</option>
+                                                            }
+                                                        </select>
+
+                                                        <select class="" id="pCategory2">
+                                                            @foreach (var item in ViewData["ProductCategories"] as List<Logistic_Inventory.Models.SubCategory>)
+                                                            {
+                                                                <option value="@item.id">@item.SubCatName</option>
+                                                            }
+                                                        </select>
+
+
+                                                    </div>
+                                                </div>
+
+
+
+
+                                            </div>
+
+                                            <div class="row" style="padding-right:15px">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label>Available Products</label>
+                                                        <br />
+                                                        <select class="" name="ProductsID" id="ProductsID">
+                                                        </select>
+
+
+
+                                                        @*@Html.DropDownList("ProductsID", null, htmlAttributes: new { @class = "form-control" })*@
+                                                        @Html.ValidationMessageFor(model => model.ProductsID, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row" style="padding-right:15px">
+                                                <div class="col-md-12" id="cow_div">
+
+
+                                                    <div class="form-group hide">
+                                                        <label> Cow</label>
+                                                        <br />
+
+                                                        <select class="form-control" name="CowID" id="CowID">
+                                                            <option value="0">Select Cow</option>
+                                                            @*@foreach (var item in ViewData["CowID"] as List<Logistic_Inventory.Models.Cows>)
+                                            {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }*@
+
+                                                        </select>
+
+
+                                                    </div>
+
+
+                                                    <div class="form-group">
+                                                        <label>SELECT COW</label>
+                                                        <br />
+
+                                                        <input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="select2-input" id="CowSelect" tabindex="0" placeholder="Select Cows" style="width:100%" />
+
+                                                        <p class="btn btn-success btn-sm hide" id="btnSelected">Get Selected</p>
+                                                        <p class="btn btn-success btn-sm hide" id="btnData">Get Selected Data</p>
+                                                        <p class="text-danger text-right right" id="btnClear">Clear All</p>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+
+
+
+                                    <div id="pro">
+
+
+                                    </div>
+
+
+
+
+
+
+
+
+
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4>SELECTED PRODUCTS</h4>
+
+                                            <table class="table table-responsive  align-items-center table-hover table-bordered" id="table" style="font-weight:bold">
+                                                <thead class="thead-light">
+                                                    <tr class="th_bg">
+                                                        <th>SL</th>
+                                                        <th class="width-110">
+                                                            Products
+                                                        </th>
+                                                        <th>
+                                                            Rate
+                                                        </th>
+
+
+
+                                                        <th style="width:60px">Qty</th>
+                                                        <th>
+                                                            Total
+                                                        </th>
+
+
+                                                    </tr>
+
+                                                    <tr>
+                                                    </tr>
+
+                                                    </thead>
+</table>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="col-md-3" style="padding:0">
+                                    <div class="card card-user">
+                                        <div class="card-body">
+                                            <p class="card-text">
+
+
+                                                <div class="card-description">
+
+
+                                                    <div class="form-group hide">
+                                                        @Html.LabelFor(model => model.ComissionType, htmlAttributes: new { @class = "control-label col-md-8" })
+                                                        <div class="col-md-12">
+
+                                                            <input type="radio" name="ComissionType" id="ComissionTypeFlat" value="Flat" checked="checked"> Flat
+                                                            &nbsp;&nbsp;&nbsp;<input type="radio" id="ComissionTypePercent" name="ComissionType" value="Percent"> Percent(%)
+
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="form-group hide">
+                                                        <label class="control-label col-md-8" for="Comission">Comission</label> <span id="comm"></span>
+                                                        <div class="col-md-12">
+                                                            <input class="form-control text-box single-line" data-val="true" data-val-number="The field Comission must be a number."
+                                                                   data-val-required="The Comission field is required." id="Comission" name="Comission" step="0.01" min="0" type="number" value="">
+                                                            @Html.ValidationMessageFor(model => model.Comission, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        @Html.LabelFor(model => model.NetTotal, htmlAttributes: new { @class = "control-label col-md-8" })
+                                                        <div class="col-md-12">
+                                                            <input readonly="readonly" class="form-control text-box single-line" data-val="true" data-val-number="The field Net Total must be a number." data-val-required="The Net Total field is required." id="NetTotal" name="NetTotal" type="number" value="">
+                                                            @Html.ValidationMessageFor(model => model.NetTotal, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group hide">
+                                                        @Html.LabelFor(model => model.ServiceCharge, htmlAttributes: new { @class = "control-label col-md-8" })
+                                                        <div class="col-md-12">
+                                                            <input class="form-control text-box single-line" data-val="true" data-val-number="The field Net Total must be a number." data-val-required="The Net Total field is required." id="ServiceCharge" name="ServiceCharge" type="number" value="">
+                                                            @Html.ValidationMessageFor(model => model.ServiceCharge, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-8" for="PurchaseQuantity">VAT (%) <b><span id="TotalVat"></span></b></label>
+                                                        <div class="col-md-12">
+
+                                                            <input type="radio" class="hide" name="VatType" id="VatTypePlus" value="plus" checked="checked">  @*Add (+)*@
+                                                            @*&nbsp;&nbsp;&nbsp;<input type="radio" name="VatType" id="VatTypeMinus" value="minus">  Subtract (-)*@
+
+                                                            <input class="form-control text-box single-line" style="margin-top:10px" data-val="true" data-val-number="The field Net Total must be a number." data-val-required="The Net Total field is required." id="VAT" name="VAT" type="number" value="">
+                                                            @Html.ValidationMessageFor(model => model.VAT, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        @Html.LabelFor(model => model.NetPayable, htmlAttributes: new { @class = "control-label col-md-8" })
+                                                        <div class="col-md-12">
+                                                            <input readonly="readonly" class="form-control text-box single-line" data-val="true" data-val-number="The field Net Total must be a number." data-val-required="The Net Total field is required." id="NetPayable" name="NetPayable" type="number" value="">
+                                                            @Html.ValidationMessageFor(model => model.NetPayable, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group" style="padding-left:15px">
+                                                        <label>Collection Shift/Timing</label>
+                                                        <br />
+
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <input type="radio" name="CollectionShift" checked="checked" value="None"> None
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <input type="radio" name="CollectionShift" value="Morning"> Morning
+                                                            </div>
+
+                                                        </div>
+
+
+                                                        <div class="row">
+                                                            <div class="col-md-6" style="padding-right:0">
+                                                                <input type="radio" name="CollectionShift" value="AfterNoon"> AfterNoon
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <input type="radio" name="CollectionShift" value="Evening"> Evening
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+
+
+
+                                                    <div class="form-group" style="padding-left:15px">
+                                                        <label>Factory/Provider/Supplier</label>
+                                                        @Html.DropDownList("ProvidersID", null, htmlAttributes: new { @class = "" })
+                                                        @Html.ValidationMessageFor(model => model.ProvidersID, "", new { @class = "text-danger" })
+                                                    </div>
+
+
+                                                    <div class="row" style="display:none">
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label> Account Head</label>
+
+                                                                @Html.DropDownList("AccSubHeadID", null, htmlAttributes: new { @class = "form-control", @readonly = "Readonly" })
+                                                                @Html.ValidationMessageFor(model => model.AccSubHeadID, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-group" style="margin-left:50px">
+                                                                <label>Account Sub Head</label>
+
+                                                                @Html.DropDownList("AccSubHeadID2", null, htmlAttributes: new { @class = "form-control" })
+                                                                @Html.ValidationMessageFor(model => model.AccSubHeadID2, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+
+
+
+                                                    </div>
+
+
+                                                    <div class="form-group" style="padding-left:15px">
+                                                        <label>Godown</label>
+                                                        <br />
+                                                        @Html.DropDownList("GodownID", null, htmlAttributes: new { @class = "" })
+                                                        @Html.ValidationMessageFor(model => model.GodownID, "", new { @class = "text-danger" })
+                                                    </div>
+
+
+
+
+
+                                                    <div class="form-group" style="padding-left:15px">
+                                                        <label>Comments</label>
+                                                        @Html.EditorFor(model => model.Comments, new { htmlAttributes = new { @class = "form-control" } })
+                                                        @Html.ValidationMessageFor(model => model.Comments, "", new { @class = "text-danger" })
+                                                    </div>
+
+
+
+
+                                                    <input type="hidden" name="Year" value="0" />
+                                                    <input type="hidden" name="UnitsID" id="UnitsID" value="0" />
+
+                                                    <input type="hidden" name="Month" value="0" />
+                                                    <input type="hidden" name="VatAmount" id="VatAmount" value="0" />
+                                                    <input type="hidden" name="ProductsList" id="ProductsList" />
+                                                    <input type="hidden" name="CowsList" id="CowsList" />
+
+                                                    <input type="hidden" name="ProductsCount" id="ProductsCount" value="1" />
+
+                                                    <input type="hidden" name="ProductsListQuantity" id="ProductsListQuantity" value="0" />
+
+                                                    <input type="hidden" name="ProductsListTotal" id="ProductsListTotal" value="0" />
+                                                    <input type="hidden" name="ProductsListNames" id="ProductsListNames" value="" />
+
+                                                </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            @*<a class="btn btn-dark" id="AddProduct" style="color:white;width:100%"><i class="fa fa-plus"></i>&nbsp; Add More Products</a>*@
+
+
+                                            <button type="submit" style="width:100%" class="btn btn-round btn-default" id="submit"> Submit </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+ 
+
+
+<button type="button" class="btn btn-default" id="modal" data-toggle="modal" data-target="#ProductModal" style="display:none">
+    Launch Product Picker
+</button>
+
+
+ 
+
+
+<style>
+    #UnitPrice, #Total, #NetTotal, #NetPayable {
+        border: 2px solid green;
+        color: green;
+        font-weight: bold;
+        background: white;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    #PurchaseCode, #PurchaseDate, #Invoice {
+        font-family: monospace;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .col-md-12 {
+        padding-right: 0px;
+    }
+
+   /* .card {
+        margin-bottom: 10px;
+    }
+
+    .width-90 {
+        width: 90px;
+    }
+
+    .width-70 {
+        width: 70px;
+    }
+
+    .width-100 {
+        width: 94%;
+    }
+
+    .width-110 {
+        width: 150px;
+    }
+
+    .white-content .table > tbody > tr > td, th {
+        padding: 0px;
+    }
+
+    .inp {
+        margin: 3px;
+        border: 1px solid #adb5bd;
+    }*/
+    .form-control {
+        border-radius: unset;
+    }
+
+    .width-80 {
+        width: 100px;
+    }
+
+
+    .card .table td {
+        padding: 4px;
+    }
+
+    .card .table th {
+        padding: 4px;
+        text-align: center;
+    }
+
+    .inp {
+        padding: 5px !important;
+        height: 30px;
+        font-size: 12px;
+    }
+
+
+
+    .margin-2 {
+        margin-left: 2px;
+        margin-right: 2px;
+    }
+
+    .center {
+        text-align: center;
+        margin: 0 auto;
+    }
+
+
+    .list-group-item {
+        padding-top: 7px;
+        padding-bottom: 10px;
+        font-weight: bold;
+    }
+
+    input {
+        font-family: inherit;
+    }
+
+    #RemoveSelected {
+        float: right;
+        padding: 4px;
+        padding-right: 8px;
+        padding-left: 8px;
+        color: white;
+        font-size: 12px;
+    }
+
+    .greyBold {
+        background-color: #ededed;
+        font-weight: bold;
+    }
+
+    #btnClear:hover {
+        font-weight: bold;
+        text-decoration: underline
+    }
+</style>
+
+
+
+
+<script>
+
+    var products = [];
+    var productsTotal = [];
+    var cowsList = [];
+    var cowsListNames = [];
+    var productsQuantity = [];
+    var PriceList = [];
+    var TotalList = [];
+    var text = "";
+    var productCount = 0;
+    var pTotal = 0;
+
+    var productsNetTotal = 0;
+    var val = $('#ProductsID').val();
+
+    var currentCatId = 0;
+
+    var currentCowSelected = "0";
+    var currentCowSelectedText = "";
+    //Adding products ID to the list
+    //products.push(val);
+
+    var milkProductSelected = false;
+    var modalOpened = true;
+
+        var totalProductCount = 0;
+        var countIndex = 0;
+
+    productsQuantity.push(1);
+
+
+        var totalAmount = 0;
+
+
+        var pUrl2 = "/Api/GetProductsByCategory?catId=" + $('#pCategory').val();
+
+        $.get(pUrl2, function (data) {
+            console.log(data.length);
+
+            $("#ProductsID").empty();
+            $("#Products2").empty();
+
+            $.each(data, function (key, value) {
+
+
+                //$("#ProductsID").select2('data', { id: value.id, text: value.ProductName  });
+
+
+
+                if (key == 0) {
+                    $("#ProductsID").append('<option value=' + value.id + ' selected="selected">' + value.ProductName + '</option>');
+                    $("#Products2").append('<option value=' + value.id + ' selected="selected">' + value.ProductName + '</option>');
+
+
+                    console.log("#####");
+                    var url = "/Purchases/getProductPrice/" + value.id;
+
+                    $.get(url, function (data) {
+                        var price = parseInt(data["price"]);
+                        var name = data["name"];
+                        var unit = data["unit"];
+                        var catId = parseInt(data["categoryId"]);
+                        console.log("********");
+
+                        currentCatId = catId;
+                        var total = price * parseInt($("#moreProductQuantity").val());
+
+                        PriceList[0] = price;
+                        totalAmount = total;
+                        $("#UnitPriceP2").val(price);
+                        $("#TotalP2").val(total);
+
+
+                    });
+
+
+                }
+                else
+                {
+                    $("#ProductsID").append('<option value=' + value.id + '  >' + value.ProductName + '</option>');
+                    $("#Products2").append('<option value=' + value.id + '  >' + value.ProductName + '</option>');
+
+
+
+                }
+
+
+                var pid = data["id"];
+                var name = data["ProductName"];
+                console.log(key);
+                console.log(value);
+
+                $("#ProductsID").change();
+                $('#ProductsID').trigger("chosen:updated");
+
+
+                $("#Products2").change();
+                $('#Products2').trigger("chosen:updated");
+            });
+
+
+
+        });
+
+
+
+        $('#pCategory').on('change', function () {
+
+            console.log(this.value);
+
+            var pUrl = "/Api/GetProductsByCategory?catId=" + this.value;
+
+            $.get(pUrl, function (data) {
+                console.log(data.length);
+
+                $("#ProductsID").empty();
+
+                $.each(data, function (key, value) {
+
+
+                    //$("#ProductsID").select2('data', { id: value.id, text: value.ProductName  });
+
+                    if (key == 0)
+                        $("#ProductsID").append('<option value=' + value.id + ' selected="selected">' + value.ProductName + '</option>');
+                    else
+                        $("#ProductsID").append('<option value=' + value.id + '  >' + value.ProductName + '</option>');
+
+                    var pid = data["id"];
+                    var name = data["ProductName"];
+                    console.log(key);
+                    console.log(value);
+
+
+                    $("#ProductsID").change();
+                    $('#ProductsID').trigger("chosen:updated");
+
+
+                });
+
+            });
+
+
+        });
+
+
+
+
+
+        $("#pCategory2").hide();
+        $("#Products2").hide();
+        $("#CowID2").hide();
+        $("#UnitPriceP2").hide();
+
+        $("#moreProductQuantity").hide();
+        $("#TotalP2").hide();
+        $("#pickProduct").hide();
+
+
+
+    $('#ProductsID').on('change', function () {
+
+        products[0] = $('#ProductsID').val();
+
+        var v = $('#ProductsID').val();
+
+
+    });
+
+
+
+
+
+    $('#Comission').on('change', function () {
+        var type = $('input[name=ComissionType]:checked').val();
+
+        var n = parseInt(this.value);
+        if (isNaN(n)) {
+            var comission = 0;
+        } else {
+            var comission = parseInt(this.value);
+        }
+
+        console.log(this.value);
+
+        var total = parseInt($("#NetTotal").val());
+
+
+        if (type == "Flat") {
+
+
+            if (total < comission) {
+                alert("Comission amount can not be greather than total amount.");
+                $("#Comission").val(0);
+                $("#Comission").focus();
+            }
+            else {
+                var netTotal = total - comission;
+
+                $("#comm").text(" == " + comission);
+
+                $("#NetTotal").val(netTotal);
+                $("#NetPayable").val(netTotal);
+            }
+
+        }
+        else {
+
+            var netTotal = (total * comission) / 100;
+            $("#Comission").val(netTotal);
+            $("#comm").text(" == " + netTotal);
+            netTotal = total - netTotal;
+
+
+            $("#NetTotal").val(netTotal);
+
+            $("#NetPayable").val(netTotal);
+
+
+
+
+        }
+    });
+
+
+     $("#moreProductQuantity").on('keyup paste', function () {
+
+            var price = parseInt($("#UnitPriceP2").val());
+
+            var total = price * parseInt(this.value);
+            $("#UnitPriceP2").val(price);
+            $("#TotalP2").val(total);
+
+
+            totalAmount += total;
+            console.log("Total Amount : " + totalAmount);
+
+        });
+
+
+    function CalculateComission() {
+        var type = $('input[name=ComissionType]:checked').val();
+
+
+        var comission = $("#Comission").val();
+        var total = $("#Total").val();
+
+        console.log("TT : " + total);
+
+        if (comission != "") {
+            comission = parseInt(comission);
+
+            if (type == "Flat") {
+
+
+                if (total < comission) {
+                    alert("Comission amount can not be greather than total amount.");
+                    $("#Comission").val(0);
+                    $("#Comission").focus();
+
+                    return 0;
+                }
+                else {
+                    var netTotal = total - comission;
+
+                    $("#comm").text(" == " + comission);
+
+                    $("#NetTotal").val(netTotal);
+
+                    return netTotal;
+                }
+
+            }
+            else {
+
+                var netTotal = (total * comission) / 100;
+                $("#comm").text(" == " + netTotal);
+                netTotal = total - netTotal;
+
+
+                $("#NetTotal").val(netTotal);
+
+                return netTotal;
+
+            }
+        }
+
+    }
+    $('#PurchaseQuantity').on("keyup keydown change paste", function (e) {
+
+        var quantity = $("#PurchaseQuantity").val();
+
+        productsQuantity[0] = this.value;
+
+        console.log(productsQuantity);
+
+        if (quantity == "") {
+            //alert("Product Quantity Cannot be empty.Please Specify Product Quantity");
+            $("#PurchaseQuantity").focus();
+        }
+        else {
+            var price = $("#UnitPrice").val();
+
+
+
+            var total = quantity * price;
+
+
+            totalAmount = total;
+
+            $("#Total").val(total);
+            $("#NetTotal").val(total);
+
+            var serviceCharge = $("#ServiceCharge").val();
+            var vat = $("#VAT").val();
+
+
+            if (serviceCharge != "") {
+                total = total + parseInt(serviceCharge);
+
+                if (vat != "") {
+                    var vatAmount = (total * vat) / 100;
+
+                    var vtype = $('input[name=VatType]:checked').val();
+
+                    if (vtype == "plus") {
+                        total = total + parseInt(vatAmount);
+                    }
+                    else {
+                        total = total - parseInt(vatAmount);
+                    }
+
+
+                    $("#VatAmount").val(vatAmount);
+
+                    $("#NetPayable").val(total);
+
+                }
+
+                $("#NetPayable").val(total);
+
+
+            }
+            else {
+                if (vat != "") {
+                    var vatAmount = (total * vat) / 100;
+
+                    total = total + vatAmount;
+
+                    $("#VatAmount").val(vatAmount);
+
+                    $("#NetPayable").val(total);
+
+                }
+
+                $("#NetPayable").val(total);
+
+
+            }
+
+        }
+
+    });
+
+
+    function UpdateNetPayable() {
+        var quantity = 1;
+
+
+        var price = $("#UnitPrice").val();
+
+        var total = quantity * price;
+
+
+
+
+
+    }
+
+    $('#ServiceCharge').bind('keyup paste', function () {
+        var total = parseInt($("#NetTotal").val());
+        total = total + 0;
+
+
+        var serviceCharge = parseInt(this.value);
+
+
+
+        total = total + serviceCharge;
+
+        var vat = $("#VAT").val();
+
+        if (vat != "") {
+            var vatAmount = (total * vat) / 100;
+
+            total = total + vatAmount;
+        }
+
+
+        $("#NetPayable").val(parseInt(total));
+
+
+    });
+
+
+    $('#VAT').bind('keyup paste change', function () {
+        var total = parseInt($("#NetTotal").val());
+        total = total + 0;
+
+
+        var vat = parseInt(this.value);
+
+        var serviceCharge = $("#ServiceCharge").val();
+
+        if (serviceCharge != "") {
+            total = total + parseInt(serviceCharge);
+        }
+
+        if (vat != "") {
+            var vatAmount = (total * vat) / 100;
+
+            if (isNaN(vatAmount)) {
+
+                $("#VatAmount").val(0);
+
+                $("#NetPayable").val(parseInt(total));
+            }
+            else {
+                $("#TotalVat").text(" == " + vatAmount);
+
+
+                total = total + vatAmount;
+
+                $("#VatAmount").val(vatAmount);
+
+                $("#NetPayable").val(parseInt(total));
+            }
+
+
+        }
+
+
+
+    });
+
+    $("#PurchaseQuantity").val(1);
+    $("#VAT").val(0);
+    $("#VatAmount").val(0);
+    $("#Comission").val(0);
+    $("#ServiceCharge").val(0);
+    UpdateNetPayable();
+
+
+
+
+
+
+
+    $('select').select2({
+        width: '100%'
+
+    });
+
+
+
+    $('input[type=radio][name=VatType]').change(function () {
+        var total = parseInt($("#NetTotal").val());
+
+
+
+        var vat = $("#VAT").val();
+        var serviceCharge = $("#ServiceCharge").val();
+        if (serviceCharge != "") {
+            total = parseInt(total) + parseInt(serviceCharge);
+
+            if (vat != "") {
+                var vatAmount = parseInt((total * vat) / 100);
+                $("#TotalVat").text(" == " + vatAmount);
+
+
+
+                var vtype = this.value;
+
+                if (vtype == "plus") {
+                    total = total + parseInt(vatAmount);
+                }
+                else {
+                    total = total - parseInt(vatAmount);
+                }
+
+
+
+                console.log(vatAmount);
+                $("#VatAmount").val(vatAmount);
+
+                $("#NetPayable").val(total);
+            }
+
+        }
+
+    });
+
+
+
+
+
+
+    $('#PurchaseDate').datepicker({
+        weekStart: 1,
+        color: 'black',
+        format:'dd/mm/yyyy'
+    });
+
+
+    $("#PurchaseCode").val(@ViewBag.code);
+
+
+    var shift = $('input[name=CollectionShift]:checked').val();
+
+    $('input[type=radio][name=CollectionShift]').change(function () {
+
+        if (this.value == 'Morning') {
+
+            $("#Invoice").val("@ViewBag.invoiceMorning");
+        }
+        else if (this.value == 'Evening') {
+
+             $("#Invoice").val("@ViewBag.invoiceEvening");
+        }
+        else if (this.value == 'None') {
+
+             $("#Invoice").val("@ViewBag.invoiceNone");
+        }
+        else {
+             $("#Invoice").val("@ViewBag.invoiceNoon");
+        }
+    });
+
+
+
+
+
+        function removeProductFromArray(value,qty,tot,cow,rate) {
+
+            console.log("Af : " + products.toString());
+            for (var i = 0; i < products.length; i++) {
+                if (products[i] == value) {
+                    products.splice(i, 1);
+                    break;
+                }
+
+            }
+
+
+
+
+
+            for (var i = 0; i < TotalList.length; i++) {
+                if (TotalList[i] == tot) {
+                    TotalList.splice(i, 1);
+                    break;
+                }
+
+            }
+
+
+            console.log("Bf Cowlist : " + cowsList.toString());
+
+            for (var i = 0; i < cowsList.length; i++) {
+                if (cowsList[i] == cow) {
+                    cowsList.splice(i, 1);
+                    break;
+                }
+
+            }
+
+            console.log("Af Cowlist : " + cowsList.toString());
+
+
+
+
+
+
+            console.log("productsQuantityList : " + productsQuantity.toString());
+            for (var i = 0; i < productsQuantity.length; i++) {
+                if (productsQuantity[i] == qty) {
+                    productsQuantity.splice(i, 1);
+                    break;
+                }
+
+            }
+
+
+
+            for (var i = 0; i < PriceList.length; i++) {
+                if (PriceList[i] == rate) {
+                    PriceList.splice(i, 1);
+                    break;
+                }
+
+            }
+
+
+            $("#ProductsListQuantity").val(productsQuantity.toString());
+            console.log("productsQuantityList After : " + productsQuantity.toString());
+
+
+            console.log("Bf : " + products.toString());
+
+
+            console.log("TotList After : " + TotalList.toString());
+
+            $("#ProductsList").val(products.toString());
+            $("#CowsList").val(cowsList.toString());
+
+
+            console.log("-- proCount : " + productCount);
+
+            if (products.length == 0) {
+
+
+                location.reload();
+
+                $("#pickProduct").hide();
+
+                $("#addProduct").show();
+
+                productCount = 0;
+                pTotal = 0;
+
+                productsQuantity = [];
+
+
+
+
+                productsTotal = [];
+                cowsList = [];
+
+                PriceList = [];
+                TotalList = [];
+
+                TotalList[0] = 0;
+
+
+                productsNetTotal = 0;
+
+
+                currentCatId = 0;
+
+                currentCowSelected = "0";
+                currentCowSelectedText = "";
+                //Adding products ID to the list
+                //products.push(val);
+
+                milkProductSelected = false;
+                modalOpened = true;
+
+                productsQuantity.push(1);
+
+
+                totalAmount = 0;
+                $("#moreProductQuantity").hide();
+                $("#PurchaseQuantity").show();
+
+
+                $("#PurchaseQuantity").val(1);
+                $("#VAT").val(0);
+                $("#VatAmount").val(0);
+                $("#Comission").val(0);
+                $("#ServiceCharge").val(0);
+
+                $("#ProductsID").change();
+                $('#ProductsID').trigger("chosen:updated");
+
+
+                $("#pCategory2").hide();
+                $("#Products2").hide();
+
+                $("#pCategory").show();
+                $("#ProductsID").show();
+
+
+
+            }
+
+        }
+
+
+
+
+    var preload_data = [
+
+          @foreach (var item in ViewData["CowID"] as List<Logistic_Inventory.Models.Cows>)
+                                    {
+
+           @:   { id: '@item.Id', text: '@item.Name' },
+
+          }
+    ];
+
+    $(document).ready(function () {
+        $('#CowSelect').select2({
+            multiple: true
+            , query: function (query) {
+                var data = { results: [] };
+
+                $.each(preload_data, function () {
+                    if (query.term.length == 0 || this.text.toUpperCase().indexOf(query.term.toUpperCase()) >= 0) {
+                        data.results.push({ id: this.id, text: this.text });
+                    }
+                });
+
+                query.callback(data);
+            }
+        });
+        //$('#data').select2('data', preload_data);
+
+
+        $("#btnSelected").click(function () { alert("Selected value is: " + $("#CowSelect").select2("val")); });
+
+        $("#btnData").click(function () {
+            alert("Selected value is: " + JSON.stringify($("#CowSelect").select2("data")));
+
+            getItems();
+
+
+            $("#CowSelect option[value='3']").remove();
+
+
+        });
+
+        $("#btnClear").click(function () {
+
+
+
+            var values = $("#CowSelect").select2("val");
+            console.log(values.toString());
+            for (i = 0; i < values.length; i++) {
+                var cowId = values[i];
+
+
+                $("#r_" + cowId).remove();
+                removeCow(cowId);
+                cowCount--;
+
+
+            }
+
+            countSum();
+
+
+            $("#CowSelect").select2("val", "");
+
+        });
+
+
+
+        $("#CowSelect")
+            .on("change", function (e) {/* log("change " + JSON.stringify({ val: e.val, added: e.added, removed: e.removed }));*/ })
+
+            //.on("select2-highlight", function (e) { log("highlighted val=" + e.val + " choice=" + JSON.stringify(e.choice)); })
+            .on("select2-selecting", function (e) {
+                //  log("selecting val=" + e.val + " choice=" + );
+                var data = e.choice;
+
+                var cowId = e.val;
+                var cowName = data.text;
+                log(data.text);
+                log(e.val);
+                var pid = $("#ProductsID").val();
+                var pname = cowName + " - " + $("#ProductsID").text();
+
+                cowsListNames.push(cowName);
+
+                addPro(pid, pname, cowId);
+
+            })
+            //.on("select2-removing", function (e) { log("removing val=" + e.val + " choice=" + JSON.stringify(e.choice)); })
+            .on("select2-removed", function (e) {
+             //   log("removed val=" + e.val + " choice=" + JSON.stringify(e.choice));
+                var data = e.choice;
+
+                var cowId = e.val;
+                var cowName = data.text;
+
+                $("#r_" + cowId).remove();
+                removeCow(cowId);
+                removeCowName(cowName);
+
+                cowCount--;
+
+                countSum();
+                updateProductSerial();
+
+                var pid = $("#ProductsID").select2("val");
+                removeProduct(pid);
+                productCount--;
+
+
+            });
+
+
+
+
+        function log(data) {
+            console.log(data);
+        }
+
+
+    });
+
+
+
+    function getProductPrice(id, name, cowId) {
+
+        var p = 0;
+        var url = "/Purchases/getProductPrice/" + id;
+        $.get(url, function (data) {
+
+            console.log(data);
+            p = data["price"];
+            console.log(data["price"]);
+            //var unit = data["unit"];
+            var unitID = data["unitID"];
+            $('#UnitsID').val(unitID);
+            add(p, name, cowId);
+
+        });
+
+
+
+
+    }
+
+
+    function setAmount(price, quantity) {
+
+        //var quantity = $("#PurchaseQuantity").val();
+
+        if (quantity != "") {
+            $("#Total").val(0);
+
+            var total = parseInt(quantity * price);
+
+            totalAmount = totalAmount;
+
+            console.log(productsNetTotal);
+
+            if (productsNetTotal > 0) {
+                total = total + productsNetTotal;
+            }
+
+            $("#Total").val(total);
+
+
+
+            $("#NetTotal").val(total);
+
+            var comission = $("#Comission").val();
+
+            if (comission != "") {
+                var netTotal = CalculateComission();
+
+                if (netTotal != 0) {
+                    total = netTotal;
+                }
+
+            }
+
+            var serviceCharge = $("#ServiceCharge").val();
+            serviceCharge = serviceCharge;
+
+            var vat = $("#VAT").val();
+
+            if (serviceCharge != "") {
+                total = parseInt(total) + parseInt(serviceCharge);
+
+                if (vat != "") {
+                    var vatAmount = parseInt((total * vat) / 100);
+                    $("#TotalVat").text(" == " + vatAmount);
+                    var vtype = $('input[name=VatType]:checked').val();
+
+                    if (vtype == "plus") {
+                        total = total + parseInt(vatAmount);
+                    }
+                    else {
+                        total = total - parseInt(vatAmount);
+                    }
+
+
+
+
+                    console.log(vatAmount);
+                    $("#VatAmount").val(vatAmount);
+
+
+                }
+
+                $("#NetPayable").val(total);
+
+            }
+            else {
+
+                var vat = $("#VAT").val();
+
+                if (vat != "") {
+                    var vatAmount = (total * vat) / 100;
+
+                    $("#TotalVat").text(" == " + vatAmount);
+
+                    var vtype = $('input[name=VatType]:checked').val();
+
+                    if (vtype == "plus") {
+                        total = total + parseInt(vatAmount);
+                    }
+                    else {
+                        total = total - parseInt(vatAmount);
+                    }
+
+
+                    $("#VatAmount").val(vatAmount);
+
+                }
+
+                console.log("total : " + total)
+                $("#NetPayable").val(total);
+
+
+            }
+
+
+        }
+
+
+
+    }
+    var cowCount = 0;
+    function addPro(id, name, cowId) {
+
+
+        for (var i = 0; i < cowsList.length; i++) {
+            if (cowId == cowsList[i]) {
+                alert("This Cow is already selected !");
+                return;
+            }
+        }
+        cowCount++;
+
+        cowsList.push(cowId);
+        //$(".icon" + id).show();
+        getProductPrice(id, name, cowId);
+
+
+        if (productCount > 0)
+            products.push(id);
+
+        productCount++;
+
+
+
+       // $("#ProductsCount").val(1);
+      //  $("#ProductsList").val(products.toString());
+
+
+    }
+
+
+
+    var CountProduct = 1;
+
+    function add(price, name, cowId) {
+
+
+        var row2 = '<tr  id = "r_' + cowId + '" >' +
+            '<td class="text-center" ><span class="sl" class="text-center">' + cowCount + '</span></td>' +
+            '<td> <input id="pName' + cowId + '"   class="inp width-100 NameInput form-control" readonly type="text" value="' + name + '" title="' + name + '" /></td> ' +
+            '<td> <input id="pRate' + cowId + '"   min="1" onChange="updateRate(' + cowId + ')"  class="inp width-100 RateInput form-control" type="number" value="' + price + '" /></td> ' +
+            '<td class="width-80"> <input id="pQty' + cowId + '"   min="1" onChange="updateQty(' + cowId + ')" class="inp width-100 QtyInput form-control" type="number" value="1" /></td> ' +
+            '<td> <input id="pTotal' + cowId + '"   class="inp width-100 TotalInput greyBold form-control" readonly  type="number" value="' + price + '" /></td> ' +
+            //'<td> <input id="sel_' + cowId + '" type="checkbox" name="deleteBox" value="' + cowId + ':' + cowId + '" class="margin-2 DeleteInput" /> </td> ' +
+            '</tr>';
+
+
+        $("#table tr:last").after(row2);
+
+
+        countSum();
+
+        getItems();
+
+    }
+
+
+    function countSum() {
+
+        var group = $('.TotalInput');
+        var sum = 0;
+        if (group.length > 0) {
+            group.each(function () {
+                //$(this).attr("name", $(this).attr("name") + "[]");
+
+                var val = parseInt($(this).val());
+
+                if (isNaN(val))
+                    val = 0;
+
+                sum += val;
+                console.log("Sum " + val);
+
+            });
+
+            $("#NetTotal").val(sum);
+            $("#NetPayable").val(sum);
+            $('#Total').val(sum);
+
+        } else {
+            console.log("Len 0");
+
+            $("#NetTotal").val(0);
+            $("#NetPayable").val(0);
+            $('#Total').val(0);
+        }
+
+
+    }
+
+
+    function updateQty(index) {
+
+
+        var rate = $("#pRate" + index).val();
+        var qty = $("#pQty" + index).val();
+
+        rate = parseInt(rate);
+        qty = parseInt(qty);
+
+        if (isNaN(rate))
+            rate = 0;
+
+        if (isNaN(qty))
+            qty = 0;
+
+        var amt = rate * qty;
+
+        $("#pTotal" + index).val(amt);
+
+        countSum();
+
+    }
+
+
+    function updateRate(index) {
+
+
+        var rate = $("#pRate" + index).val();
+        var qty = $("#pQty" + index).val();
+
+        rate = parseInt(rate);
+        qty = parseInt(qty);
+
+        if (isNaN(rate))
+            rate = 0;
+
+        if (isNaN(qty))
+            qty = 0;
+
+        var amt = rate * qty;
+
+        $("#pTotal" + index).val(amt);
+
+        countSum();
+
+    }
+
+
+
+    function removeSelected() {
+        var count = 0;
+
+        $.each($("input[name='deleteBox']:checked"), function () {
+
+            var val = $(this).val().split(":");
+            var count = val[0];
+            var pid = val[1];
+
+            console.log("count " + count);
+            console.log("pid " + pid);
+
+            $("#r_" + count).remove();
+            //$(".icon" + pid).hide();
+            removeProduct(pid);
+            count++;
+            productCount--;
+
+        });
+
+
+        //if (count == 0)
+        //    alert("No Product Selected To Remove !");
+        //else
+        countSum();
+
+        $("#ProductsCount").val(1);
+        $("#ProductsList").val(products.toString());
+        updateProductSerial();
+
+    }
+
+
+
+
+    function removeProduct(pid) {
+        for (var i = 0; i < products.length; i++) {
+            if (products[i] == pid) {
+                products.splice(i, 1);
+                break;
+            }
+
+        }
+    }
+
+
+    function removeCow(cid) {
+        for (var i = 0; i < cowsList.length; i++) {
+            if (cowsList[i] == cid) {
+                cowsList.splice(i, 1);
+                break;
+            }
+
+        }
+    }
+
+    function removeCowName(name) {
+        for (var i = 0; i < cowsListNames.length; i++) {
+            if (cowsListNames[i] == name) {
+                cowsListNames.splice(i, 1);
+                break;
+            }
+
+        }
+    }
+
+
+
+    function checkIfProductExists(pid) {
+        for (var i = 0; i < products.length; i++) {
+            if (products[i] == pid) {
+                $(".icon" + pid).show();
+                break;
+            }
+
+        }
+    }
+
+
+    function checkIfCowExists(cid) {
+        for (var i = 0; i < cowsList.length; i++) {
+            if (cowsList[i] == cid) {
+
+                break;
+            }
+
+        }
+    }
+
+
+    function updateProductSerial() {
+        var span = document.getElementsByClassName("sl");
+        for (i = 0; i < span.length; i++) {
+            var data = span[i].innerHTML;
+            console.log(data);
+            span[i].innerHTML = i + 1;
+
+        }
+
+    }
+
+
+    $("form").submit(function (e) {
+
+        if (productCount > 0) {
+            getItems();
+
+            return true;
+        } else {
+
+            alert("No Product Selected !");
+            return false;
+        }
+
+
+    });
+
+
+
+    function getItems() {
+
+
+
+
+        PriceList = [];
+
+        productsQuantity = [];
+        productsTotal = [];
+
+        var rates = $('.RateInput');
+
+        if (rates.length > 0) {
+
+            rates.each(function () {
+                var val = $(this).val();
+                PriceList.push(val);
+
+            });
+        }
+
+        var QtyInput = $('.QtyInput');
+        if (QtyInput.length > 0) {
+
+            QtyInput.each(function () {
+                var val = $(this).val();
+                productsQuantity.push(val);
+
+            });
+        }
+
+        var TotalInput = $('.TotalInput');
+        if (TotalInput.length > 0) {
+
+            TotalInput.each(function () {
+                var val = $(this).val();
+                productsTotal.push(val);
+
+            });
+        }
+
+        $("#UnitPrice").val(0);
+        $("#CowsList").val(cowsList.toString());
+
+
+        $('#Unit').val(0);
+
+
+        console.log("products " + products.toString());
+        console.log("cowsList " + cowsList.toString());
+        console.log("productCount " + productCount);
+        console.log("productsTotal " + productsTotal.toString());
+        console.log("productsQuantity " + productsQuantity.toString());
+        console.log("PriceList " + PriceList.toString());
+
+
+        var productsName = $("#ProductsID").text() + " ( " + cowsListNames.toString() + " )";
+
+        console.log("productsName " + productsName);
+        $("#PurchaseQuantity").val(productCount);
+
+
+        $("#ProductsCount").val(productCount);
+        $("#ProductsListNames").val(productsName);
+
+        $("#ProductsListQuantity").val(productsQuantity.toString());
+
+
+        $("#PriceList").val(PriceList.toString());
+
+        $("#ProductsList").val(products.toString());
+
+        $("#ProductsListTotal").val(productsTotal.toString());
+        $("#CowsList").val(cowsList.toString());
+
+
+        $("#UnitPrice").val(PriceList[0]);
+
+
+
+    }
+
+
+</script>

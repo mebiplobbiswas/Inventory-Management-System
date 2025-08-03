@@ -1,0 +1,432 @@
+﻿
+
+@using PagedList.Mvc;
+@using System.Globalization;
+
+
+
+@{
+    ViewBag.Title = "Customer Sale Report";
+
+
+    decimal totalAmt = 0;
+    decimal totalQty = 0;
+    decimal total = 0;
+
+    int i = 1;
+
+    var fileName = System.IO.Path.Combine(Server.MapPath("~/Content/img/logo/"), "banner2_350.png");
+
+    ViewBag.banner = "data:image/gif;base64," + Convert.ToBase64String(File.ReadAllBytes(fileName));
+
+    ViewBag.page = "reports";
+}
+
+
+<link rel="stylesheet" type="text/css" href="~/Content/datatable/jquery.dataTables.css">
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jquery.dataTables.js"></script>
+
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.print.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/dataTables.buttons.min.js"></script>
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.flash.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/pdfmake.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/vfs_fonts.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.html5.min.js"></script>
+
+<link href="~/Content/cal/bootstrap-datepicker.css" rel="stylesheet" />
+
+<script src="~/Scripts/cal/bootstrap-datepicker.js"></script>
+
+
+<script src="~/Scripts/select2/3.5/select2.min.js"></script>
+
+<link href="~/Content/select2/3.5/select2.min.css" rel="stylesheet" />
+
+
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Customer Payments Report</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")">Reports</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Customers Payments </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+
+
+                    <button class="btn btn-primary" id="modal" data-toggle="modal" data-target="#ProductModal">
+                        <i class="fa fa-search"></i> Search
+                    </button>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (!ViewBag.firstRun)
+{
+
+
+
+    if (ViewData["AllSales"] != null)
+    {
+
+
+        <!-- Page content -->
+        <div class="container-fluid mt--6" id="content">
+            <div class="row justify-content-center">
+                <div class=" col ">
+                    <div class="card">
+
+                        <div class="card-body">
+                            @*<h5>Total Sale : <b>@ViewBag.total</b></h5>
+                            <h5>Total Paid : <b>@ViewBag.totalDue</b></h5>
+                            <h5>Total Due&nbsp; : <b>@ViewBag.totalPaid</b></h5>*@
+
+                            <table class="display table dataTable" style="font-weight:bold;width:100%" id="content">
+
+
+                                <thead class="text-primary">
+                                    <tr>
+                                        <th>SL</th>
+                                        <th>Date</th>
+                                        <th>
+                                            Customer
+                                        </th>
+
+
+                                        <th>Products</th>
+                                        <th>
+                                            Invoice
+                                        </th>
+                                        <th>
+                                            Quantity
+                                        </th>
+                                        <th>
+                                            Total
+                                        </th>
+                                        <th>
+                                            Paid
+                                        </th>
+                                        <th>
+                                            Due
+                                        </th>
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in ViewData["AllSales"] as List<Logistic_Inventory.Models.db_first.vCustomerSalesList>)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>
+                                                @item.SalesDate.ToShortDateString()
+                                            </td>
+                                            <td>
+                                                @item.CustomerName
+                                            </td>
+
+                                            <td>
+                                                @item.ProductsListNames
+                                            </td>
+                                            <td>
+
+                                                <a style="font-size:16px" href="/sales/Details/@item.SaleId" target="_blank"> @item.Invoice</a>
+
+                                            </td>
+
+                                            <td>
+                                                @item.QuantityList
+                                            </td>
+                                            <td>
+                                                @item.Total
+                                            </td>
+                                            <td>
+                                                @item.Paid
+                                            </td>
+                                            <td>
+                                                @item.Due
+                                            </td>
+
+                                        </tr>
+                                        i++;
+                                    }
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+
+                                        <td><h4><b>Total</b></h4></td>
+                                        <td><h4 class="doubleUnderline"><b>@ViewBag.total</b></h4></td>
+                                        <td><h4 class="doubleUnderline"><b>@ViewBag.totalPaid</b></h4></td>
+                                        <td><h4 class="doubleUnderline"><b>@ViewBag.totalDue</b></h4></td>
+
+                                    </tr>
+
+                                </tfoot>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+    }
+}
+
+
+
+
+<div class="container col-md-6 mt--6" id="searchBody">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h3 class="mb-0">Select Customer</h3>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm())
+                    {
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <select    required style="max-width:700px" name="customerId" id="customerId">
+
+
+                                    @foreach (var item in ViewBag.customers)
+                                    {
+
+                                        <option value="@item.id">@item.CustomerName</option>
+                                    }
+
+
+                                </select>
+                            </div>
+                        </div>
+
+                        <br />
+
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+
+                                <label>Date From</label>
+                                <input class="form-control text-box single-line"   placeholder="Date From" id="from" name="from" type="text" value="" autocomplete="off">
+
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+
+                                <label>Date To</label>
+                                <input class="form-control text-box single-line"   placeholder="Date From" id="to" name="to" type="text" value="" autocomplete="off">
+
+
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <button class="btn btn-default btn-block" type="submit"> Show Report</button>
+
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+<script>
+
+
+         $('table').DataTable({
+
+            "aLengthMenu": [[25, 50, 100, 200, 300, 500, 1000], ['25 Rows', '50 Rows', '100 Rows', '200 Rows', '300 Rows', '500 Rows', '1000 Rows']],
+            "pageLength": 25,
+
+            //"fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            //    $("td:nth-child(1)", nRow).html(iDisplayIndex + 1);
+            //    return nRow;
+            //},
+            "language": {
+
+                "search": '<i class="fa fa-search"></i>',
+                "searchPlaceholder": "By Cow,Provider",
+                "paginate": {
+                    "previous": '<i class="fa fa-angle-left"></i>',
+                    "next": '<i class="fa fa-angle-right"></i>'
+                }
+            },
+              dom: 'lBfrtip',
+             buttons: [
+
+                 {
+                    extend: 'pdf',
+                    text: '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                    customize: function (doc) {
+                        doc.content.splice(0, 0, {
+                            margin: [0, 0, 0, 0],
+
+                            alignment: 'left',
+                            image: '@ViewBag.banner'
+                        });
+
+                    }
+                }
+                 ,
+                 {
+                    extend: 'excel',
+                    text: '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+                    title: "@ViewBag.Title",
+                    footer: true,
+
+
+                },
+                 {
+                    extend: 'csv',
+                    text: '<i class="fa fa-file-word" aria-hidden="true"></i> CSV',
+                     title: "@ViewBag.Title",
+                    footer: true
+
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: "@ViewBag.Title",
+                    autoPrint: true,
+                    footer: true,
+                    customize: function (win)
+                    {
+                        var url = location.protocol + '//' + location.host + "/Content/img/logo/banner_1000.png";
+
+                        $(win.document.body).find('.table>thead>tr>th').css("color", "black");
+                        $(win.document.body).find('.table>tbody>tr>td').css("color", "black");
+                        $(win.document.body).find('table.dataTable tfoot th').css("color", "black");
+                        $(win.document.body).find('table.dataTable tfoot th').css("text-decoration", "underline");
+
+
+                        $(win.document.body)
+                            .css('font-size', '10pt').css('background-color', 'white')
+                        .prepend( '<img src="'+url+'" style="position:relative; top:0; left:0;width:600px" />'  );
+                        $(win.document.body).find('h1').css('font-size', '20px').css('font-weight', 'bold').css('text-transform', 'uppercase').css('color', 'black').css('margin-top', '15px');
+                    }
+                }
+
+            ]
+         });
+
+
+
+
+
+
+
+
+
+    //$(document).ready(function () {
+    //    $('#tbl').DataTable();
+    //});
+
+
+
+
+
+
+
+
+    @if (!ViewBag.firstRun  )
+    {
+          @:$("#searchBody").hide();
+    }
+
+
+    $('#modal').click(function () {
+
+        $("#content,#tbl,#content").hide();
+        $("#searchBody").show();
+
+
+    });
+
+
+
+    $('#from').datepicker({
+        weekStart: 1,
+        color: 'black',
+        format: 'dd/mm/yyyy'
+    });
+
+
+    $('#to').datepicker({
+        weekStart: 1,
+
+        format: 'dd/mm/yyyy'
+    });
+
+    $('#customerId').select2({
+        width: '99%'
+
+    });
+
+</script>
+
+
+<style>
+    [type="search"] {
+        /* border: 1px solid black; */
+        border-radius: 15px;
+        height: 30px;
+        padding-left: 15px;
+        border-radius: 15px;
+    }
+
+    .doubleUnderline {
+        text-decoration: underline;
+    }
+</style>

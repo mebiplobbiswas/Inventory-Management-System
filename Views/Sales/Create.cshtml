@@ -1,0 +1,1385 @@
+﻿@model Logistic_Inventory.Models.Sales
+@using Logistic_Inventory.Models;
+@{
+    ViewBag.Title = "Create";
+    int i = 1;
+    ViewBag.page = "sales";
+
+}
+<script src="~/Scripts/cal/bootstrap-datepicker.js"></script>
+
+
+<script src="~/Scripts/select2/3.5/select2.min.js"></script>
+
+<link href="~/Content/select2/3.5/select2.min.css" rel="stylesheet" />
+
+<link href="~/Content/cal/bootstrap-datepicker.css" rel="stylesheet" />
+
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h5 class="h2 text-white d-inline-block mb-0"><i class="fa fa-plus-circle"></i>   New Sales</h5>
+                    @*<nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/products")">Products</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Add Sale</li>
+                        </ol>
+                    </nav>*@
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="@Url.Content("~/sales/")" class="btn btn-md btn-sm btn-default"> Sales List</a>
+                    @*<button class="btn btn-default btn-sm" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-search"></i> &nbsp; Search By Customer</button>*@
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page content -->
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+
+                <div class="card-body">
+
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+
+
+                        <input type="hidden" name="ProductCount" id="ProductCount" />
+                        <input type="hidden" name="ProductsListIds" id="ProductsListIds" />
+                        <input type="hidden" name="ProductsListNames" id="ProductsListNames" />
+                        <input type="hidden" name="QuantityList" id="QuantityList" />
+                        <input type="hidden" name="PriceList" id="PriceList" />
+                        <input type="hidden" name="TotalList" id="TotalList" />
+                        
+                        <input type="hidden" name="GrandTotal" id="GrandTotal" />
+
+                        <input type="hidden" name="ProductsID" id="ProductsID" />
+
+                        <input type="hidden" name="VAT_Amount" id="VAT_Amount" />
+                        
+
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.SalesDate, htmlAttributes: new { @class = "form-control-label" })
+
+                                        <input required class="form-control text-box single-line" placeholder="Sales Date" data-val="true" autocomplete="off" data-val-date="The field Purchase Date must be a date." data-val-required="The Purchase Date field is required." id="SalesDate" name="SalesDate" type="text" value="@ViewBag.today">
+                                        @Html.ValidationMessageFor(model => model.SalesDate, "", new { @class = "text-danger" })
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Invoice, htmlAttributes: new { @class = "form-control-label" })
+
+                                        @Html.EditorFor(model => model.Invoice, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.ValidationMessageFor(model => model.Invoice, "", new { @class = "text-danger" })
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                               
+                                    <div class="col">
+                                        <label class="form-control-label" for="Payment_Type">Payment Type</label>
+
+                                        <select name="Payment_Type" id="Payment_Type" class="select2">
+                                            <option value="Cash" selected="selected">Cash</option>
+                                            <option value="Bank">Bank</option>
+                                            <option value="Card">Card</option>
+                                            <option value="Cheque">Cheque</option>
+                                            <option value="Bkash">Bkash</option>
+                                            <option value="Other">Other</option>
+                                           
+                                        </select>
+ 
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-control-label" for="Payment_Type">Payment Account ( If Any )</label>
+
+                                        @Html.EditorFor(model => model.Payment_Account, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.ValidationMessageFor(model => model.Payment_Account, "", new { @class = "text-danger" })
+
+                                    </div>
+                             
+
+                            </div>
+                        </div>
+                    
+                               
+                        <div class="col">
+
+
+
+
+
+                            <div class="row" style="padding-bottom:5px">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+
+                                        <div class="col-md-12">
+
+                                            <span style="font-size:26px;color:black" id="totalAmt">0</span>
+                                        </div>
+                                        <label class="control-label col-md-12" for="ProductsID">     Transaction </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+
+                                        <div class="col-md-12">
+                                            <span style="font-size:26px;color:black" id="totalPaid">0</span>
+
+                                        </div>
+                                        <label class="control-label col-md-12" for="ProductsID"> Total Payment  </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+
+                                        <div class="col-md-12">
+                                            <span style="font-size:26px;color:black" id="totalBal">0</span>
+
+                                        </div>
+
+                                        <label class="control-label col-md-12" for="ProductsID"> Total  Due   </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group hide">
+                                <label class="form-control-label" for="ProductsID">Customer</label>
+
+                                @Html.DropDownList("AccSubHeadID", null, htmlAttributes: new { @class = "" })
+                              
+
+                            </div>
+
+                            <div class="form-group pad ">
+                                <label class="form-control-label" for="ProductsID">Customer</label>
+
+                                @Html.DropDownList("AccSubHeadID2", null, htmlAttributes: new { @class = "" })
+                                @Html.ValidationMessageFor(model => model.AccSubHeadID2, "", new { @class = "text-danger" })
+
+                            </div>
+
+
+                        </div>
+                        </div>
+
+                        <br/>
+
+                        <div class="row">
+
+                            <div class="col">
+                                <table class="table   align-items-center table-hover table-bordered" id="table" style="font-weight:bold">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th width="50">SL</th>
+
+                                            <th>
+                                                Products
+                                            </th>
+                                            <th style="width:80px">
+                                                Stock
+                                            </th>
+                                            <th style="width:150px">
+                                                Rate
+                                            </th>
+                                            <th class="centers" style="width:80px">Unit</th>
+                                            <th style="width:100px">Qty</th>
+
+                                            <th width="180">
+                                                Total
+                                            </th>
+                                            <th style="width:50px">
+                                                Action
+                                            </th>
+
+                                        </tr>
+                                        
+                                    </thead>
+
+                                    <tbody>
+                                       
+
+                                        
+
+                                    </tbody>
+                                   
+                                    
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="5">
+                                                <input id="" class="inp width-100 NameInput form-control" type="text" name="Comments" placeholder="Sales Details/Comments" />
+                                            </td>
+                                            <td class="centers">
+                                                <label class="form-control-label centers">   Gross Total </label>
+                                            </td>
+                                            <td>
+                                                <input class="inp width-100 NameInput form-control" readonly="readonly" type="number" placeholder="Amount" id="GrossTotal" value="0" />
+
+                                            </td>
+                                            <td class="centers"> <span class="btn btn-success btn-block" onclick="addProductRow()"><i class="fa fa-plus-circle"></i></span> </td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <td colspan="5">
+                                            </td>
+                                            <td class="centers">
+                                                <label class="form-control-label centers">   Discount </label>
+                                            </td>
+                                            <td>
+                                               
+                                                <input class="inp width-100 NameInput form-control" type="number" placeholder="Amount" id="Discount" name="Discount" value="0" 
+                                                       data-val="true" data-val-number="The field Discount must be a number." data-val-required="The Total field is required." />
+                                                @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
+                                            </td>
+                                            <td class="centers">   </td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <td colspan="5">
+                                            </td>
+                                            <td class="centers">
+                                                <label class="form-control-label centers">   VAT(%) </label>
+                                            </td>
+                                            <td>
+                                                <label class="control-label col-md-12 hide">
+                                                    VAT (%)      &nbsp; &nbsp; &nbsp; &nbsp;   <input type="radio" name="VAT_Type" id="plus" value="+" checked="checked"> Plus &nbsp; &nbsp; &nbsp; &nbsp;
+                                                    @*<input type="radio" name="VAT_Type" id="minus" value="-">  Minus*@
+                                                </label>
+
+                                                <input class="inp width-100 NameInput form-control" id="VAT" name="VAT" type="number" data-val="true" data-val-number="The field Discount must be a number." data-val-required="The Total field is required." value="0" placeholder="VAT Percentage" />
+                                                @Html.ValidationMessageFor(model => model.VAT, "", new { @class = "text-danger" })
+                                            </td>
+                                            <td class="centers">   </td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <td colspan="5">
+                                            </td>
+                                            <td class="centers">
+                                                <label class="form-control-label centers">  Net Total </label>
+                                            </td>
+                                            <td>
+
+                                                <input class="inp width-100 NameInput form-control" data-val="true" data-val-number="The field Total must be a number." data-val-required="The Total field is required."
+                                                       id="Total" name="Total" type="number" value="0" readonly="readonly">
+                                                @Html.ValidationMessageFor(model => model.Total, "", new { @class = "text-danger" })
+
+
+                                            </td>
+                                            <td class="centers">   </td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <td colspan="5">
+                                            </td>
+
+                                            <td class="centers">
+                                                <label class="form-control-label centers">  Paid Amount </label>
+                                            </td>
+                                            <td>
+                                                <input class="inp width-100 NameInput form-control" data-val="true" data-val-number="The field Paid must be a number."
+                                                       data-val-required="The Paid field is required." id="Paid" name="Paid" type="number" value="0">
+                                                @Html.ValidationMessageFor(model => model.Paid, "", new { @class = "text-danger" })
+                                            </td>
+                                            <td class="centers">  <span class="btn centers btn-block  btn-outline-default" id="fullPaid"><i class="fa fa-check-circle"></i></span> </td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <td colspan="5">
+                                            </td>
+
+                                            <td class="centers">
+                                                <label class="form-control-label centers">  Due Amount </label>
+                                            </td>
+                                            <td>
+                                                <input class="inp width-100 NameInput form-control" data-val="true" id="Due" name="Due" type="number" value="0" readonly="readonly">
+                                                @Html.ValidationMessageFor(model => model.Due, "", new { @class = "text-danger" })
+                                            </td>
+                                            <td class="centers">  </td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <td colspan="5" >
+                                            </td>
+
+                                            <td class="centers" colspan="3">
+                                                <button class="btn btn-default btn-block"   > SUBMIT SALE</button>
+                                            </td>
+                                           
+                                        </tr>
+
+
+                                    </tfoot>
+                               
+                                
+                                </table>
+
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+
+                        
+                    </div>
+                    }
+
+
+                </div>
+
+
+            </div>
+            </div>
+        </div>
+    </div>
+
+
+ 
+
+
+
+
+<style>
+    input, select {
+        max-width: 700px;
+    }
+
+    td {
+        font-weight: bold;
+    }
+
+    .centers
+    {
+        text-align:center;
+    }
+
+
+    #productDiv {
+        background-color: #e3e3e3;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        -webkit-box-shadow: 0px 0px 6px -2px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 0px 6px -2px rgba(0,0,0,0.75);
+        box-shadow: 0px 0px 6px -2px rgba(0,0,0,0.75);
+        border: 1px solid #ccd1d6;
+        border-radius: 5px;
+    }
+
+    #Invoice {
+        font-family: sans-serif;
+        font-weight: bold;
+    }
+
+    .control-label {
+        text-align: initial;
+    }
+
+    .pad {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .panel {
+       
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        padding-top: 10px;
+    }
+
+    .badge {
+        margin-top: 15px;
+    }
+ 
+
+    .form-control {
+        border-radius: unset;
+        max-width:1000px;
+    }
+
+    .width-80 {
+        width: 100px;
+    }
+
+    ::-webkit-input-placeholder {
+        text-align: center;
+    }
+
+    :-moz-placeholder {
+        text-align: center;
+    }
+    .card .table td {
+        padding: 4px;
+    }
+
+    .card .table th {
+       /* padding: 4px;
+        text-align: center;*/
+    }
+
+    .inp {
+     /*   padding: 5px !important;
+        height: 30px;
+        font-size: 12px;*/
+    }
+
+
+
+    .margin-2 {
+        margin-left: 2px;
+        margin-right: 2px;
+    }
+
+    .center {
+        text-align: center;
+        margin: 0 auto;
+    }
+
+
+    .list-group-item {
+        padding-top: 7px;
+        padding-bottom: 10px;
+        font-weight: bold;
+    }
+
+    input {
+        font-family: inherit;
+    }
+
+    #RemoveSelected {
+        float: right;
+        padding: 4px;
+        padding-right: 8px;
+        padding-left: 8px;
+        color: white;
+        font-size: 12px;
+    }
+
+    .greyBold {
+        background-color: #ededed;
+        font-weight: bold;
+    }
+
+    #btnClear:hover {
+        font-weight: bold;
+        text-decoration: underline
+    }
+</style>
+
+ 
+
+<script>
+
+
+
+
+    $("#Invoice").val("@ViewBag.invoice");
+
+    var productCount=0;
+
+
+    var stock = 0;
+    var price = 0;
+
+    var ProductsListIds = [];
+    var ProductsListNames = [];
+ 
+    var QuantityList = [];
+ 
+    var PriceList = [];
+ 
+
+    var TotalAmountList = [];
+
+
+    var netTotal = 0;
+    var actualProductCount = 0;
+    var discount = 0;
+
+    var totalList = [];
+
+    var totalNow = 0;
+
+    var totalTemp = 0;
+
+    var flag = false;
+
+    $(".prev").hide();
+
+    $("#VAT_Amount").val(0);
+
+    $("#submit").prop("disabled", true);
+
+    $("#products").on('change', function () {
+
+        var val = this.value;
+
+ 
+
+    });
+
+
+  
+
+ 
+
+   
+
+
+
+    $('#Paid').on("keyup keydown change", function (e) {
+
+        var qty = parseFloat($("#SalesQuantity").val());
+        var unitprice = parseFloat($("#UnitPrice").val());
+
+        var total = parseFloat($("#Total").val());
+
+        if (isNaN(parseFloat($("#Paid").val())))
+            var paid = 0;
+        else
+            var paid = parseFloat($("#Paid").val());
+
+        var due = parseFloat($("#Due").val());
+
+
+
+        if (paid > total) {
+            alert("Paid amount can not be greather than Total Amount.")
+            $("#Paid").val(total);
+            paid = total;
+        }
+
+
+        due = total - paid;
+
+        $("#Total").val(total);
+        totalNow = parseInt(total);
+        netTotal = total;
+        $("#GrandTotal").val(netTotal);
+        $("#Due").val(due);
+
+
+    });
+
+
+
+    $("#fullPaid").click(function () {
+        var tot = $("#Total").val();
+
+        $("#Paid").val(tot);
+        $("#Due").val(0);
+
+       
+    });
+
+
+
+  
+
+
+   
+
+    var getType = (function () {
+
+        var objToString = ({}).toString,
+            typeMap = {},
+            types = [
+                "Boolean",
+                "Number",
+                "String",
+                "Function",
+                "Array",
+                "Date",
+                "RegExp",
+                "Object",
+                "Error"
+            ];
+
+        for (var i = 0; i < types.length; i++) {
+            typeMap["[object " + types[i] + "]"] = types[i].toLowerCase();
+        };
+
+        return function (obj) {
+            if (obj == null) {
+                return String(obj);
+            }
+            // Support: Safari <= 5.1 (functionish RegExp)
+            return typeof obj === "object" || typeof obj === "function" ?
+                typeMap[objToString.call(obj)] || "object" :
+                typeof obj;
+        }
+    }());
+
+
+    function isInArray(value, array) {
+
+        //console.log(array.indexOf(value));
+        return array.indexOf(value) > -1;
+    }
+
+    $("#AccSubHeadID2").change(function () {
+
+        GetCustomerBalance(this.value);
+
+    });
+
+
+    //GetCustomerBalance($("#AccSubHeadID2").val());
+
+
+    function GetCustomerBalance(id) {
+
+        var url = "/Api/GetCustomersBalance?accHeadId=" + id;
+
+        $.get(url, function (data) {
+
+            //console.log(data);
+
+
+            if (data.length > 0) {
+                var Name = data[0]["CustomerName"];
+                var total = data[0]["TotalAmount"];
+
+                var TotalPaid = data[0]["TotalPaid"];
+                var TotalDue = data[0]["TotalDue"];
+            } else {
+
+                var total = 0;
+
+                var TotalPaid = 0;
+                var TotalDue = 0;
+            }
+
+
+
+            $("#totalAmt").text(total);
+            $("#totalPaid").text(TotalPaid);
+            $("#totalBal").text(TotalDue);
+
+        });
+
+    }
+
+
+    var dicount = 0;
+
+    $("#Discount").bind('change paste keyup', function () {
+
+
+       if (productCount == 0) {
+            alert("Please Select a product.");         
+           $("#Discount").val(0);
+            return ;
+
+        }
+
+        console.log("totalNow " + totalTemp);
+
+        var payment = totalTemp;
+
+            if (isNaN(parseInt(this.value))) {
+                var amt = 0;
+            } else {
+                var amt = parseInt(this.value);
+            }
+
+            $("#Total").val(payment - amt);
+
+            totalNow = payment - amt;;
+            $("#Due").val(payment - amt);
+
+            $("#VAT").val(0);
+            $("#VAT_Amount").val(0);
+            $("#Paid").val(0);
+
+            discount = amt;
+
+
+       
+
+    });
+
+
+    $('#SalesDate').datepicker({
+         format: "dd/mm/yyyy"
+    });
+
+
+    $('#pCategory').select2({
+        width: '100%'
+
+    });
+
+    
+     
+
+    $('#Payment_Type').select2({
+        width: '100%'
+
+    });
+
+
+    $("#next").click(function () {
+
+        if (productCount == 0) {
+            alert("Please Select a product.");
+            $("#products").focus();
+            $("#Discount").val(0);
+            return;
+
+        }
+
+        if (validate() == true) {
+
+
+            $("#title").text("Set Discount/VAT/Payment");
+            $("#next").hide();
+            $(".nextHide").hide();
+            $(".prev").show();
+
+
+        } else {
+            alert("Product  Quantity Not Set");
+            $("#Discount").val(0);
+        }
+
+    });
+
+
+    $('input[type=radio][name=VAT_Type]').change(function () {
+
+        var payment = parseInt($("#Total").val());
+        var vat = $("#VAT").val();
+
+        if (isNaN(parseInt(vat))) {
+            var amt = 0;
+        } else {
+            var amt = parseInt(vat);
+        }
+
+
+        var type = this.value;
+
+        if (type == '+') {
+            $("#Total").val(payment + amt);
+            totalNow = parseInt(payment+amt);
+            $("#Due").val(payment + amt);
+        } else {
+            $("#Total").val(payment - amt);
+            totalNow = parseInt(payment-amt);
+            $("#Due").val(payment - amt);
+        }
+
+
+    });
+
+    $("#VAT").bind('change paste keyup', function () {
+
+
+        var payment = totalTemp - parseInt($("#Discount").val());
+
+        if (isNaN(parseInt(this.value))) {
+            var amt = 0;
+        } else {
+            var amt = parseInt(this.value);
+        }
+
+
+        var type = $('input[name=VAT_Type]:checked').val();
+        var percent = Math.ceil((amt / 100) * payment);
+        console.log(percent);
+
+        $("#VAT_Amount").val(percent);
+
+        if (type == '+') {
+
+            $("#Total").val(payment + percent);
+            totalNow = parseInt(payment + percent);
+            $("#Due").val(payment + percent);
+        } else {
+            $("#Total").val(payment - percent);
+            totalNow = parseInt(payment - percent);
+            $("#Due").val(payment - percent);
+        }
+    });
+
+
+ 
+    function check() {
+        console.log("ProductsListIds : " + ProductsListIds.toString());
+        console.log("ProductsListNames : " + ProductsListNames.toString());
+        console.log("QuantityList : " + QuantityList.toString());
+        console.log("PriceList : " + PriceList.toString());
+        console.log("TotalAmountList : " + TotalAmountList.toString());
+        console.log("totalNow=== = " + totalNow);
+
+    }
+ 
+
+    var items = [];
+
+
+    function GetProductStockInfo(pid,sl) {
+        var pUrl2 = "/Api/GetProductStockInfo?pid="+pid;
+
+        $.get(pUrl2, function (data) {
+
+            if (data.length == 0) {
+                alert("GetProductStockInfo Api call returns a error !");
+            }
+            else {
+
+                $.each(data, function (key, value) {
+
+                    var price = parseInt(value.SellingPrice);
+                    var name = value.ProductName;
+                    var unit = value.Unit;
+                    var catId = parseInt(value.CatId);
+                    var catName = value.CategoryName;
+                    var balance = value.Balance;
+
+                    var fullName = name + " - " + catName; 
+
+
+                    $("#Stock" + sl).val(balance);
+                    $("#Rate" + sl).val(price);
+                    $("#Qty" + sl).val(1);
+                    $("#Unit" + sl).val(unit);
+
+                 
+                    $("#TotalSelected" + sl).val(price);
+
+
+                    $("#Qty" + sl).attr(
+                        {
+                            "max": balance,
+                            "min" : 1
+                        });
+
+                    $("#Qty" + sl).attr('max', balance); 
+
+                 
+
+
+                    countSum();
+                 
+                });
+            }
+            //$('#products').trigger("chosen:updated");       
+        });
+        
+   
+    }
+
+
+    function getProductsList() {
+        var pUrl2 = "/Api/GetProductsList?catId=0";
+
+        $.get(pUrl2, function (data) {
+
+            if (data.length == 0) {
+                $("#products1").append('<option value=""   selected="selected">No Available Product in Stock </option>');
+            }
+            items = data;
+          
+        });
+        initSelectProduct(1, items);
+    }
+
+
+
+    function insertItem(item) {
+        items.push(item);
+    }
+ 
+    function initSelectProduct(serial,data) {
+
+       
+        var link = "/Api/GetProductsList";
+        $("#products" + serial).select2({
+            placeholder: "Search Products",
+            ajax: {  
+                url: link,
+                dataType: 'json',
+                //quietMillis: 250,
+                data: function (term, page) {
+                    return {
+                        catId: 0, // search term
+                    };
+                },
+                results: function (data, page) {  
+                  
+                    return { results: data };
+                },
+                //cache: true
+            }
+            
+         
+        });
+ 
+
+    }
+
+    function updateRate(sl) {
+
+        Calculate(sl);
+        countSum();
+
+    }
+
+    function updateQty(sl) {
+
+        var max = parseInt($("#Qty" + sl).attr('max'));
+        var val = parseInt($("#Qty" + sl).val());
+        console.log(max);
+        console.log(val);
+
+        if (val > max) {
+            alert("Currently Available Stock Balance is " + max);
+            $("#Qty" + sl).val(max);
+        }
+
+
+        Calculate(sl);
+        countSum();
+    }
+
+
+    function Calculate(sl) {
+        var rate = $("#Rate" + sl).val();
+        var Qty = $("#Qty" + sl).val();
+        var total = parseInt(rate) * parseInt(Qty);
+        $("#TotalSelected" + sl).val(total);
+    }
+
+
+
+    function addProductRow() {
+
+
+        if (validate() == false) {
+
+            alert("Please select this product before add more product !");
+            return;
+           
+        }
+
+        productCount++;
+        actualProductCount++;
+
+        var row = ' <tr id="row_' + actualProductCount + '">' +
+            '<td class="text-center" > <span class="sl">' + actualProductCount + '</span></td>' +
+            '<td>' +
+            '<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class=" select2-input products "' +
+            '       id="products' + actualProductCount + '" tabindex="0" placeholder="Select Product By Name or Category" style="width:100%" />' +
+            '</td>' +
+            '<td> <input id="Stock' + actualProductCount + '" min="1" readonly="readonly" class="inp width-100 form-control StockInput" type="number" value="0" placeholder="stock" /></td>' +
+            '<td> <input id="Rate' + actualProductCount + '" min="1" onchange="updateRate(' + actualProductCount + ')" class="inp width-100  form-control RateInput" type="number" value="0" /></td>' +
+            '<td class="width-80 centers"> <input id="Unit' + actualProductCount + '" min="1" class="inp width-100 centers form-control UnitInput" type="text" value="-" readonly="readonly" /></td>' +
+            '<td class="width-80"> <input id="Qty' + actualProductCount + '" min="1" onchange="updateQty(' + actualProductCount + ')" class="inp width-100  form-control QtyInput" type="number" value="1" /></td>' +
+            '<td> <input id="TotalSelected' + actualProductCount + '" class="inp width-100 greyBold form-control TotalSelectedInp"   type="number" value="" /></td>' +
+            '<td class="centers"> <span class="btn btn-outline-danger btn-block" onclick="removeRow(' + actualProductCount + ')"><i class="fa fa-times-circle"></i></span> </td>' +
+            '                        </tr >';
+
+
+
+
+        $("#table tbody tr:last").after(row);
+
+        $("#TotalSelectedInp").change();
+        $('#TotalSelectedInp').trigger("chosen:updated");
+
+        var tableBody = $("#table tbody");
+        tableBody.before(row);
+        initSelectProduct(actualProductCount);
+        row = null;
+
+        addSelectElement(actualProductCount);
+      
+        updateProductSerial();
+
+       
+        
+    }
+
+
+   
+
+
+    function addSelectElement(actualProductCount) {
+
+        $("#products" + actualProductCount)
+            .on("change", function (e) {/* log("change " + JSON.stringify({ val: e.val, added: e.added, removed: e.removed }));*/
+                var sl = this.id.toString().replace("products", "");
+                var val = $("#products" + sl).select2("val");
+
+                if (checkProductsIfSelected(val)) {
+                    alert("Choose a diffrent product. This Product is already selected. ");
+                    $("#products" + sl).select2("val", "");
+                    $("#products" + sl).select2("open");
+                    return;
+                }
+
+                console.log(sl);
+                console.log(val);
+                GetProductStockInfo(val, sl);
+
+              
+
+             
+
+                updateQty(actualProductCount);
+
+            });
+
+    }
+
+
+
+    function countSum() {
+
+        var group = $('.TotalSelectedInp');
+        var sum = 0;
+
+        console.log("Len " + group.length);
+        if (group.length > 0) {
+            group.each(function () {
+                //$(this).attr("name", $(this).attr("name") + "[]")
+
+                var v = parseInt($(this).val());              
+                if (isNaN(v)) v = 0;
+
+                sum += v;
+                console.log("Sum " + sum);
+                console.log("v " + v);
+
+            });
+
+            $("#GrossTotal").val(sum);
+            $("#GrandTotal").val(sum);
+            $("#Paid").val(0);
+            $("#Total").val(sum);
+            $('#Due').val(sum);
+
+        } else {
+            console.log("Len 0");
+
+            $("#GrandTotal").val(sum);
+            $("#GrossTotal").val(sum);
+            $("#Paid").val(0);
+            $("#Total").val(0);
+            $('#Due').val(0);
+        }
+
+        totalTemp = sum;
+
+
+    }
+
+
+    function removeRow(sl) {
+        productCount--;
+        $("#row_" + sl).remove();
+        countSum();
+        updateProductSerial();
+
+      
+    }
+
+
+    function removeProduct(pid) {
+        for (var i = 0; i < products.length; i++) {
+            if (products[i] == pid) {
+                products.splice(i, 1);
+                break;
+            }
+
+        }
+    }
+
+
+
+
+    function validate() {
+        var group = $('.select2-input.products');
+        var flag = true;
+        if (group.length > 0) {
+
+            ProductsListIds = [];
+            group.each(function () {
+                //$(this).attr("name", $(this).attr("name") + "[]");
+                var val = parseInt($(this).val());
+
+                var sl = this.id.toString().replace("products", "");
+
+                if (isNaN(val))
+                    val = 0;
+
+                if (val == 0) {
+                    $('#products' + sl).select2('open');
+                    //alert("Please select this product !");
+                    flag = false;
+                     
+
+                }
+
+                ProductsListIds.push(val); 
+                console.log("P : " + val);
+                console.log("SL : " + sl);
+
+            });
+
+
+        } 
+
+
+
+
+        return flag;
+
+    }
+
+    function checkProductsIfSelected(pid) {
+        var group = $('.select2-input.products');
+        var flag = false;
+        var matchCount = 0;
+        if (group.length > 0) {
+   
+            group.each(function () {
+                //$(this).attr("name", $(this).attr("name") + "[]");
+                var val = parseInt($(this).val());
+
+                if (val == pid) {
+                    matchCount++;
+                }
+                console.log(val + "-" + pid);
+
+            });
+
+        }
+
+        if (matchCount > 1) {
+            return true;
+        } else {
+            return false;
+        }
+        
+
+    }
+
+    
+
+    $("form").submit(function (e) {
+
+        if ($('#AccSubHeadID2').val() == 0) {
+            alert("Please Select Customer !");
+            return false;
+        }
+
+        if (productCount > 0) {
+            getItems();
+
+            return true;
+        } else {
+
+            alert("No Product Selected !");
+            return false;
+        }
+
+
+    });
+
+
+    function updateProductSerial() {
+        var span = document.getElementsByClassName("sl");
+        for (i = 0; i < span.length; i++) {
+            var data = span[i].innerHTML;
+            console.log(data);
+            span[i].innerHTML = i + 1;
+
+        }
+
+    }
+
+    $("#Payment_Type")
+        .on("change", function (e) {
+            /* log("change " + JSON.stringify({ val: e.val, added: e.added, removed: e.removed }));*/
+         
+            if (e.val == "Cash") {
+
+                $("#Payment_Account").prop("readonly", true);
+                $("#Payment_Account").attr("placeholder", "").val("");
+            }
+            else if (e.val == "Bank") {
+
+                $("#Payment_Account").prop("readonly", false);
+                $("#Payment_Account").attr("placeholder", "Bank Account No.").val("").focus();
+            }
+            else if (e.val == "Card") {
+
+                $("#Payment_Account").prop("readonly", false);
+                $("#Payment_Account").attr("placeholder", "Card No.").val("").focus();
+            }
+            else if (e.val == "Cheque") {
+
+                $("#Payment_Account").prop("readonly", false);
+                $("#Payment_Account").attr("placeholder", "Cheque No.").val("").focus();
+            }
+            else if (e.val == "Bkash") {
+
+                $("#Payment_Account").prop("readonly", false);
+                $("#Payment_Account").attr("placeholder", "Bkash No.").val("").focus();
+            } else {
+                $("#Payment_Account").prop("readonly", false);
+                $("#Payment_Account").attr("placeholder", "Other Account No.").val("").focus();
+            }
+        });
+
+
+
+    function getItems() {
+
+
+        var ProductsListIds = [];
+        var ProductsListNames = [];
+        var QuantityList = [];
+        var PriceList = [];
+        var TotalAmountList = [];
+
+ 
+
+        var rates = $('.RateInput');
+
+        if (rates.length > 0) {
+
+            rates.each(function () {
+                var val = $(this).val();
+                PriceList.push(val);
+
+            });
+        }
+
+
+
+        var QtyInput = $('.QtyInput');
+        if (QtyInput.length > 0) {
+
+            QtyInput.each(function () {
+                var val = $(this).val();
+                QuantityList.push(val);
+
+            });
+        }
+
+        var TotalInput = $('.TotalSelectedInp');
+        if (TotalInput.length > 0) {
+
+            TotalInput.each(function () {
+                var val = $(this).val();
+                TotalAmountList.push(val);
+
+            });
+        }
+
+
+        var plist = $('.select2-input.products');
+        if (plist.length > 0) {
+
+            plist.each(function () {
+                var val = $(this).val();
+
+                var sl = this.id.toString().replace("products", "");
+                var name = $("#products" + sl).select2("data");
+
+
+                ProductsListIds.push(val);
+                ProductsListNames.push(name.text);
+            });
+        }
+
+       
+
+
+        console.log("ProductsListIds " + ProductsListIds.toString());
+        console.log("ProductsListNames " + ProductsListNames.toString());
+        console.log("QuantityList " + QuantityList);
+        console.log("PriceList " + PriceList.toString());
+        console.log("TotalAmountList " + TotalAmountList.toString());
+        
+
+ 
+
+
+        $("#ProductCount").val(productCount);
+        $("#ProductsListIds").val(ProductsListIds);
+
+        $("#ProductsListNames").val(ProductsListNames.toString());
+
+
+        $("#PriceList").val(PriceList.toString());
+        $("#QuantityList").val(QuantityList.toString());
+        $("#PriceList").val(PriceList.toString());
+
+        $("#TotalList").val(TotalAmountList.toString());
+
+ 
+
+
+
+    }
+
+
+
+
+    $("#AccSubHeadID2").prepend("<option value='0' selected='selected'>SELECT</option>");
+
+    addProductRow();
+    
+
+    $('#AccSubHeadID2').select2({
+        width: '100%'
+
+    });
+
+  
+
+
+
+</script>

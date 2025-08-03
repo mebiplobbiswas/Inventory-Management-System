@@ -1,0 +1,347 @@
+﻿@model Logistic_Inventory.Models.Payments
+@using Logistic_Inventory.Models
+@{
+    ViewBag.Title = "Create";
+
+    var select = "";
+}
+<script src="~/Scripts/select2/3.5/select2.min.js"></script>
+
+<link href="~/Content/select2/3.5/select2.min.css" rel="stylesheet" />
+<h2>Edit Purchase Payment</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="row">
+
+        <div class="col-md-8">
+
+
+
+            <div class="card">
+                <div class="card-header">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h3 class="title">Transaction Info </h3>
+                        </div>
+
+                        <div class="col-md-8" style="text-align:right">
+                            <span class="text-primary" id="total" style="text-align:right;font-size:25px;font-weight:bold"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PaymentDate, htmlAttributes: new { @class = "control-label col-md-8" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.PaymentDate, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.PaymentDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PurchaseID, "PurchaseID", htmlAttributes: new { @class = "control-label col-md-8" })
+                        <div class="col-md-12">
+                            <select class="form-control" name="PurchaseID" id="PurchaseID">
+                                @foreach (var item in ViewData["PurchaseID"] as List<Purchase>)
+                                {
+                                    var total_due = item.NetPayable;
+                                    var text = item.Providers.CompanyName + "   ( Invoice : " + item.Invoice + " )  ( Total : " + total_due + " )";
+
+                                    if (item.ProvidersID == Model.Purchase.ProvidersID)
+                                    {
+                                        <option selected value="@item.id">@text</option>
+
+                                        select = text;
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.id">@text</option>
+                                    }
+
+                                }
+                            </select>
+                            @Html.ValidationMessageFor(model => model.PurchaseID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-8" for="AccSubHeadID">Account Sub Head</label>
+                        <div class="col-md-12">
+                            <input type="text" id="AccHead" class="form-control" readonly />
+                            @Html.ValidationMessageFor(model => model.AccSubHeadID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PaymentMethod, htmlAttributes: new { @class = "control-label col-md-8" })
+                        <div class="col-md-12">
+                            <input type="radio" name="PaymentMethod" id="PaymentMethod" value="1" checked="checked"> Transfer To Bank Account
+                            &nbsp;&nbsp;&nbsp;<input type="radio" id="PaymentMethod" name="PaymentMethod" value="2"> By Check
+                            &nbsp;&nbsp;&nbsp;<input type="radio" id="PaymentMethod" name="PaymentMethod" value="3"> By Cash
+                            @Html.ValidationMessageFor(model => model.PaymentMethod, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PaymentAmount, htmlAttributes: new { @class = "control-label col-md-8" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.PaymentAmount, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.PaymentAmount, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+
+
+
+                </div>
+                <div class="card-footer">
+
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="col-md-4">
+            <div class="card card-user">
+                <div class="card-body">
+                    <p class="card-text">
+                        <div class="author">
+                            <div class="block block-one"></div>
+                            <div class="block block-two"></div>
+                            <div class="block block-three"></div>
+                            <div class="block block-four"></div>
+                        </div>
+
+                        <div class="card-description">
+
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.TotalBill, htmlAttributes: new { @class = "control-label col-md-8" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.TotalBill, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.TotalBill, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.TotalDue, htmlAttributes: new { @class = "control-label col-md-8" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.TotalDue, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.TotalDue, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.TotalPaid, htmlAttributes: new { @class = "control-label col-md-8" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.TotalPaid, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.TotalPaid, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="ChequeNo">
+                                @Html.LabelFor(model => model.ChequeNo, htmlAttributes: new { @class = "control-label col-md-8" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ChequeNo, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ChequeNo, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group" id="BrankName">
+                                @Html.LabelFor(model => model.BrankName, htmlAttributes: new { @class = "control-label col-md-8" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.BrankName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.BrankName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="BankAccNumber">
+                                @Html.LabelFor(model => model.BankAccNumber, htmlAttributes: new { @class = "control-label col-md-8" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.BankAccNumber, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.BankAccNumber, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+
+
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Comment, htmlAttributes: new { @class = "control-label col-md-8" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Comment, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="AccSubHeadID" id="AccSubHeadID" />
+
+                        </div>
+                        <div class="card-footer">
+
+                            <button type="submit" style="width:100%" class="btn btn-round btn-info"><i class="fa fa-edit"></i>&nbsp; Update</button>
+
+                        </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+<script>
+    var price = 0;
+    var invoice = "";
+    var bill = 0;
+    var paid = 0;
+    var hid = 0;
+    var head = "";
+
+
+    $('#PurchaseID').on('change', function () {
+
+        var v = this.value;
+
+        var url = "/Payments/getPurchase/" + v;
+        $.get(url, function (data) {
+
+            due = data["due"];
+            invoice = data["invoice"];
+            bill = data["bill"];
+            paid = data["paid"];
+            hid = data["hid"];
+            head = data["headName"];
+
+            $("#total").text("DUE : ৳" + due)
+
+            $("#TotalBill").val(bill);
+
+            $("#TotalDue").val(due);
+
+            $("#TotalPaid").val(paid);
+
+            $("#AccHead").val(head);
+            $("#AccSubHeadID").val(hid);
+
+        });
+
+    });
+
+
+    function GetPurchase() {
+        var v = $("#PurchaseID").val();
+
+        var url = "/Payments/getPurchase/" + v;
+        $.get(url, function (data) {
+
+
+            due = data["due"];
+            invoice = data["invoice"];
+            bill = data["bill"];
+            paid = data["paid"];
+            hid = data["hid"];
+            head = data["headName"];
+
+            $("#total").text("DUE : ৳" + due)
+
+            $("#TotalBill").val(bill);
+
+            $("#TotalDue").val(due);
+
+            $("#TotalPaid").val(paid);
+
+            $("#AccHead").val(head);
+            $("#AccSubHeadID").val(hid);
+
+        });
+    }
+
+
+    $('input[type=radio][name=PaymentMethod]').change(function () {
+        var v = this.value;
+
+        if (v == 2) {
+
+            $("#BankAccNumber").hide();
+            $("#BrankName").hide();
+
+
+            $("#ChequeNo").show();
+
+
+        }
+        if (v == 1) {
+            $("#BankAccNumber").show();
+            $("#BrankName").show();
+
+            $("#ChequeNo").hide();
+
+        }
+
+        if (v == 3) {
+            $("#BankAccNumber").hide();
+            $("#BrankName").hide();
+
+            $("#ChequeNo").hide();
+
+        }
+    });
+
+
+    $('#PaymentAmount').on("keyup keydown change paste", function (e) {
+        var payment = parseInt(this.value);
+
+        if (payment > bill) {
+
+            alert("Payment Amount Cannot Be Greather Than Total Bill");
+
+            $("#PaymentAmount").val(bill);
+        }
+
+    });
+
+    $("#ChequeNo").hide();
+
+
+    GetPurchase();
+
+    $('select').select2({
+        width: '88%'
+
+    });
+
+
+  
+
+
+    //$('#PurchaseID').append($option).trigger('change');
+
+
+</script>

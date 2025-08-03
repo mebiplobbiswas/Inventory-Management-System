@@ -1,0 +1,481 @@
+﻿@model Logistic_Inventory.Models.Sales
+@using Logistic_Inventory.Models;
+@{
+    ViewBag.Title = "Create";
+    ViewBag.page = "sales";
+}
+<script src="~/Scripts/cal/bootstrap-datepicker.js"></script>
+
+
+
+
+<link href="~/Content/cal/bootstrap-datepicker.css" rel="stylesheet" />
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"> Sales Dues</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/Sales")">Sales</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Pay Due</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="@Url.Content("~/Sales")" class="btn btn-sm btn-neutral">Sales List</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h3 class="mb-0">Pay Dues</h3>
+                </div>
+                <div class="card-body col-md-6">
+
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+
+
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            @Html.HiddenFor(model => model.id)
+                            @Html.HiddenFor(model => model.CustomerID)
+                            @Html.HiddenFor(model => model.ProductsID)
+
+                            @Html.HiddenFor(model => model.BranchID)
+
+                            @Html.HiddenFor(model => model.AccSubHeadID)
+
+                            @Html.HiddenFor(model => model.ProductCount)
+
+                            @Html.HiddenFor(model => model.ProductsListIds)
+                            @Html.HiddenFor(model => model.ProductsListNames)
+                            @Html.HiddenFor(model => model.SalesQuantity)
+                            @Html.HiddenFor(model => model.PriceList)
+
+
+                            <input type="hidden" name="CustomerID" value="@Model.CustomerID" />
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.SalesDate, htmlAttributes: new { @class = "control-label col-md-6" })
+                                        <div class="col-md-12">
+
+
+                                            <input required class="form-control text-box single-line" placeholder="Sales Date" data-val="true"
+                                                   data-val-date="The field Purchase Date must be a date." data-val-required="The Purchase Date field is required."
+                                                   id="SalesDate" name="SalesDate" type="text" value="@Model.SalesDate.Value.ToShortDateString()">
+                                            @Html.ValidationMessageFor(model => model.SalesDate, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Invoice, htmlAttributes: new { @class = "control-label col-md-6" })
+                                        <div class="col-md-12">
+                                            <input class="form-control text-box single-line" data-val="true" data-val-required="The Invoice field is required." id="Invoice" name="Invoice" type="text" value="@Model.Invoice" readonly="readonly">
+                                            @Html.ValidationMessageFor(model => model.Invoice, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="control-label col-md-6" for="ProductsID">Product</label>
+                                <div class="col-md-12">
+
+                                    <input type="text" class="form-control" value="@Model.ProductsListNames" readonly="readonly" />
+
+
+
+                                </div>
+                            </div>
+
+
+
+
+
+                            <div class="form-group" style="display:none">
+                                @Html.LabelFor(model => model.AccSubHeadID, "AccSubHeadID", htmlAttributes: new { @class = "control-label col-md-6" })
+                                <div class="col-md-12">
+                                    @Html.DropDownList("AccSubHeadID", null, htmlAttributes: new { @class = "form-control" })
+
+                                    @Html.ValidationMessageFor(model => model.AccSubHeadID, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-6" for="ProductsID">Customer</label>
+                                <div class="col-md-12">
+
+                                    <input type="text" class="form-control" value="@Model.Customer.CustomerName" readonly="readonly" />
+
+                                </div>
+                            </div>
+
+                            <div class="form-group hide">
+                                <label class="control-label col-md-6" for="ProductsID">Selling Price (৳)</label>
+                                <div class="col-md-12">
+                                    <input class="form-control text-box single-line" data-val="true" data-val-number="The field Unit Price must be a number." data-val-required="The Unit Price field is required."
+                                           id="UnitPrice" name="UnitPrice" type="number" value="@Model.UnitPrice" readonly="readonly">
+                                    @Html.ValidationMessageFor(model => model.UnitPrice, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.SalesQuantity, htmlAttributes: new { @class = "control-label col-md-6" })
+                                <div class="col-md-12">
+                                    <input class="form-control text-box single-line" data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required."
+                                           id="QuantityList" name="QuantityList" type="text" value="@Model.QuantityList" readonly="readonly">
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6" for="ProductsID">Total Amount (৳)</label>
+                                        <div class="col-md-12">
+                                            <input class="form-control text-box single-line" data-val="true" data-val-number="The field Total must be a number." data-val-required="The Total field is required."
+                                                   id="Total" name="Total" type="number" value="@Model.Total" readonly="readonly">
+                                            @Html.ValidationMessageFor(model => model.Total, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6" for="ProductsID">Amount Due (৳)</label>
+                                        <div class="col-md-12">
+                                            <input class="form-control text-box single-line" data-val="true" id="Due" name="Due" type="number" value="@Model.Due" readonly="readonly">
+                                            @Html.ValidationMessageFor(model => model.Due, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="control-label col-md-6" for="ProductsID">Paid (৳)</label>
+                                <div class="col-md-12">
+                                    @if (Model.Due != 0)
+                                    {
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <input class="form-control text-box single-line" data-val="true" data-val-number="The field Paid must be a number."
+                                                       data-val-required="The Paid field is required." id="Paid" name="Paid" type="number" value="@Model.Paid">
+                                                @Html.ValidationMessageFor(model => model.Paid, "", new { @class = "text-danger" })
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <button class="btn btn-success btn-block" id="payBtn" style="margin:0">Pay Dues Completely</button>
+                                            </div>
+
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <input class="form-control text-box single-line" data-val="true" data-val-number="The field Paid must be a number."
+                                               data-val-required="The Paid field is required." id="Paid" name="Paid" type="number" value="@Model.Paid">
+                                        @Html.ValidationMessageFor(model => model.Paid, "", new { @class = "text-danger" })
+                                    }
+
+                                </div>
+                            </div>
+
+
+
+                            <br />
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-12">
+                                    <input type="submit" value="Update" class="btn btn-default btn-block btn-lg" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+ 
+
+<style>
+    input, select {
+        max-width: 700px;
+    }
+</style>
+
+
+<script>
+    var stock = 0;
+    var price = 0;
+    $('#ProductsID').on('change', function () {
+        var code = this.value;
+
+        var url2 = "/Api/GetStockPrice?pid=" + code;
+
+
+        $.ajax({
+            type: "GET",
+            url: url2,
+
+            success: function (data) {
+
+                if (typeof data["stock"] === "undefined") {
+
+                    $("#stock").text("000");
+                }
+                else {
+                    $("#stock").text(data["stock"]);
+                    stock = data["stock"];
+
+                    localStorage.setItem("stock", stock);
+                }
+
+
+
+
+                if (typeof data["price"] === "undefined") {
+
+                    $("#price").text(" ‎৳000");
+                }
+                else {
+                    $("#price").text("‎৳" + data["price"]);
+                    stock = data["price"];
+                }
+
+
+
+
+
+            },
+
+            async: false
+        });
+    });
+
+
+
+
+    $('#UnitPrice').on("keyup keydown change", function (e) {
+
+        var unitprice = 0;
+
+        if (!isNaN(this.value))
+            var unitprice = parseInt($("#UnitPrice").val());
+
+        var qty = parseInt($("#SalesQuantity").val());
+        var unitprice = parseInt($("#UnitPrice").val());
+
+        var total = parseInt($("#Total").val());
+
+        var paid = parseInt($("#Paid").val());
+        var due = parseInt($("#Due").val());
+
+
+
+
+        total = qty * unitprice;
+
+        if (paid > total) {
+            alert("Paid amount can not be greather than Total Amount.")
+            $("#Paid").val(total);
+            paid = total;
+        }
+
+        due = total - paid;
+
+        $("#Total").val(parseInt(total));
+        $("#Due").val(parseInt(due));
+
+
+    });
+
+    $('#SalesQuantity').on("keyup keydown change", function (e) {
+
+        var qty = parseInt(this.value)
+        var unitprice = parseInt($("#UnitPrice").val());
+
+        var total = parseInt($("#Total").val());
+
+        var paid = parseInt($("#Paid").val());
+        var due = parseInt($("#Due").val());
+
+        var stock = parseInt(localStorage.getItem("stock"));
+
+        total = qty * unitprice;
+
+        if (paid > total) {
+            alert("Paid amount can not be greather than Total Amount.");
+            $("#Paid").val(total);
+            paid = total;
+        }
+        if (qty > stock) {
+            alert("Only " + stock + " Stock Available.");
+            $('#SalesQuantity').val(stock);
+            qty = stock;
+
+        }
+
+
+        due = total - paid;
+
+
+
+
+
+        $("#Total").val(total);
+        $("#Due").val(due);
+
+
+    });
+
+
+
+
+    $('#Paid').on("keyup keydown change", function (e) {
+
+        var qty = parseInt($("#SalesQuantity").val());
+        var unitprice = parseInt($("#UnitPrice").val());
+
+        var total = parseInt($("#Total").val());
+
+        var paid = parseInt($("#Paid").val());
+        var due = parseInt($("#Due").val());
+
+
+        if (paid > total) {
+            alert("Paid amount can not be greather than Total Amount.")
+            $("#Paid").val(total);
+            paid = total;
+        }
+
+
+        due = total - paid;
+
+        $("#Total").val(total);
+        $("#Due").val(due);
+
+
+    });
+
+
+
+
+    $(document).ready(function () {
+
+        var id = $('#ProductsID').val();
+
+
+        var url2 = "/Api/GetStockPrice?pid=" + id;
+
+
+        $.ajax({
+            type: "GET",
+            url: url2,
+
+            success: function (data) {
+
+                if (typeof data["stock"] === "undefined") {
+
+                    $("#stock").text("000");
+                }
+                else {
+                    $("#stock").text(data["stock"]);
+                    stock = data["stock"];
+
+                    localStorage.setItem("stock", stock);
+                }
+
+
+
+
+                if (typeof data["price"] === "undefined") {
+
+                    $("#price").text("৳000");
+                }
+                else {
+                    $("#price").text("‎৳" + data["price"]);
+                    stock = data["price"];
+                }
+
+
+
+
+
+            },
+
+            async: false
+        });
+    });
+
+
+
+    $('#SalesDate').datepicker({
+        weekStart: 1,
+        color: 'red',
+        format: 'dd/mm/yyyy'
+    });
+
+
+    $("#payBtn").click(function () {
+
+        var total = $("#Total").val();
+
+        $("#Paid").val(total);
+
+
+
+        var qty = parseInt($("#SalesQuantity").val());
+        var unitprice = parseInt($("#UnitPrice").val());
+
+        var total = parseInt($("#Total").val());
+
+        var paid = parseInt($("#Paid").val());
+        var due = parseInt($("#Due").val());
+
+
+        if (paid > total) {
+            alert("Paid amount can not be greather than Total Amount.")
+            $("#Paid").val(total);
+            paid = total;
+        }
+
+
+        due = total - paid;
+
+        $("#Total").val(total);
+        $("#Due").val(due);
+
+
+
+
+    });
+
+</script>

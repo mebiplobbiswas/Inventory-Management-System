@@ -1,0 +1,1037 @@
+﻿
+@using Logistic_Inventory.Models.db_first;
+@using Logistic_Inventory.Models;
+
+
+
+
+@{
+    ViewBag.Title = "Collection Report";
+    var i = 1;
+
+    var t1 = " ( + ";
+    var t2 = " Products More ) ";
+
+    var fileName = System.IO.Path.Combine(Server.MapPath("~/Content/img/logo/"), "banner_350.png");
+
+    ViewBag.banner = "data:image/gif;base64," + Convert.ToBase64String(File.ReadAllBytes(fileName));
+
+
+    var dateToday = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Bangladesh Standard Time"));
+
+    var today = dateToday.ToString("MM/dd/yyyy");
+    var lastMonth = dateToday.AddMonths(-1).ToString("MM/dd/yyyy");
+    var tomorrow = dateToday.AddDays(1).ToString("MM/dd/yyyy");
+    ViewBag.page = "production";
+}
+
+<script src="~/Scripts/select2/3.5/select2.min.js"></script>
+
+<link href="~/Content/select2/3.5/select2.min.css" rel="stylesheet" />
+
+
+<link rel="stylesheet" type="text/css" href="~/Content/datatable/jquery.dataTables.css">
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jquery.dataTables.js"></script>
+
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.print.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/dataTables.buttons.min.js"></script>
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.flash.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/pdfmake.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/vfs_fonts.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.html5.min.js"></script>
+
+
+
+<script src="~/Scripts/cal/bootstrap-datepicker.js"></script>
+
+<link href="~/Content/cal/bootstrap-datepicker.css" rel="stylesheet" />
+
+
+ 
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-4 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"><i class="ni ni-money-coins"></i> Production/Collection</h6>
+                    @*<nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/products")">Products</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Collection Records</li>
+                        </ol>
+                    </nav>*@
+                </div>
+                <div class="col-lg-8 col-5 text-right">
+
+                    <a class="btn btn-default btn-sm" href="@Url.Content("~/Purchases/create")" style="color:white"><i class="ni ni-bag-17"></i> &nbsp; Add   Production</a>
+
+                    <a class="btn btn-default btn-sm" href="@Url.Content("~/Purchases/milkproductcollection")" style="color:white"><i class="ni ni-delivery-fast"></i> &nbsp;Add   Milk Production </a>
+
+                    <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#exampleModal"  ><i class="fa fa-search"></i> &nbsp;Date Filter/Search</button>
+
+                     
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Page content -->
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                
+                <div class="card-body">
+                    <div class="nav-wrapper">
+                        <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"><i class="ni ni-time-alarm mr-2"></i>Production Today</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="ni ni-calendar-grid-58 mr-2"></i>Production Last One Month</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="fa fa-calendar"></i> Production  Since Begining</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                                    
+                                    <table class="display" id="tbl" style="font-size:12px;font-weight:bold;color:black">
+                                        <thead>
+                                            <tr class="th_bg">
+                                                <th>SL</th>
+                                                <th>
+                                                    Date
+                                                </th>
+                                                <th>
+                                                    Product Name
+                                                </th>
+
+                                                <th>
+                                                    Provider
+                                                </th>
+
+
+                                                <th style="width:110px">
+                                                    Invoice
+                                                </th>
+
+
+                                                <th>
+                                                    Quantity
+                                                </th>
+
+                                                <th>
+                                                    Net Payable
+                                                </th>
+
+                                                <th style="width:90px"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+
+                                        <tfoot>
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+
+
+                                                <th></th>
+                                                <th>Total</th>
+
+                                                <th style="float:left;font-weight:bold"></th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+
+
+                                    </table>
+                                    
+                                    
+                                
+                                
+                                </div>
+                                <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                   
+                                    
+                                    <table class="display" id="tbl2" style="font-size: 12px;font-weight: bold;width: 100%;color:black;">
+                                        <thead>
+                                            <tr class="th_bg">
+                                                <th>SL</th>
+                                                <th>
+                                                    Date
+                                                </th>
+                                                <th>
+                                                    Product Name
+                                                </th>
+
+                                                <th>
+                                                    Provider
+                                                </th>
+
+
+                                                <th style="width:110px">
+                                                    Invoice
+                                                </th>
+
+
+                                                <th>
+                                                    Quantity
+                                                </th>
+
+                                                <th>
+                                                    Net Payable
+                                                </th>
+
+                                                <th style="width:90px"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+
+
+                                                <th></th>
+                                                <th>Total</th>
+
+                                                <th style="float:left;font-weight:bold"></th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+
+
+                                    </table>
+                                    
+                                    
+                                    
+                                     
+                                </div>
+                                <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
+                                    <table class="display" id="tbl3" style="font-size:12px;font-weight:bold;width:100%;color:black;">
+                                        <thead>
+                                            <tr class="th_bg">
+                                                <th>SL</th>
+                                                <th>
+                                                    Date
+                                                </th>
+                                                <th>
+                                                    Product Name
+                                                </th>
+
+                                                <th>
+                                                    Provider
+                                                </th>
+
+
+                                                <th style="width:110px">
+                                                    Invoice
+                                                </th>
+
+
+                                                <th>
+                                                    Quantity
+                                                </th>
+
+                                                <th>
+                                                    Net Payable
+                                                </th>
+
+                                                <th style="width:90px"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+
+
+                                                <th></th>
+                                                <th>Total</th>
+
+                                                <th style="float:left;font-weight:bold"></th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+
+
+                                    </table>
+                                
+                                                            
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Filter By Date Range</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+
+                            <input class="form-control text-box single-line" autocomplete="off" data-val="true" id="fromCopy" onchange="myDate1()" placeholder="Date From" type="date" value="@today">
+                            <input id="from" type="hidden" value="@today">
+                            <input id="from2" type="hidden" value="@lastMonth">
+                            <input id="from3" type="hidden" value="">
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+
+                            <input class="form-control text-box single-line" autocomplete="off" placeholder="Date To" id="toCopy" onchange="myDate2()" type="date" value="@tomorrow">
+                            <input id="to" type="hidden" value="@tomorrow">
+                            <input id="to2" type="hidden" value="@today">
+                            <input id="to3" type="hidden" value="">
+
+                        </div>
+                    </div>
+               
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary text-danger"  id="clearNow"><i class="fa fa-times"></i> Clear</button>
+                <button type="button" class="btn btn-primary" id="dateSarch" ><i class="fa fa-search"></i> Filter/Search</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+    var table = null;
+    var table2 = null;
+    var table3 = null;
+    var url = location.protocol + '//' + location.host + "/purchases/GetPurchasesAjax"
+
+    $(document).ready(function () {
+
+
+        table =  $('#tbl').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax":
+            {
+                "url": url,
+                "type": "POST",
+                data: function (d) {
+                    d.dateFrom = $("#from").val(),
+                        d.dateTo = $("#to").val()
+                }
+            },
+            rowId: 'id',
+            "columns": [
+                { "data": "SL", defaultContent: '' },
+                { data: "PurchaseDate", render: function (data, type, full, meta) { return '<b>' + full.PurchaseDate + '</b>' } },
+                { data: "ProductName", render: function (data, type, full, meta) { return '<b>' + full.ProductName + '</b>' } },
+                { "data": "ProviderName" },
+                { "data": "Invoice" },
+
+                {
+                    data: "Status",
+                    render: function (data, type, full, meta) {
+
+                        if (full.PurchaseQuantity == '0') {
+                            return '(' + full.Quantity + ' ) ' + full.UnitShortName;
+                        }
+
+                        return '( ' + full.PurchaseQuantity + ' ) ' + full.UnitShortName;
+
+                    }
+                }
+                ,
+                //{ data: "UnitPrice", render: function (data, type, full, meta) { return '<b>' + full.UnitPrice + '৳</b>' } },
+                { data: "NetPayable", render: function (data, type, full, meta) { return  full.NetPayable  } },
+
+                {
+                    data: "Action",
+                    render: function (data, type, full, meta) {
+
+                        return '<div class="btn-group btn-group-toggle float-right" data-toggle="buttons">' +
+                            '<label class="btn btn-sm btn-default btn-simple active" id="1" onclick="View(' + full.id + ')">' +
+                            '<input type="radio" name="options" checked="">' +
+                            '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="ni ni-single-copy-04"></i></span>' +
+                            '<span class="d-block d-sm-none">' +
+                            '<i class="ni ni-single-copy-04"></i>' +
+                            '</span>' +
+                            '</label>' +
+                            '<button class="btn btn-sm btn-default btn-simple" id="2" onclick="Delete(' + full.id + ')">' +
+                 
+                            '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="fa fa-times-circle"></i></span>' +
+                            '<span class="d-block d-sm-none">' +
+                            '<i class="fa fa-times-circle"></i>' +
+                            '</span>' +
+                            '</button>' +
+                            '</div>';
+
+                    }
+                },
+
+            ],
+            "aLengthMenu": [[ 100, 200, 300, 500, 1000], [ '100 Rows', '200 Rows', '300 Rows', '500 Rows', '1000 Rows']],
+            "pageLength": 100,
+            "language": {
+
+                "search": '<i class="fa fa-search"></i>',
+                "searchPlaceholder": "Search By Provider",
+                "paginate": {
+                    "previous": '<i class="fa fa-angle-left"></i>',
+                    "next": '<i class="fa fa-angle-right"></i>'
+                }
+            },
+              dom: 'lBfrtip',
+             buttons: [
+
+                 {
+                    extend: 'pdf',
+                    text: '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                    customize: function (doc) {
+                        doc.content.splice(0, 0, {
+                            margin: [0, 0, 0, 0],
+
+                            alignment: 'left',
+                            image: '@ViewBag.banner'
+                        });
+
+                    }
+                }
+                 ,
+                 {
+                    extend: 'excel',
+                    text: '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+                    title: "@ViewBag.Title",
+                    footer: true,
+
+
+                },
+                 {
+                    extend: 'csv',
+                    text: '<i class="fa fa-file-word" aria-hidden="true"></i> CSV',
+                     title: "@ViewBag.Title",
+                    footer: true
+
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: "@ViewBag.Title",
+                    autoPrint: true,
+                    footer: true ,
+                    customize: function (win)
+                    {
+                        var url = location.protocol + '//' + location.host + "/Content/img/Inventory.png";
+                        $(win.document.body).find('.table>thead>tr>th').css("color", "black");
+                        $(win.document.body).find('.table>tbody>tr>td').css("color", "black");
+
+
+                        $(win.document.body)
+                            .css('font-size', '10pt').css('background-color', 'white')
+                        .prepend( '<img src="'+url+'" style="position:relative; top:0; left:0;width:600px" />'  );
+                        $(win.document.body).find('h1').css('font-size', '20px').css('font-weight', 'bold').css('text-transform', 'uppercase').css('color', 'black').css('margin-top', '15px');
+                    }
+                }
+
+            ], fixedHeader: {
+                header: true,
+                footer: true
+            }
+             ,
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api(), data;
+
+                // Remove the formatting to get integer data for summation
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+                // Total over all pages
+                total = api
+                    .column(6)
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Total over this page
+                pageTotal = api
+                    .column(6, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(6).footer()).html(
+                    pageTotal
+                );
+            }
+
+
+        //});
+
+        });
+    
+
+
+
+
+       table2 =  $('#tbl2').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax":
+            {
+                "url": url,
+                "type": "POST",
+                data: function (d) {
+                    d.dateFrom = $("#from2").val(),
+                        d.dateTo = $("#to2").val()
+                }
+           },
+           rowId: 'id',
+            "columns": [
+                { "data": "SL", defaultContent: '' },
+                { data: "PurchaseDate", render: function (data, type, full, meta) { return '<b>' + full.PurchaseDate + '</b>' } },
+                { data: "ProductName", render: function (data, type, full, meta) { return '<b>' + full.ProductName + '</b>' } },
+                { "data": "ProviderName" },
+                { "data": "Invoice" },
+
+                {
+                    data: "Status",
+                    render: function (data, type, full, meta) {
+
+                        if (full.PurchaseQuantity == '0') {
+                            return '(' + full.Quantity + ' ) ' + full.UnitShortName;
+                        }
+
+                        return '( ' + full.PurchaseQuantity + ' ) ' + full.UnitShortName;
+
+                    }
+                }
+                ,
+                //{ data: "UnitPrice", render: function (data, type, full, meta) { return '<b>' + full.UnitPrice + '৳</b>' } },
+                { data: "NetPayable", render: function (data, type, full, meta) { return  full.NetPayable  } },
+
+                {
+                    data: "Action",
+                    render: function (data, type, full, meta) {
+
+                        return '<div class="btn-group btn-group-toggle float-right" data-toggle="buttons">' +
+                            '<label class="btn btn-sm btn-default btn-simple active" id="1" onclick="View(' + full.id + ')">' +
+                            '<input type="radio" name="options" checked="">' +
+                            '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="ni ni-single-copy-04"></i></span>' +
+                            '<span class="d-block d-sm-none">' +
+                            '<i class="ni ni-single-copy-04"></i>' +
+                            '</span>' +
+                            '</label>' +
+                            '<button class="btn btn-sm btn-default btn-simple" id="2" onclick="Delete(' + full.id + ')">' +
+                  
+                            '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="fa fa-times-circle"></i></span>' +
+                            '<span class="d-block d-sm-none">' +
+                            '<i class="fa fa-times-circle"></i>' +
+                            '</span>' +
+                            '</button>' +
+                            '</div>';
+
+                    }
+                },
+
+            ],
+            "aLengthMenu": [[ 100, 200, 300, 500, 1000], [ '100 Rows', '200 Rows', '300 Rows', '500 Rows', '1000 Rows']],
+            "pageLength": 100,
+            "language": {
+
+                "search": '<i class="fa fa-search"></i>',
+                "searchPlaceholder": "Search By Provider",
+                "paginate": {
+                    "previous": '<i class="fa fa-angle-left"></i>',
+                    "next": '<i class="fa fa-angle-right"></i>'
+                }
+            },
+              dom: 'lBfrtip',
+             buttons: [
+
+                 {
+                    extend: 'pdf',
+                    text: '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                    customize: function (doc) {
+                        doc.content.splice(0, 0, {
+                            margin: [0, 0, 0, 0],
+
+                            alignment: 'left',
+                            image: '@ViewBag.banner'
+                        });
+
+                    }
+                }
+                 ,
+                 {
+                    extend: 'excel',
+                    text: '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+                    title: "@ViewBag.Title",
+                    footer: true,
+
+
+                },
+                 {
+                    extend: 'csv',
+                    text: '<i class="fa fa-file-word" aria-hidden="true"></i> CSV',
+                     title: "@ViewBag.Title",
+                    footer: true
+
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: "@ViewBag.Title",
+                    autoPrint: true,
+                    footer: true ,
+                    customize: function (win)
+                    {
+                        var url = location.protocol + '//' + location.host + "/Content/img/logo/banner_1000.png";
+
+
+
+                        $(win.document.body).find('.table>thead>tr>th').css("color", "black");
+                        $(win.document.body).find('.table>tbody>tr>td').css("color", "black");
+
+
+                        $(win.document.body)
+                            .css('font-size', '10pt').css('background-color', 'white')
+                        .prepend( '<img src="'+url+'" style="position:relative; top:0; left:0;width:600px" />'  );
+                        $(win.document.body).find('h1').css('font-size', '20px').css('font-weight', 'bold').css('text-transform', 'uppercase').css('color', 'black').css('margin-top', '15px');
+                    }
+                }
+
+            ], fixedHeader: {
+                header: true,
+                footer: true
+            }
+             ,
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api(), data;
+
+                // Remove the formatting to get integer data for summation
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+                // Total over all pages
+                total = api
+                    .column(6)
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Total over this page
+                pageTotal = api
+                    .column(6, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(6).footer()).html(
+                    pageTotal
+                );
+            }
+
+
+        //});
+
+        });
+    
+
+
+
+       table3 =  $('#tbl3').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax":
+            {
+                "url": url,
+                "type": "POST",
+                data: function (d) {
+                    d.dateFrom = $("#from3").val(),
+                    d.dateTo = $("#to3").val()
+                }
+           },
+           rowId: 'id',
+            "columns": [
+                { "data": "SL", defaultContent: '' },
+                { data: "PurchaseDate", render: function (data, type, full, meta) { return '<b>' + full.PurchaseDate + '</b>' } },
+                { data: "ProductName", render: function (data, type, full, meta) { return '<b>' + full.ProductName + '</b>' } },
+                { "data": "ProviderName" },
+                { "data": "Invoice" },
+
+                {
+                    data: "Status",
+                    render: function (data, type, full, meta) {
+
+                        if (full.PurchaseQuantity == '0') {
+                            return '(' + full.Quantity + ' ) ' + full.UnitShortName;
+                        }
+
+                        return '( ' + full.PurchaseQuantity + ' ) ' + full.UnitShortName;
+
+                    }
+                }
+                ,
+                //{ data: "UnitPrice", render: function (data, type, full, meta) { return '<b>' + full.UnitPrice + '৳</b>' } },
+                { data: "NetPayable", render: function (data, type, full, meta) { return  full.NetPayable  } },
+
+                {
+                    data: "Action",
+                    render: function (data, type, full, meta) {
+
+                        return '<div class="btn-group btn-group-toggle float-right" data-toggle="buttons">' +
+                            '<label class="btn btn-sm btn-default btn-simple active" id="1" onclick="View(' + full.id + ')">' +
+                            '<input type="radio" name="options" checked="">' +
+                            '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="ni ni-single-copy-04"></i></span>' +
+                            '<span class="d-block d-sm-none">' +
+                            '<i class="ni ni-single-copy-04"></i>' +
+                            '</span>' +
+                            '</label>' +
+                            '<button class="btn btn-sm btn-default btn-simple" id="2" onclick="Delete(' + full.id + ')">' +
+                           
+                            '<span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="fa fa-times-circle"></i></span>' +
+                            '<span class="d-block d-sm-none">' +
+                            '<i class="fa fa-times-circle"></i>' +
+                            '</span>' +
+                            '</button>' +
+                            '</div>';
+
+                    }
+                },
+
+            ],
+            "aLengthMenu": [[ 100, 200, 300, 500, 1000], [ '100 Rows', '200 Rows', '300 Rows', '500 Rows', '1000 Rows']],
+            "pageLength": 100,
+            "language": {
+
+                "search": '<i class="fa fa-search"></i>',
+                "searchPlaceholder": "Search By Provider",
+                "paginate": {
+                    "previous": '<i class="fa fa-angle-left"></i>',
+                    "next": '<i class="fa fa-angle-right"></i>'
+                }
+            },
+              dom: 'lBfrtip',
+              buttons: [
+
+                 {
+                    extend: 'pdf',
+                    text: '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                    customize: function (doc) {
+                        doc.content.splice(0, 0, {
+                            margin: [0, 0, 0, 0],
+
+                            alignment: 'left',
+                            image: '@ViewBag.banner'
+                        });
+
+                    }
+                }
+                 ,
+                 {
+                    extend: 'excel',
+                    text: '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+                    title: "@ViewBag.Title",
+                    footer: true,
+
+
+                },
+                 {
+                    extend: 'csv',
+                    text: '<i class="fa fa-file-word" aria-hidden="true"></i> CSV',
+                     title: "@ViewBag.Title",
+                    footer: true
+
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: "@ViewBag.Title",
+                    autoPrint: true,
+                    footer: true ,
+                    customize: function (win)
+                    {
+                        var url = location.protocol + '//' + location.host + "/Content/img/logo/banner_1000.png";
+
+
+
+                        $(win.document.body).find('.table>thead>tr>th').css("color", "black");
+                        $(win.document.body).find('.table>tbody>tr>td').css("color", "black");
+
+
+                        $(win.document.body)
+                            .css('font-size', '10pt').css('background-color', 'white')
+                        .prepend( '<img src="'+url+'" style="position:relative; top:0; left:0;width:600px" />'  );
+                        $(win.document.body).find('h1').css('font-size', '20px').css('font-weight', 'bold').css('text-transform', 'uppercase').css('color', 'black').css('margin-top', '15px');
+                    }
+                }
+
+            ], fixedHeader: {
+                header: true,
+                footer: true
+            }
+             ,
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api(), data;
+
+                // Remove the formatting to get integer data for summation
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+                // Total over all pages
+                total = api
+                    .column(6)
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Total over this page
+                pageTotal = api
+                    .column(6, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(6).footer()).html(
+                    pageTotal
+                );
+            }
+
+
+        //});
+
+        });
+    });
+
+
+
+    //var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+
+
+
+    function edit(id) {
+        window.location.href = "/Purchases/Edit/" + id;
+
+    }
+
+    function View(id) {
+        window.location.href = "/Purchases/details/" + id;
+
+    }
+
+
+
+    $('#invoice').select2({
+        width: '99%'
+
+    });
+
+
+    $('#pid').select2({
+        width: '99%'
+
+    });
+
+
+    $("#dateSarch").click(function () {
+
+
+        table.ajax.url(url).load();
+
+    });
+
+    $("#clearNow").click(function () {
+
+
+        $("#from").val('');
+        $("#to").val("");
+
+        $("#fromCopy").val('');
+        $("#toCopy").val("");
+
+    });
+
+
+
+    function myDate1() {
+       var d = new Date(document.getElementById("fromCopy").value);
+        var day = pad(d.getDate(), 2);
+        var month = pad(d.getMonth()+1,2);
+
+        var year = d.getFullYear();
+        var date = month + "/" + day + "/" + year;
+        console.log("From " +date);
+        $("#from").val( date);
+    }
+    function myDate2() {
+        var d = new Date(document.getElementById("toCopy").value);
+        var day = pad(d.getDate(), 2);
+        var month = pad(d.getMonth()+1, 2);
+
+        var year = d.getFullYear();
+        var date = month + "/" + day + "/" + year;
+        console.log("To : "  + date);
+        $("#to").val(date);
+    }
+
+    function pad(str, max) {
+        str = str.toString();
+        return str.length < max ? pad("0" + str, max) : str;
+    }
+
+
+
+
+
+
+
+    $('#tbl tbody').on('click', 'tr', function () {
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+        }
+        else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+        }
+
+      
+    });
+
+   
+
+    //function Delete(id) {
+    //  //  window.location.href = "/Purchases/delete/" + id;
+    //     $('#'+id).remove();
+
+    //    }
+
+    function Delete(id) {
+        // window.location.href = "/Categories/delete/" + id;
+        var con = confirm('Are you sure you want to delete ?');
+        if (con) {
+            // Save it!
+            var url = "/Api/DeletePurchase?id=" + id;
+            $.get(url, function (data) {
+
+                console.log(data);
+                var Status = data["status"];
+                var Code = parseInt(data["code"]);
+
+
+              //  $("#row_" + id).remove();
+                //table.ajax.url(url).load();
+                table.row("#" + id).remove().draw();
+                table2.row("#" + id).remove().draw();
+                table3.row("#" + id).remove().draw();
+                //$('#' + id).remove();
+                //table2.ajax.url(url).load();
+                //table3.ajax.url(url).load();
+
+                return true;
+            });
+
+        } else {
+            // Do nothing!
+            return false;
+        }
+
+        return false;
+
+    }
+
+
+
+
+</script>
+
+
+
+<style>
+    [type="search"] {
+        /* border: 1px solid black; */
+        border-radius: 15px;
+        height: 30px;
+        padding-left: 15px;
+        border-radius: 15px;
+    }
+
+    th {
+        color: black;
+    }
+</style>

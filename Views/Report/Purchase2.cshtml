@@ -1,0 +1,418 @@
+﻿
+@using Logistic_Inventory.Models;
+
+@model  Logistic_Inventory.Models.Purchase
+@using PagedList.Mvc;
+@using System.Globalization;
+
+
+
+@{
+    ViewBag.Title = "Index";
+    var i = 1;
+
+    var t1 = " ( + ";
+    var t2 = " Products More ) ";
+
+    decimal totalAmt = 0;
+    decimal totalQty = 0;
+    decimal total = 0;
+
+    ViewBag.page = "reports";
+}
+
+
+<link href="~/Content/cal/bootstrap-datepicker.css" rel="stylesheet" />
+
+
+<script src="~/Scripts/cal/bootstrap-datepicker.js"></script>
+
+
+
+
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">  Production Report</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")">Reports</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">  Production </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+
+                    <button class="btn btn-success" id="modal" data-toggle="modal" data-target="#ProductModal">
+                        <i class="fa fa-search"></i> Search
+                    </button>
+
+
+                    <button class="btn btn-round btn-default" id="printNow">
+                        <i class="fa fa-print"> Print</i>
+                    </button>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt--6 col-md-6"  id="searchBody">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h3 class="mb-0">Select Product &amp; Date Range</h3>
+                </div>
+                <div class="card-body">
+                    <div class="card-description">
+
+
+
+
+
+                        @using (Html.BeginForm())
+                        {
+
+
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <select style="max-width:700px" name="productId" id="productId">
+                                        <option value="0">SELECT ALL PRODUCT</option>
+
+                                        @foreach (var item in ViewBag.products)
+                                        {
+
+                                            <option value="@item.id">@item.ProductName</option>
+                                        }
+
+
+                                    </select>
+                                </div>
+                            </div>
+
+
+
+
+                            <br />
+                            <div class="form-group">
+                                <div class="col-md-12">
+
+                                    <label>Date From</label>
+                                    <input class="form-control text-box single-line" placeholder="Date From" id="from" name="from" type="text" value="" autocomplete="off">
+
+
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+
+                                    <label>Date To</label>
+                                    <input class="form-control text-box single-line" placeholder="Date From" id="to" name="to" type="text" value="" autocomplete="off">
+
+
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <button class="btn btn-default btn-block" type="submit"> Show Report</button>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+ 
+
+
+@if (!ViewBag.firstRun)
+{
+
+
+
+
+
+
+
+
+
+    if (ViewData["Data"] != null)
+    {
+
+        <div class="container-fluid mt--6">
+            <div class="row justify-content-center">
+                <div class=" col ">
+                    <div class="card" id="content">
+
+                        <div class="card-body">
+                            <table class="table  display" id="tbl">
+                                <thead>
+                                    <tr class="th_bg">
+                                        <th>SL</th>
+                                        <th>
+                                            Date
+                                        </th>
+                                        @*<th>
+                                            Shift
+                                        </th>*@
+
+
+                                        <th>
+                                            Product Name
+                                        </th>
+
+                                        <th>
+                                            Provider
+                                        </th>
+
+
+                                        <th style="width:110px">
+                                            Invoice
+                                        </th>
+
+
+                                        <th>
+                                            Quantity
+                                        </th>
+
+
+                                        <th>
+                                            Unit Price
+                                        </th>
+
+
+
+                                        <th>
+                                            Net Payable
+                                        </th>
+
+                                        @*<th style="text-align:center">Status</th>*@
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var item in ViewData["Data"] as List<Logistic_Inventory.Models.db_first.vPurchaseListByProduct>)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>
+                                                <b>   @item.Date.ToShortDateString() </b>
+                                            </td>
+
+
+                                            @*<td>
+                                                <b>
+                                                    @item.CollectionShift
+
+
+
+                                                </b>
+                                            </td>*@
+
+
+                                            <td>
+                                                <b>
+                                                    @item.ProductName
+
+
+                                                </b>
+                                            </td>
+
+                                            <td>
+                                                @item.Provider
+                                            </td>
+
+
+                                            <td>
+                                                <a href="/purchases/Details/@item.id"> @item.Invoice</a>
+                                            </td>
+
+
+                                            <td>
+                                                @item.Quantity (@item.UnitShortName)
+                                            </td>
+
+
+                                            <td>
+                                                @item.UnitPrice
+                                            </td>
+
+
+                                            <td>
+                                                @item.Total
+
+                                            </td>
+
+
+
+                                        </tr>
+
+
+                                        i++;
+
+                                        totalQty += item.Quantity;
+                                        totalAmt += item.Total;
+                                    }
+
+
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td><h4><b>Total</b></h4></td>
+                                        <td><h4><b>@totalQty</b></h4></td>
+                                        <td></td>
+                                        <td><h4><b>@totalAmt</b></h4></td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+    }
+}
+
+
+
+
+
+<script src="~/Scripts/select2/3.5/select2.min.js"></script>
+
+<link href="~/Content/select2/3.5/select2.min.css" rel="stylesheet" />
+<script>
+
+    $("#printNow").click(function () {
+
+        var toPrint = document.getElementById('tbl');
+
+        var popupWin = window.open('', '', 'toolbar=yes,scrollbars=yes,resizable=yes,width=800,height=800,location=no,left=200px');
+        popupWin.document.open();
+        popupWin.document.write('<html><head><title>Attandence Report </title><style>h1{font-size:20px} h4{font-size:14px;margin-top:20px;} @@media print {a[href]:after {content: none !important;}} .no-print{display: none;} .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{}a[href]: after { content: none!important; } </style > <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" /> <link href="/Content/site.css" rel="stylesheet" /></head > ');
+
+
+        popupWin.document.write('<body onload="window.print();" style="padding:5%"> <div >  ');
+
+        popupWin.document.write('<img src="/Content/img/logo/banner_500.png" width="420" /> ');
+
+        popupWin.document.write('<h3>Production Report </h3>');
+
+        popupWin.document.write('<table class="table table-responsive  table-hover table-bordered" style="font-size:12px" id="print">');
+        popupWin.document.write(toPrint.innerHTML);
+        popupWin.document.write('</table>');
+
+
+
+
+        popupWin.document.write('</div></body></html>');
+        popupWin.document.close();
+
+    });
+
+
+
+
+
+
+    //$(document).ready(function () {
+    //    $('#tbl').DataTable();
+    //});
+
+
+
+
+    var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    console.log(width);
+
+    if (width < 1000) {
+        $("table").addClass("table-responsive");
+        console.log(width);
+    }
+
+    function edit(id) {
+        window.location.href = "/Purchases/Edit/" + id;
+
+    }
+
+    function details(id) {
+        window.location.href = "/Purchases/details/" + id;
+
+    }
+
+    function deletes(id) {
+        window.location.href = "/Purchases/delete/" + id;
+
+    }
+
+
+
+    $('#from').datepicker({
+        weekStart: 1,
+        color: 'black',
+        format: 'dd/mm/yyyy'
+    });
+
+
+    $('#to').datepicker({
+        weekStart: 1,
+
+        format: 'dd/mm/yyyy'
+    });
+
+       $('select').select2({
+        width: '99%'
+
+    });
+
+    @if (!ViewBag.firstRun  )
+    {
+          @:$("#searchBody").hide();
+    }
+
+
+    $('#modal').click(function () {
+
+        $("#content,#content").hide();
+        $("#searchBody").show();
+
+
+    });
+
+</script>
+
+
+

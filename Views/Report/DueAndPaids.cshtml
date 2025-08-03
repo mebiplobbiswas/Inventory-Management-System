@@ -1,0 +1,306 @@
+﻿@model IEnumerable<Logistic_Inventory.Models.Purchase>
+
+@{
+    ViewBag.Title = "Index";
+    var i = 1;
+
+    var t1 = " ( + ";
+    var t2 = " Products More ) ";
+
+    ViewBag.page = "reports";
+}
+
+<div class="row">
+
+    <div class="col-md-8">
+        <h1><i class="tim-icons icon-money-coins"></i>   Dues And Paids</h1>
+    </div>
+
+
+    <div class="col-md-4" style="text-align:right">
+        <button class="btn btn-default btn-round" id="modal" data-toggle="modal" data-target="#ProductModal">
+            <i class="tim-icons icon-zoom-split"></i> Search
+        </button>
+
+
+        <button class="btn btn-round btn-default" id="printNow">
+            <i class="fa fa-print"> Print</i>
+        </button>
+
+
+
+    </div>
+</div>
+
+
+
+
+
+<table class="table table-responsive  table-hover table-bordered" style="font-size:12px">
+    <tr>
+        <th>SL</th>
+        <th>
+            @Html.DisplayNameFor(model => model.Projects.ProjectName)
+        </th>
+
+        <th>
+            Account Head
+        </th>
+        <th>
+            Branch
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Products.ProductName)
+        </th>
+
+        <th>
+            Provider
+        </th>
+
+
+        <th style="width:110px">
+            @Html.DisplayNameFor(model => model.Invoice)
+        </th>
+
+
+        <th>
+            Quantity
+        </th>
+
+
+        <th>
+            @Html.DisplayNameFor(model => model.UnitPrice)
+        </th>
+
+
+
+
+        <th>
+            @Html.DisplayNameFor(model => model.NetPayable)
+        </th>
+
+
+        <th>Total Paid</th>
+
+        <th>Balance</th>
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@i</td>
+            <td>
+                <b> @Html.DisplayFor(modelItem => item.Projects.ProjectName)</b>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccSubHead.SubHeadName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Branch.BranchName)
+            </td>
+
+            <td>
+                <b>
+                    @Html.DisplayFor(modelItem => item.Products.ProductName)  @if (item.ProductsCount > 1)
+
+                    {
+                        var tot = item.ProductsCount - 1;
+                        <p class='text-warning'>@t1 @tot @t2 </p>}
+                </b>
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Providers.CompanyName)
+            </td>
+
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Invoice)
+            </td>
+
+
+            <td>
+                @item.PurchaseQuantity (@item.Units.UnitShortName)
+            </td>
+
+
+            <td>
+                @Html.DisplayFor(modelItem => item.UnitPrice)
+            </td>
+
+
+            <td>
+                @Html.DisplayFor(modelItem => item.NetPayable)
+            </td>
+
+
+            <td>@Html.DisplayFor(modelItem => item.TotalPaid)</td>
+
+            <td>
+
+                @{
+                    var bal = item.NetPayable - item.TotalPaid;
+                    @bal
+                }
+            </td>
+
+
+        </tr>
+
+        i++;
+    }
+    <tr>
+        <td></td>
+        <td colspan="8" class="font26" style="text-align:center"><b>Total</b>  </td>
+        <td class="font26"><u><b>@Convert.ToInt64(ViewBag.totalDue)</b></u> </td>
+        <td class="font26"> <u><b>@ViewBag.totalPaid</b></u>  </td>
+        <td class="font26"> <b><u>@Convert.ToInt64(ViewBag.balance)</u></b></td>
+    </tr>
+</table>
+<style>
+    .font26 {
+        font-size: 20px;
+    }
+</style>
+
+
+
+<div class="modal fade" id="ProductModal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog  " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLongTitle">Search Option</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="col-md-12 ml-auto mr-auto">
+                    <div class="card card-upgrade">
+
+                        <div class="card-body">
+                            <div class="card card-user">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                    </p><div class="author">
+                                        <div class="block block-one"></div>
+                                        <div class="block block-two"></div>
+                                        <div class="block block-three"></div>
+                                        <div class="block block-four"></div>
+
+                                        <h2 class="description">
+                                          Search Options
+                                        </h2>
+                                    </div>
+                                    <p></p>
+                                    <div class="card-description">
+
+
+
+
+
+                                        @using (Html.BeginForm())
+                                        {
+
+
+
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <select class="form-control" style="max-width:700px" name="bid" id="bid">
+                                                        <option value="" selected> Select Branch </option>
+
+                                                        @foreach (var item in ViewBag.branches)
+                                                        {
+
+                                                            <option value="@item.id">@item.BranchName</option>
+                                                        }
+
+
+                                                    </select>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <select class="form-control" style="max-width:700px" name="pid" id="pid">
+                                                        <option value="" selected> Select Provider </option>
+
+                                                        @foreach (var item in ViewBag.providers)
+                                                        {
+
+                                                            <option value="@item.id">@item.CompanyName</option>
+                                                        }
+
+
+                                                    </select>
+                                                </div>
+                                            </div>
+
+
+
+
+                                            <br />
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <button class="btn btn-default btn-block" type="submit"> Show Report</button>
+
+                                                </div>
+
+                                            </div>
+                                        }
+
+                                    </div>
+
+                                    <div class="card-footer">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+
+    $("#printNow").click(function () {
+
+        var toPrint = document.getElementById('tbl');
+
+        var popupWin = window.open('', '', 'toolbar=yes,scrollbars=yes,resizable=yes,width=800,height=800,location=no,left=200px');
+        popupWin.document.open();
+        popupWin.document.write('<html><head><title>Dues And Paids Report </title><style>h1{font-size:20px} h4{font-size:14px}  .no-print{display: none;}.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{}a[href]: after { content: none!important; } </style > <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />  <link href="/Content/site.css" rel="stylesheet" /></head > ');
+
+
+        popupWin.document.write('<body onload="window.print();" style="padding:5%"> <div >  ');
+
+        popupWin.document.write('<table class="table table-responsive  table-hover table-bordered" style="font-size:12px" id="print">');
+        popupWin.document.write(toPrint.innerHTML);
+        popupWin.document.write('</table>');
+
+
+
+
+        popupWin.document.write('</div></body></html>');
+        popupWin.document.close();
+
+    });
+
+
+</script>

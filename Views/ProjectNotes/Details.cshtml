@@ -1,0 +1,124 @@
+﻿@model Logistic_Inventory.Models.ProjectNotes
+
+@{
+    ViewBag.Title = "Details";
+
+}
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+
+                    
+                    <h6 class="h2 text-white d-inline-block mb-0"> Notes Details</h6>
+
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                   
+
+                </div>
+        </div>
+    </div>
+</div>
+    </div>
+<div class="container col-md-8 mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h3 class="mb-0">Notes</h3>
+                </div>
+
+                <div class="card-body">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Subject)
+                        </dt>
+
+                        <dd>
+                            <div class="form-control">@Html.DisplayFor(model => model.Subject)</div>
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.SubTopic)
+                        </dt>
+
+                        <dd>
+                            <div class="form-control">
+                                @Html.DisplayFor(model => model.SubTopic)
+                            </div>
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Details)
+                        </dt>
+
+                        <dd>
+                            <div class="form-control">
+                                @Html.DisplayFor(model => model.Details)
+                            </div>
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Date)
+                        </dt>
+
+                        <dd>
+
+
+                            <div class="form-control">
+                                @Html.DisplayFor(model => model.Date)
+                            </div>
+
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.CreatedBy)
+                        </dt>
+
+                        <dd>
+                            <div class="form-control">
+                                @Html.DisplayFor(model => model.CreatedBy)
+                            </div>
+                        </dd>
+
+                        <dt>
+
+
+                            Updated By
+
+
+                        </dt>
+
+                        <dd>
+
+
+
+                            @if (Model.UpdatedBy == null)
+                            {
+                                <div class="form-control">-</div>
+                            }
+                            else
+                            {
+                                <div class="form-control">@Html.DisplayFor(model => model.UpdatedBy)</div>
+
+                            }
+
+
+                        </dd>
+
+                    </dl>
+
+                    <a href="@Url.Content("~/projectNotes")" class="btn btn-sm btn-primary">All Notes</a>
+                    <a href="@Url.Content("~/projectNotes/edit")/@Model.id" class="btn btn-sm btn-default">Edit</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ 

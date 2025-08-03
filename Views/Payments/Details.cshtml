@@ -1,0 +1,139 @@
+﻿@model Logistic_Inventory.Models.Payments
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Payments</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AccSubHead.SubHeadCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccSubHead.SubHeadCode)
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AccSubHead.SubHeadName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccSubHead.SubHeadName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Purchase.Invoice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Purchase.Invoice)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaymentDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalBill)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalBill)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalDue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalDue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalPaid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalPaid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaymentAmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentMethod)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaymentMethod)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ChequeNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ChequeNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BrankName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BrankName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BankAccNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BankAccNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FullPaymentDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FullPaymentDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Comment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Comment)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

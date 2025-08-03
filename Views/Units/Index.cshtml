@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Logistic_Inventory.Models.Units>
+
+@{
+    ViewBag.Title = "Index";
+    var i = 1;
+    ViewBag.page = "others";
+}
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"> Product Categories</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/products")">Products</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Units</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="@Url.Content("~/units/create")" class="btn btn-md btn-primary"><i class="fa fa-plus-circle"> </i> Add New</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table    table-hover" id="tbl2">
+                        <tr>
+                            <th>Sl</th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.UnitShortName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.UnitFullName)
+                            </th>
+                            @*<th>
+                                @Html.DisplayNameFor(model => model.Details)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.SortOrder)
+                            </th>*@
+                            <th></th>
+                        </tr>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UnitShortName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UnitFullName)
+                                </td>
+                                @*<td>
+                                    @Html.DisplayFor(modelItem => item.Details)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SortOrder)
+                                </td>*@
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
+                                    @*@Html.ActionLink("Details", "Details", new { id = item.id }) |*@
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.id })
+                                </td>
+                            </tr>
+                            i++;
+                        }
+
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
