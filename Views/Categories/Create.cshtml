@@ -1,0 +1,109 @@
+﻿@model Logistic_Inventory.Models.Category
+
+@{
+    ViewBag.Title = "Create";
+}
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"> Product Categories</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/categories")">Categories</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Add</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a href="@Url.Content("~/Categories")" class="btn btn-sm btn-neutral">Category List</a>
+ 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Page content -->
+<div class="container col-md-6 mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                
+                <div class="card-body">
+                    <div class="row icon-examples">
+
+                        <div class="container-fluid mt--12">
+                            <div class="row">
+
+                                <div class="col-xl-8 order-xl-1">
+
+                                    @using (Html.BeginForm())
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <h6 class="heading-small text-muted mb-4">Category</h6>
+                                        <div class="pl-lg-4">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+
+                                                        @Html.LabelFor(model => model.CatName, htmlAttributes: new { @class = "form-control-label" })
+
+                                                        @Html.EditorFor(model => model.CatName, new { htmlAttributes = new { @class = "form-control" } })
+                                                        @Html.ValidationMessageFor(model => model.CatName, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label" for="input-email">Details</label>
+                                                        @Html.EditorFor(model => model.Details, new { htmlAttributes = new { @class = "form-control" } })
+                                                        @Html.ValidationMessageFor(model => model.Details, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row hide">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label hide" for="input-first-name">Sort Order</label>
+                                                        <input class="input-validation-error form-control text-box single-line" data-val="true" data-val-number="The field Sort Order must be a number." data-val-required="The Sort Order field is required." id="SortOrder" name="SortOrder" type="number" value="1">
+                                                        @Html.ValidationMessageFor(model => model.SortOrder, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+                                                        <input type="submit" value="Submit" class="btn btn-primary" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+
+                                    }
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+

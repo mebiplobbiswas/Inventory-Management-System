@@ -1,0 +1,80 @@
+﻿@model Logistic_Inventory.Models.Branch
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<div class="row" ">
+    <div class="col-md-6">
+        <h1 style="margin:0" class="center-block">
+            <i class="fa fa-university" aria-hidden="true"></i>  Branch Edit
+
+
+        </h1>
+
+    </div>
+    <div class="col-md-6">
+        <div class="btn-group btn-group " style="float:right;">
+
+            <a class="btn btn-default" href="@Url.Content("~/branches/create")" style="color:white"><i class="tim-icons icon-pencil"></i> &nbsp;Add New </a>
+
+            <button class="btn btn-default"><i class="fa fa-search"></i>  Search</button>
+
+
+
+            <button class="btn btn-default" id="d3" onclick="print()"><i class="fa fa-print" aria-hidden="true"></i> Print</button>
+
+
+
+        </div>
+    </div>
+</div>
+
+<br />
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Branch</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BranchCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BranchCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.BranchCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BranchName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BranchName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.BranchName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Comment, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Comment, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

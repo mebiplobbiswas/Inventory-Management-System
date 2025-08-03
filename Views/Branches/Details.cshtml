@@ -1,0 +1,68 @@
+﻿@model Logistic_Inventory.Models.Branch
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="row" ">
+    <div class="col-md-6">
+        <h1 style="margin:0" class="center-block">
+            <i class="fa fa-university" aria-hidden="true"></i>  Branch Info
+
+
+        </h1>
+
+    </div>
+    <div class="col-md-6">
+        <div class="btn-group btn-group " style="float:right;">
+
+            <a class="btn btn-default" href="@Url.Content("~/branches/create")" style="color:white"><i class="tim-icons icon-pencil"></i> &nbsp;Add New </a>
+
+            <button class="btn btn-default"><i class="fa fa-search"></i>  Search</button>
+
+
+
+            <button class="btn btn-default" id="d3" onclick="print()"><i class="fa fa-print" aria-hidden="true"></i> Print</button>
+
+
+
+        </div>
+    </div>
+</div>
+
+<br />
+
+<div>
+    <h4>Branch</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.BranchCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BranchCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BranchName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BranchName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Comment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Comment)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

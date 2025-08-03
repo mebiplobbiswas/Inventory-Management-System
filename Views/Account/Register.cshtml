@@ -1,0 +1,117 @@
+﻿@model Logistic_Inventory.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register New Admin Account";
+
+
+    var selectList = new SelectList(
+                    new List<SelectListItem>
+                    {
+        new SelectListItem {Text = "Branch", Value = "Branch"},
+
+        new SelectListItem {Text = "Admin", Value = "Admin"},
+
+        new SelectListItem {Text = "HR", Value = "HR"},
+
+        new SelectListItem {Text = "Super Admin", Value = "Super Admin"}
+
+                    }, "Value", "Text");
+
+}
+
+
+
+<div class="row">
+    <div class="col-md-2">
+
+    </div>
+
+
+
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header" style="text-align:center">
+
+                <i class="tim-icons icon-single-02" style="font-size:80px"></i>
+                <h2 class="title">Register Account</h2>
+            </div>
+            <div class="card-body">
+
+                @Html.ValidationSummary("", new { @class = "text-danger" })
+
+
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="row">
+                        <div class="col-md-12 px-md-4">
+                            <div class="form-group">
+                                <label>Username</label>
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 px-md-4">
+                            <div class="form-group">
+                                <label> Email  </label>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 px-md-4">
+                            <div class="form-group">
+                                <label>  Password </label>
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 px-md-4">
+                            <div class="form-group">
+                                <label>  Confirm Password </label>
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 px-md-4">
+                            <div class="form-group">
+                                <label>  User Role </label>
+                                @Html.DropDownListFor(m => m.UserRole, selectList, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+
+
+
+
+                    <div class="card-footer" style="text-align:center">
+                        <button type="submit" class="btn btn-fill btn-default">Add Account</button>
+                    </div>
+ 
+                }
+
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

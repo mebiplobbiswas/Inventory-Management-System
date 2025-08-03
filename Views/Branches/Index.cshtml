@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Logistic_Inventory.Models.Branch>
+
+@{
+    ViewBag.Title = "Index";
+    var i = 1;
+}
+
+<div class="row" ">
+    <div class="col-md-6">
+        <h1 style="margin:0" class="center-block">
+            <i class="fa fa-university" aria-hidden="true"></i>  Branches
+
+
+        </h1>
+
+    </div>
+    <div class="col-md-6">
+        <div class="btn-group btn-group " style="float:right;">
+
+            <a class="btn btn-default" href="@Url.Content("~/branches/create")" style="color:white"><i class="tim-icons icon-pencil"></i> &nbsp;Add New </a>
+
+            <button class="btn btn-default"><i class="fa fa-search"></i>  Search</button>
+
+
+
+            <button class="btn btn-default" id="d3" onclick="print()"><i class="fa fa-print" aria-hidden="true"></i> Print</button>
+
+
+
+        </div>
+    </div>
+</div>
+
+<br />
+
+<table class="table table-responsive  table-hover">
+    <tr>
+        <th>SL</th>
+        <th>
+            @Html.DisplayNameFor(model => model.BranchCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BranchName)
+        </th>
+       
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>@i</td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BranchCode)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BranchName)
+        </td>
+      
+        <td>
+            <a style="font-size:20px" href="/branches/Edit/@item.id"><i class="fa fa-edit"></i></a>&nbsp; | &nbsp; 
+            <a style="font-size:20px" href="/branches/Details/@item.id"><i class="tim-icons icon-notes"></i></a> &nbsp;  
+           
+        </td>
+
+    </tr>
+        i++;
+    }
+
+</table>

@@ -1,0 +1,144 @@
+﻿@model Logistic_Inventory.Models.AccSubHead
+
+@{
+    ViewBag.Title = "Create";
+    var selected = "selected='selected'";
+    ViewBag.page = "accountheads";
+}
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">  Account Sub Heads</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#">Accounts</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"> Sub Heads</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a class="btn btn-default" href="/AccountSubHeads/" style="color:white">  &nbsp;All Account Heads </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Page content -->
+<div class="container col-md-6 mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h3 class="mb-0">Edit</h3>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+
+
+                             
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.AccHeadSubCode, htmlAttributes: new { @class = "form-control-label  " })
+                                <div class=" ">
+                                    <select name="AccHeadSubCode" id="AccHeadSubCode" class="form-control">
+                                        <option selected="selected">Select</option>
+                                        @{
+                                            foreach (var item in ViewBag.AccHeads)
+                                            {
+                                                var name = item.AccSubCode + " - " + item.AccSubName;
+
+                                                <option   @{ if (Model.AccHeadSubCode == item.AccSubCode) {  @selected } }  value="@item.AccSubCode"   >@name </option>
+                                            }
+                                        }
+
+                                    </select>
+                                    @Html.ValidationMessageFor(model => model.AccHeadSubCode, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="AccHeadName" value="n/a" />
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.SubHeadName, htmlAttributes: new { @class = "form-control-label  " })
+                                <div class=" ">
+                                    @Html.EditorFor(model => model.SubHeadName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.SubHeadName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.SubHeadCode, htmlAttributes: new { @class = "form-control-label  " })
+                                <div class=" ">
+                                    @Html.EditorFor(model => model.SubHeadCode, new { htmlAttributes = new { @class = "form-control" ,@readonly=""} })
+                                    @Html.ValidationMessageFor(model => model.SubHeadCode, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <br />
+                            <div class="form-group">
+
+                                <input type="submit" value="Update" class="btn btn-warning btn-block" />
+
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+<script>
+
+
+    $('#AccHeadSubCode').on('change', function () {
+        var code = this.value;
+
+        var url2 = "/Api/GetAccountCode?subhead=" + code;
+
+
+        $.ajax({
+            type: "GET",
+            url: url2,
+
+            success: function (data) {
+
+
+                if (typeof data[0] === "undefined") {
+
+                    code = parseInt(code) + 1;
+                    $("#SubHeadCode").val(code);
+                }
+                else {
+                    $("#SubHeadCode").val(data[0]);
+                }
+
+
+
+
+            },
+
+            async: false
+        });
+    });
+
+
+
+</script>

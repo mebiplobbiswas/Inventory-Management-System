@@ -1,0 +1,156 @@
+﻿@model IEnumerable<Logistic_Inventory.Models.AccHead>
+
+@{
+    ViewBag.Title = "Index";
+    var i = 1;
+
+    ViewBag.page = "accountheads";
+}
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">  Account Heads</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#">Reports</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"> Account Heads</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a class="btn btn-default" href="/AccountHeads/create" style="color:white"><i class="fa fa-plus"></i> &nbsp;Add New </a>
+                    <button class="btn btn-default"><i class="fa fa-search"></i>  Search</button>
+
+                    <button class="btn btn-default" id="d3" onclick="print()"><i class="fa fa-print" aria-hidden="true"></i> Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+               
+                <div class="card-body">
+                    <table class="table    align-items-center table-hover table-bordered">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>SL</th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.AccName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.AccCode)
+                                </th>
+                                <th>
+                                    Sub Head Name
+                                </th>
+                                <th>
+                                    Sub Head Code
+                                </th>
+                                <th>Debit/Credit</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr id="row_@item.id">
+                                    <td>@i</td>
+                                    <td>
+                                        <b>   @Html.DisplayFor(modelItem => item.AccName)</b>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.AccCode)
+                                    </td>
+                                    <td>
+                                        <b>@Html.DisplayFor(modelItem => item.AccSubName)</b>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.AccSubCode)
+                                    </td>
+                                    <td>
+
+
+                                        @if (item.Side == "DR")
+                                        {
+                                            <span class="badge badge-success">@item.Side</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-danger">@item.Side</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.id > 24)
+                                        {
+                                            @:<a style="font-size:20px;color:black" href="/AccountHeads/Edit/@item.id"><i class="fa fa-edit"></i></a>&nbsp; | &nbsp;
+                                            @*@:<a style="font-size:20px" href="/AccountHeads/Details/@item.id"><i class="ni ni-note-03"></i></a> &nbsp; | &nbsp;*@
+                                            @:<span style="font-size:20px;color:red" onclick="deletes(@item.id)"><i class="fa fa-times-circle"></i></span>
+
+ 
+
+
+                                        }
+                                    </td>
+
+                                </tr>
+                                i++;
+                            }
+                        </tbody>
+                           
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+<script>
+    function deletes(id) {
+        // window.location.href = "/Categories/delete/" + id;
+        var con = confirm('Are you sure   to delete ?');
+        if (con) {
+            // Save it!
+            var url = "/Api/DeleteAccHead?id=" + id;
+            $.get(url, function (data) {
+
+                console.log(data);
+                var Status = data["status"];
+                var Code = parseInt(data["code"]);
+
+
+                $("#row_" + id).remove();
+
+
+
+
+                return true;
+            });
+
+        } else {
+            // Do nothing!
+            return false;
+        }
+
+        return false;
+
+    }
+
+
+</script>

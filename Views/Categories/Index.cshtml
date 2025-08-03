@@ -1,0 +1,182 @@
+﻿@model IEnumerable<Logistic_Inventory.Models.Category>
+
+@{
+    ViewBag.Title = "Index";
+    var i = 1;
+    ViewBag.page = "cat";
+}
+
+    <div class="header bg-primary-grey pb-6">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row align-items-center py-4">
+                    <div class="col-lg-6 col-7">
+                        <h6 class="h2 text-white d-inline-block mb-0"> Product Categories</h6>
+                        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                                <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Content("~/products")">Products</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Category</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="col-lg-6 col-5 text-right">
+                        <a href="@Url.Content("~/Categories/create")" class="btn btn-sm btn-neutral">Add New</a>
+                        @*<a href="#" class="btn btn-sm btn-neutral" id="modal" data-toggle="modal" data-target="#ProductModal">Search</a>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Page content -->
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h3 class="mb-0"> Product Categories</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row icon-examples">
+
+                        <table class="table  align-items-center   table-hover table-bordered">
+                            <thead class="thead-light">
+                                <tr class="th_bg">
+                                    <th>SL</th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.CatName)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Details)
+                                    </th>
+                                    @*<th>
+                @Html.DisplayNameFor(model => model.SortOrder)
+            </th>*@
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr id="row_@item.id">
+                                        <td>@i</td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.CatName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Details)
+                                        </td>
+                                        @*<td>
+                    @Html.DisplayFor(modelItem => item.SortOrder)
+                </td>*@
+                                        <td>
+
+                                            @if (item.id != 9)
+                                            {
+                                                <div class="btn-group btn-group-toggle float-left" data-toggle="buttons">
+
+                                                    <button class="btn btn-sm btn-default btn-simple active" onclick="edit(@item.id)">
+
+
+                                                      
+                                                        <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Edit</span>
+                                                        <span class="d-block d-sm-none">
+                                                            <i class="fa fa-edit"></i>
+                                                        </span>
+
+                                                    </button>
+
+                                                    @*<label class="btn btn-sm btn-default btn-simple" id="1" onclick="details(@item.id)">
+                                                        <input type="radio" class="d-none d-sm-none" name="options">
+                                                        <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Details</span>
+                                                        <span class="d-block d-sm-none">
+                                                            <i class="tim-icons icon-notes"></i>
+                                                        </span>
+                                                    </label>*@
+                                                    <button class="btn btn-sm btn-default btn-simple" id="2" onclick="deletes(@item.id)">
+                                                         
+                                                        <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Delete</span>
+                                                        <span class="d-block d-sm-none">
+                                                            <i class="tim-icons icon-simple-remove"></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+
+                                            }
+
+                                        </td>
+                                    </tr>
+
+                                    i++;
+                                }
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+ 
+
+
+
+ 
+
+<script>
+
+    var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+
+    if (width < 900) {
+        $("table").addClass("table-responsive");
+    }
+
+    function edit(id) {
+        window.location.href = "/Categories/Edit/" + id;
+
+    }
+
+    function details(id) {
+        window.location.href = "/Categories/details/" + id;
+
+    }
+
+    function deletes(id) {
+       // window.location.href = "/Categories/delete/" + id;
+        var con = confirm('Are you sure you want to delete ?');
+        if (con) {
+            // Save it!
+            var url = "/Api/DeleteCategory?catId=" + id;
+            $.get(url, function (data) {
+
+                console.log(data);
+                var Status = data["status"];
+                var Code = parseInt(data["code"]);
+
+                
+                    $("#row_" + id).remove();
+               
+
+               
+
+                return true;
+            });
+
+        } else {
+            // Do nothing!
+            return false;
+        }
+
+        return false;
+
+    }
+</script>

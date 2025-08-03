@@ -1,0 +1,64 @@
+﻿@model Logistic_Inventory.Models.Category
+
+@{
+    ViewBag.Title = "Details";
+    ViewBag.page = "cat";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Category</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CatName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CatName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Details)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Details)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SortOrder)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SortOrder)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+<div class="fixed-plugin hide">
+    <div class="dropdown show-dropdown">
+        <a href="#" data-toggle="dropdown">
+            <i class="fa fa-angle-double-left  fa-2x" style="color:white;font-weight:600"> </i>
+        </a>
+        <ul class="dropdown-menu">
+            <li class="header-title"> Additional Options</li>
+
+            <li class="adjustments-line text-center color-change">
+                <a class="btn btn-default" href="@Url.Content("~/Categories/create")" style="color:white"><i class="tim-icons icon-pencil"></i> &nbsp;Add New </a>
+
+            </li>
+            <li class="adjustments-line text-center color-change">
+                <a class="btn btn-default" href="@Url.Content("~/Categories/")" style="color:white"><i class="tim-icons icon-paper"></i> &nbsp;List </a>
+
+            </li>
+            <li></li>
+
+        </ul>
+    </div>
+</div>

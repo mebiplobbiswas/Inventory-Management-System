@@ -1,0 +1,72 @@
+﻿@model Logistic_Inventory.Models.AccSubHead
+
+@{
+    ViewBag.Title = "Details";
+    ViewBag.page = "accountheads";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <h1 style="margin:0" class="center-block">
+            <i class="fa fa-sitemap"></i>   Account Sub Heads
+
+
+        </h1>
+    </div>
+    <div class="col-md-6">
+        <div class="btn-group btn-group " style="float:right;">
+            <a class="btn btn-default" href="/AccountSubHeads" style="color:white"><i class="fa fa-sitemap"></i> &nbsp;Account Sub Head List </a>
+            <button class="btn btn-default"><i class="fa fa-search"></i>  Search</button>
+
+            <button class="btn btn-default" id="d3" onclick="print()"><i class="fa fa-print" aria-hidden="true"></i> Print</button>
+
+        </div>
+    </div>
+
+</div>
+<br />
+
+<h2>Details</h2>
+
+<div>
+    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AccHeadName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccHeadName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AccHeadSubCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccHeadSubCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SubHeadName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SubHeadName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SubHeadCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SubHeadCode)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,172 @@
+﻿@model Logistic_Inventory.Models.AccHead
+
+@{
+    ViewBag.Title = "Create";
+    ViewBag.page = "accountheads";
+}
+
+
+<script src="~/Scripts/select2/3.5/select2.min.js"></script>
+
+<link href="~/Content/select2/3.5/select2.min.css" rel="stylesheet" />
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"> Account   Heads</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/products")">Account    </a></li>
+                            <li class="breadcrumb-item active" aria-current="page">    Heads</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a class="btn btn-default" href="/AccountHeads" style="color:white"><i class="fa fa-sitemap"></i> &nbsp;Account Heads List </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container col-md-6 mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h3 class="mb-0">Add New</h3>
+                </div>
+                <div class="card-body">
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.AccName, htmlAttributes: new { @class = "form-control-label" })
+                                <div class=" ">
+
+
+                                    <select   name="AccName" id="AccName">
+                                        <option value="">
+                                            Select Account Head
+                                        </option>
+                                        <option value="Asset" >
+                                            Asset
+                                        </option>
+                                        <option value="Expense">
+                                            Expense
+                                        </option>
+
+                                        <option value="Revenue">
+                                            Revenue
+                                        </option>
+
+                                        <option value="Capital">
+                                            Capital
+                                        </option>
+                                        <option value="Liabilities">Liabilities</option>
+                                    </select>
+                                    @Html.ValidationMessageFor(model => model.AccName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.AccCode, htmlAttributes: new { @class = "form-control-label" })
+                                <div class=" ">
+                                    @Html.EditorFor(model => model.AccCode, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccCode, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.AccSubName, htmlAttributes: new { @class = "form-control-label" })
+                                <div class=" ">
+                                    @Html.EditorFor(model => model.AccSubName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccSubName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.AccSubCode, htmlAttributes: new { @class = "form-control-label" })
+                                <div class=" ">
+                                    @Html.EditorFor(model => model.AccSubCode, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.AccSubCode, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Side, htmlAttributes: new { @class = "form-control-label" })
+                                <div class=" ">
+
+                                    <select name="Side" id="Side"  >
+                                        <option value="DR">Debit Side</option>
+                                        <option value="CR">Credit Side</option>
+                                    </select>
+
+                                </div>
+                            </div>
+
+                            <br/>
+                            <div class="form-group">
+
+                                <input type="submit" value="Submit" class="btn btn-default btn-block" />
+
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+
+    $('#AccName').on('change', function () {
+        var code = this.value;
+
+        var url2 = "/Api/GetAccountHeadCode?head=" + code;
+
+
+        $.ajax({
+            type: "GET",
+            url: url2,
+
+            success: function (data) {
+
+                console.log(data);
+                console.log(data["code"]);
+                if (typeof data[0] === "undefined") {
+
+                    var acccode = parseInt(data["code"]);
+                    $("#AccCode").val(acccode);
+                    $("#AccSubCode").val(data["subcode"]);
+                }
+                else {
+                    // $("#SubHeadCode").val(data[0]);
+                }
+
+
+            },
+
+            async: false
+        });
+    });
+
+
+    $("select").select2({width:"100%"});
+
+</script>

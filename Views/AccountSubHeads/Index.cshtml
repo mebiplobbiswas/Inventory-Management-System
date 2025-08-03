@@ -1,0 +1,323 @@
+﻿@model IEnumerable<Logistic_Inventory.Models.AccSubHead>
+
+@{
+    ViewBag.Title = "Account Sub Heads";
+    var i = 1;
+
+
+    var fileName = System.IO.Path.Combine(Server.MapPath("~/Content/img/logo/"), "banner_350.png");
+
+    ViewBag.banner = "data:image/gif;base64," + Convert.ToBase64String(File.ReadAllBytes(fileName));
+    ViewBag.page = "accountheads";
+
+}
+
+
+
+<link rel="stylesheet" type="text/css" href="~/Content/datatable/jquery.dataTables.css">
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jquery.dataTables.js"></script>
+
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.print.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/dataTables.buttons.min.js"></script>
+
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.flash.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/pdfmake.min.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/vfs_fonts.js"></script>
+<script type="text/javascript" charset="utf8" src="~/Scripts/datatable/buttons.html5.min.js"></script>
+
+
+
+<div class="header bg-primary-grey pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">  Account Sub Heads</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="@Url.Content("~/home")"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#">Accounts</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"> Sub Heads</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-5 text-right">
+                    <a class="btn btn-default" href="/AccountSubHeads/create" style="color:white"><i class="fa fa-plus"></i> &nbsp;Add New </a>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid mt--6">
+    <div class="row justify-content-center">
+        <div class=" col ">
+            <div class="card">
+
+                <div class="card-body">
+
+                    <table class="table    display" id="tbl">
+                        <thead>
+                            <tr class="th_bg ">
+                                <th>SL</th>
+                                <th>
+                                    Acc. Head Code
+                                </th>
+                                <th>
+                                    Head Name
+                                </th>
+                                <th>
+                                    Sub Head Code
+                                </th>
+                                <th>
+                                    Sub Head Name
+                                </th>
+
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model)
+                            {
+                                <tr id="row_@item.id">
+                                    <td>@i</td>
+
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.AccHeadSubCode)
+                                    </td>
+
+
+                                    <td>
+                                        <b> @Html.DisplayFor(modelItem => item.AccHeadName)</b>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.SubHeadCode)
+                                    </td>
+
+                                    <td>
+                                        <b>@Html.DisplayFor(modelItem => item.SubHeadName)</b>
+                                    </td>
+
+                                    <td>
+                                        <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+
+
+                                            @if (item.GeneratedBy == "Manual")
+                                            {
+                                                <label class="btn btn-sm btn-default btn-simple active" onclick="edit(@item.id)">
+
+
+                                                    <input type="radio" name="options" checked="">
+                                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"> <i class="fa fa-edit"></i> </span>
+                                                    <span class="d-block d-sm-none">
+                                                        <i class="fa fa-edit"></i>
+                                                    </span>
+
+                                                </label>
+
+                                                <span class="btn btn-sm btn-danger btn-simple" id="2" onclick="deletes(@item.id)">
+                                                    <input type="radio" class="d-none" name="options">
+                                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block"><i class="fa fa-times-circle"></i>  </span>
+                                                    <span class="d-block d-sm-none">
+                                                        <i class="tim-icons icon-simple-remove"></i>
+                                                    </span>
+                                                </span>
+
+
+                                            }
+
+
+                                            @*<label class="btn btn-sm btn-default btn-simple" id="1" onclick="details(@item.id)">
+                                                    <input type="radio" class="d-none d-sm-none" name="options">
+                                                    <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Details</span>
+                                                    <span class="d-block d-sm-none">
+                                                        <i class="tim-icons icon-notes"></i>
+                                                    </span>
+                                                </label>*@
+
+                                        </div>
+
+
+                                    </td>
+                                </tr>
+
+
+                                i++;
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
+<script>
+
+    
+
+
+
+    var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+
+    if (width < 900) {
+        $("table").addClass("table-responsive");
+    }
+
+
+    function edit(id) {
+        window.location.href = "/AccountSubHeads/Edit/" + id;
+
+    }
+
+    function details(id) {
+        window.location.href = "/AccountSubHeads/details/" + id;
+
+    }
+
+    function deletes(id) {
+        window.location.href = "/AccountSubHeads/delete/" + id;
+
+    }
+
+    function deletes(id) {
+        // window.location.href = "/Categories/delete/" + id;
+        var con = confirm('Are you sure you want to delete ?');
+        if (con) {
+            // Save it!
+            var url = "/Api/DeleteAccSubHead?id=" + id;
+            $.get(url, function (data) {
+
+                console.log(data);
+                var Status = data["status"];
+                var Code = parseInt(data["code"]);
+
+
+                $("#row_" + id).remove();
+
+
+
+
+                return true;
+            });
+
+        } else {
+            // Do nothing!
+            return false;
+        }
+
+        return false;
+
+    }
+
+
+
+
+       $('table').DataTable({
+             
+         
+         
+            "aLengthMenu": [[ 50, 200, 300, 500, 1000], [ '50 Rows', '200 Rows', '300 Rows', '500 Rows', '1000 Rows']],
+            "pageLength": 50,
+            "language": {
+
+                "search": '<i class="fa fa-search"></i>',
+                "searchPlaceholder": "Search By Provider",
+                "paginate": {
+                    "previous": '<i class="fa fa-angle-left"></i>',
+                    "next": '<i class="fa fa-angle-right"></i>'
+                }
+            },
+              dom: 'lBfrtip',
+             buttons: [
+
+                 {
+                    extend: 'pdf',
+                    text: '<i class="fa fa-file-pdf" aria-hidden="true"></i> PDF',
+                    title: "@ViewBag.Title",
+                    footer: true,
+                    customize: function (doc) {
+                        doc.content.splice(0, 0, {
+                            margin: [0, 0, 0, 0],
+
+                            alignment: 'left',
+                            image: '@ViewBag.banner'
+                        });
+
+                    }
+                }
+                 ,
+                 {
+                    extend: 'excel',
+                    text: '<i class="fa fa-file-excel" aria-hidden="true"></i> Excel',
+                    title: "@ViewBag.Title",
+                    footer: true,
+
+
+                },
+                 {
+                    extend: 'csv',
+                    text: '<i class="fa fa-file-word" aria-hidden="true"></i> CSV',
+                     title: "@ViewBag.Title",
+                    footer: true
+
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    title: "@ViewBag.Title",
+                    autoPrint: true,
+                    footer: true ,
+                    customize: function (win)
+                    {
+                        var url = location.protocol + '//' + location.host + "/Content/img/logo/banner_1000.png";
+
+
+
+                        $(win.document.body).find('.table>thead>tr>th').css("color", "black");
+                        $(win.document.body).find('.table>tbody>tr>td').css("color", "black");
+
+
+                        $(win.document.body)
+                            .css('font-size', '10pt').css('background-color', 'white')
+                        .prepend( '<img src="'+url+'" style="position:relative; top:0; left:0;width:600px" />'  );
+                        $(win.document.body).find('h1').css('font-size', '20px').css('font-weight', 'bold').css('text-transform', 'uppercase').css('color', 'black').css('margin-top', '15px');
+                    }
+                }
+
+            ], fixedHeader: {
+                header: true,
+                footer: true
+            }
+             ,
+            
+
+        //});
+
+        });
+
+
+
+</script>
+
+<style>
+    .content {
+        background: #f5f6fa;
+    }
+</style>
+
